@@ -30,7 +30,7 @@ def list_anssi_recommandations(category : str) -> list[str]:
         entire_path = supported_systems.get_entire_path()
         recommandations = {}
         p = join(entire_path,category,"ANSSI")
-        if exists():
+        if exists(p):
             for dir in listdir(p):
                 recommandations[dir] = listdir(join(p,dir))
             return recommandations
