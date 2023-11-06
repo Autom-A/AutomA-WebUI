@@ -38,7 +38,7 @@ class SupportedSystems(SingletonSupportedSystems):
         else:
             raise VariablePathNotDefined(f"Variables _playbooks_location, _os_selected, _os_type_selected and _os_version_selected must be filled")
 
-    def set_playbooks_location(self, path : str) -> list[str]:
+    def set_playbooks_location(self, path : str):
         if len(path) > 0:
             if exists(path):
                 self._playbooks_location = path
@@ -81,7 +81,7 @@ class SupportedSystems(SingletonSupportedSystems):
         else:
             raise VariablePathNotDefined(f"The variable os must be a string with len > 0")
 
-    def select_os_type(self, os_type : str) -> None:
+    def select_os_type(self, os_type : str):
         if len(self._os_selected) >= 1: 
             if len(os_type) >= 1:
                 self._os_type_selected = os_type.upper()
@@ -90,7 +90,7 @@ class SupportedSystems(SingletonSupportedSystems):
         else:
             raise VariablePathNotDefined(f"The variable _os_selected cannot be a string with len == 0")
 
-    def select_os_version(self, os_version : str) -> None:
+    def select_os_version(self, os_version : str):
         if len(self._os_selected) >=1 and len(self._os_type_selected) >= 1: 
             if len(os_version) >= 1:
                 self._os_version_selected = os_version.upper()
