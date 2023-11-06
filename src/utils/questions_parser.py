@@ -2,6 +2,7 @@
 
 from os import listdir
 from os.path import abspath, join, exists, isfile
+from utils.custom_exceptions import PathDoesNotExist
 from utils.supported_systems import SupportedSystems
 from yaml import safe_load
 
@@ -11,25 +12,29 @@ def read_questions_file(path : str) -> dict:
             data = safe_load(question_file)
         return data
     else:
-        print("Raise an exception AA")
+        raise PathDoesNotExist(f"The following path does not exist {path}")
 
 def list_categories() -> list[str]:
     supported_systems = SupportedSystems()
-    entire_path = supported_systems.get_entire_path()
-    if entire_path:
+    try:
+        entire_path = supported_systems.get_entire_path()
         return listdir(entire_path)
-    else:
-        print("Raise an exception AB")
+    except Exception as e:
+        raise e
 
 def list_anssi_recommandations(category : str) -> list[str]:
     category = category.upper()
-    
     supported_systems = SupportedSystems()
-    entire_path = supported_systems.get_entire_path()
-    recommandations = {}
-    if entire_path and exists(join(entire_path,category,"ANSSI")):
-        for dir in listdir(join(entire_path,category,"ANSSI")):
-            recommandations[dir] = listdir(join(entire_path,category,"ANSSI",dir))
-        return recommandations
-    else:
-        print("Raise an exception AC")
+
+    try:
+        entire_path = supported_systems.get_entire_path()
+        recommandations = {}
+        p = join(entire_path,category,"ANSSI")
+        if exists():
+            for dir in listdir(p):
+                recommandations[dir] = listdir(join(p,dir))
+            return recommandations
+        else:
+            raise PathDoesNotExist(f"The following path does not exist {p}")
+    except Exception as e:
+        raise e
