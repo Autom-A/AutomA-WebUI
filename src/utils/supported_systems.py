@@ -12,9 +12,7 @@ class SingletonSupportedSystems():
         if class_ not in class_._instances:
             class_._instances[class_] = super(SingletonSupportedSystems, class_).__new__(class_, *args, **kwargs)
         return class_._instances[class_]
-
-class PathException(Exception):
-    pass
+    
 class SupportedSystems(SingletonSupportedSystems):
     _playbooks_location = ""
     _os_selected = ""
