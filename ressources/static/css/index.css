@@ -1,0 +1,15 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
+.welcome-block {
+    font-size: 1.5em;
+}
+
+.welcome-title {
+    font-size: 2.5em !important;
+}

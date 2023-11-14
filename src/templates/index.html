@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutomA</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</head>
+
+<body id="body-background">
+    <nav>
+        <div class="nav-wrapper light-blue">
+            <a href="/" class="brand-logo center"><img src="{{ url_for('static', filename='images/logo.png') }}"
+                    height="80">
+            </a>
+        </div>
+    </nav>
+
+    <div class="row" style="margin-top: 50px;">
+        <div class="col s6 offset-s3">
+            <div class="card">
+                <div class="card-content white-text">
+                    <span class="card-title center light-blue-text welcome-title">Welcome to AutomA !</span>
+                    <p class="black-text center-align welcome-block">
+                        To begin using our software, click on the below button. You will find all the
+                        <a target="_blank" href="https://autom-a.github.io">documentation</a>
+                        online and the open source projet on our
+                        <a target="_blank" href="https://github.com/Autom-A">github</a>.
+                    </p>
+                </div>
+
+                <div class="card-action center-align">
+                    <a class="waves-effect waves-light btn light-blue" href="/app">
+                        <i id="rocket_launch" class="material-symbols-outlined left"></i>
+                        Start !
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="{{ url_for('static', filename='js/three.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vanta.net.min.js') }}"></script>
+<script>
+    VANTA.NET({
+        el: "#body-background",
+        mouseControls: false,
+        touchControls: false,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color : "#03a9f4",
+        backgroundColor: "#ffffff" 
+    })
+</script>
+
+</html>

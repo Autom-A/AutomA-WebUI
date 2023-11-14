@@ -14,27 +14,28 @@ def read_questions_file(path : str) -> dict:
     else:
         raise PathDoesNotExist(f"The following path does not exist {path}")
 
-def list_categories() -> list[str]:
-    supported_systems = SupportedSystems()
+def list_categories(supported_systems: SupportedSystems) -> list[str]:
     try:
         entire_path = supported_systems.get_entire_path()
         return listdir(entire_path)
     except Exception as e:
         raise e
 
-def list_anssi_recommandations(category : str) -> list[str]:
+def list_anssi_recommandations(category : str, supported_systems: SupportedSystems) -> list[str]:
     category = category.upper()
-    supported_systems = SupportedSystems()
-
     try:
         entire_path = supported_systems.get_entire_path()
         recommandations = {}
         p = join(entire_path,category,"ANSSI")
         if exists(p):
-            for dir in listdir(p):
-                recommandations[dir] = listdir(join(p,dir))
+            for anssi_level in listdir(p):
+                recommandations[anssi_level] = listdir(join(p,anssi_level))
             return recommandations
         else:
             raise PathDoesNotExist(f"The following path does not exist {p}")
     except Exception as e:
         raise e
+
+# Not implemented
+def list_cis_recommandations():
+    pass
