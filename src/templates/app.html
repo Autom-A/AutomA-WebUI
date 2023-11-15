@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutomA</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    <script>
+        // GLOBAL VARIABLES
+        var SERVER_IP = "{{ SERVER_IP }}"
+        var SERVER_PORT = "{{ SERVER_PORT }}"
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper light-blue">
+            <a href="/" class="brand-logo center"><img src="{{ url_for('static', filename='images/logo.png') }}"
+                    height="80">
+            </a>
+        </div>
+    </nav>
+
+    <div id="os_not_selected">
+        <div class="row" style="margin-top: 50px;">
+            <div class="col s12 center">
+                <div class="center-align">
+                    <a class="waves-effect waves-light btn light-blue" href="#" onclick="select_os_model_open()">
+                        <i id="radio_button_unchecked" class="material-symbols-outlined left"></i>
+                        Select my system !
+                    </a>
+                </div>
+            </div>
+            <div class="col s12 center">
+                <div class="center-align">
+                    <a class="waves-effect waves-light btn light-blue" href="#" onclick="environment_selected_toggle()">
+                        <i id="navigate_next" class="material-symbols-outlined left"></i>
+                        Skip
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="os_selected" class="hide">
+        <div class="row" style="margin-top: 50px;">
+            <div class="col s8 offset-s2 center">
+                <div class="center-align">
+                    <table class="highlight">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Level</th>
+                                <th>From</th>
+                            </tr>
+                        </thead>
+                        <tbody id="question-body"></tbody>
+                      </table>      
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Structure -->
+    <div id="os_selector_modal" class="modal">
+        <div class="modal-content">
+            <h4>Environment Selection</h4>
+            <p>Answer the boxes</p>
+
+            <div class="row">
+                <div class="col s8 offset-s2">
+                    <select id="os_selection">
+                        <option value="" disabled selected>Choose your os</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s8 offset-s2">
+                    <select id="os_type">
+                        <option value="" disabled selected>Choose your os type</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s8 offset-s2">
+                    <select id="os_version">
+                        <option value="" disabled selected>Choose your os version</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a id="valid" href="#!" class="hide modal-close waves-effect waves-green btn-flat" onclick="valid_environment()">Next !</a>
+        </div>
+    </div>
+</body>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</html>

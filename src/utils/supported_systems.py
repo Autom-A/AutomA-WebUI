@@ -45,13 +45,13 @@ class SupportedSystems(SingletonSupportedSystems):
         else:
             raise VariablePathNotDefined("The path must be a string with len > 0")
 
-    def list_os(self) -> list[str]:
+    def get_os(self) -> list[str]:
         if len(self._playbooks_location) <= 0:
             raise VariablePathNotDefined(f"Variables _playbooks_location musts be filled")
         else:
             return listdir(self._playbooks_location)
 
-    def list_os_type(self) -> list[str]:
+    def get_os_type(self) -> list[str]:
         if len(self._playbooks_location) <= 0 or len(self._os_selected) <= 0:
             raise VariablePathNotDefined(f"Variables _playbooks_location and _os_selected must be filled")
         else:
@@ -62,7 +62,7 @@ class SupportedSystems(SingletonSupportedSystems):
             else:
                 return listdir(join(self._playbooks_location,self._os_selected))
 
-    def list_os_version(self) -> list[str]:
+    def get_os_version(self) -> list[str]:
         if len(self._playbooks_location) <= 0 or len(self._os_selected) <= 0 or len(self._os_type_selected) <= 0 :
             raise VariablePathNotDefined(f"Variables _playbooks_location and _os_selected, _os_type_selected must be filled")
         else:
@@ -73,13 +73,13 @@ class SupportedSystems(SingletonSupportedSystems):
             else:
                 return listdir(join(self._playbooks_location,self._os_selected, self._os_type_selected))
 
-    def select_os(self, os : str) -> None:
+    def set_os(self, os : str) -> None:
         if len(os) >= 1:
             self._os_selected = os.upper()
         else:
             raise VariablePathNotDefined(f"The variable os must be a string with len > 0")
 
-    def select_os_type(self, os_type : str):
+    def set_os_type(self, os_type : str):
         if len(self._os_selected) >= 1: 
             if len(os_type) >= 1:
                 self._os_type_selected = os_type.upper()
@@ -88,7 +88,7 @@ class SupportedSystems(SingletonSupportedSystems):
         else:
             raise VariablePathNotDefined(f"The variable _os_selected cannot be a string with len == 0")
 
-    def select_os_version(self, os_version : str):
+    def set_os_version(self, os_version : str):
         if len(self._os_selected) >=1 and len(self._os_type_selected) >= 1: 
             if len(os_version) >= 1:
                 self._os_version_selected = os_version.upper()
