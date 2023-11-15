@@ -100,7 +100,8 @@ def get_questions():
                 for recommandation in recommandations_in_cat[level]:
                     split_name = recommandation.split("_")
                     name = " ".join(split_name[1:])
-                    all_questions.append({"id":split_name[0],"name":name,"category":category,"level":level,"from":"ANSSI"})
+                    level_name = " ".join(level.split("_")[1:])
+                    all_questions.append({"id":split_name[0],"name":name,"category":category,"level":level_name,"from":"ANSSI"})
         return jsonify(all_questions), 200
     except PathDoesNotExist as e:
         return jsonify({"ERROR":e.args}), 400
