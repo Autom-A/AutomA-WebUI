@@ -96,7 +96,7 @@ class RecommendationID(SingletonRecommendationID):
             if exists(path):
                 path = join(path.replace(self._playbooks_location,""))
                 for pair in self._recommendation_ids:
-                    if pair.get("path") == path:
+                    if pair.get("path").strip("/") == path.strip("/"):
                         return pair.get("id")
                 raise IDDoesNotExist(f"The following path does not have id: {path}")
             else:
@@ -105,7 +105,7 @@ class RecommendationID(SingletonRecommendationID):
             raise VariablePathNotDefined("The path must be a string with len > 0")
         
     def get_path_from_id(self,id: str):
-        if len(id) != 36:
+        if len(id) == 36:
                 for pair in self._recommendation_ids:
                     if pair.get("id") == id:
                         return pair.get("path")
