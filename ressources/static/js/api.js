@@ -27,8 +27,8 @@ function verify_os_type(value) {
                 M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
             }
         } else {
-            reinitSelector(document.getElementById('os_version'))
-            M.FormSelect.init(document.getElementById('os_version'), {});   
+            reinitSelector(document.getElementById('os-version'))
+            M.FormSelect.init(document.getElementById('os-version'), {});   
         }
     }
     xhttp.open("POST", endpoint, true);
@@ -61,7 +61,7 @@ function get_os() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        fillSelector("os_selection", xhttp, verify_os);
+        fillSelector("os-selection", xhttp, verify_os);
     }
     xhttp.open("GET", endpoint, true);
     xhttp.send();
@@ -71,7 +71,7 @@ function get_os_type() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os_type`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        fillSelector("os_type", xhttp, verify_os_type);
+        fillSelector("os-type", xhttp, verify_os_type);
     }
     xhttp.open("GET", endpoint, true);
     xhttp.send();
@@ -81,7 +81,7 @@ function get_os_version() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os_version`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        fillSelector("os_version", xhttp, verify_os_version);
+        fillSelector("os-version", xhttp, verify_os_version);
     }
     xhttp.open("GET", endpoint, true);
     xhttp.send();
@@ -115,7 +115,7 @@ function fillSelector(type, xhttp, functionToVerify, childName) {
 function reinitSelector(selector) {
     selector.value = ''
     selector.dispatchEvent(new Event('change'))
-    let options =  selector.getElementsByTagName("option");
+    let options = selector.getElementsByTagName("option");
     for(let i = 1; i<options.length; i ++) {
         options[i].remove()
     }
