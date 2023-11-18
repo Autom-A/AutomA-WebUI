@@ -27,8 +27,11 @@ function verify_os_type(value) {
                 M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
             }
         } else {
-            reinitSelector(document.getElementById('os-version'))
-            M.FormSelect.init(document.getElementById('os-version'), {});   
+            let selector = document.getElementById('os-version');
+            if(selector.classList.contains("hide")) {
+                reinitSelector(selector)
+                M.FormSelect.init(selector, {});
+            }
         }
     }
     xhttp.open("POST", endpoint, true);
@@ -87,13 +90,14 @@ function get_os_version() {
     xhttp.send();
 }
 
-function fillSelector(type, xhttp, functionToVerify, childName) {
+function fillSelector(type, xhttp, functionToVerify) {
+    console.log("jefill",type)
     if (xhttp.readyState == 4 && xhttp.status == 200) {
         let list = JSON.parse(xhttp.responseText);
         let select_item = document.getElementById(type);
         reinitSelector(select_item)
 
-        select_item.onchange = (e) => {
+        select_item.onchange = () => {
             functionToVerify(select_item.value);
         }
 
@@ -105,7 +109,6 @@ function fillSelector(type, xhttp, functionToVerify, childName) {
 
             select_item.appendChild(op);
         }
-
         M.FormSelect.init(select_item, {});
     } else if (xhttp.readyState == 4 && xhttp.status == 400) {
         M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
