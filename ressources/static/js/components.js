@@ -109,7 +109,6 @@ function render_question_btn(_id) {
 
         for (let i = 0; i < nb_questions; i++) {
             let input = document.getElementById(`${_id}-${i}`)
-            console.log(input.getAttribute("question-type"));
             switch (parseInt(input.getAttribute("question-type"))) {
                 case TYPES_QUESTION_ENUM["str"]:
                     break;
@@ -235,7 +234,6 @@ function render_field_choice_str(_id, index, one_field) {
         option_choice.value = one_choice
         option_choice.innerText = one_choice
 
-        console.log(one_choice);
 
         select_choice.appendChild(option_choice)
     }
