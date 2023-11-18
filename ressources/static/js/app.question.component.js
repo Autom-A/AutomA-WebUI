@@ -6,50 +6,14 @@ const TYPES_QUESTION_ENUM = {
     "choice<str>": 3
 }
 
-function render_recommendations() {
-    let recommendation_container = document.getElementById("recommendations-container")
-
-    // clear table before filling
-    while (recommendation_container.firstChild) {
-        question_body.removeChild(recommendation_container.lastChild);
-    }
-
-    let all_recommendations = JSON.parse(localStorage.getItem("recommendations"))
-    for (let i = 0; i < all_recommendations.length; i++) {
-        const one_recommendation = all_recommendations[i];
-        let r_line = render_recommendation_line(one_recommendation)
-        recommendation_container.appendChild(r_line)
-    }
-}
-
-function render_recommendation_line(one_recommendation) {
-    let line = document.createElement("tr")
-    line.setAttribute("id", one_recommendation["_id"])
-
-    line.onclick = () => {
-        get_question(line.getAttribute("id"))
-    }
-
-    let c_selected = document.createElement("th")
-    c_selected.innerHTML = `<a id="r-radio-btn" class=material-symbols-outlined>radio_button_unchecked</a>`
-    line.appendChild(c_selected)
-
-    line.appendChild(render_recommendation_atome(one_recommendation["id"]))
-    line.appendChild(render_recommendation_atome(one_recommendation["name"]))
-    line.appendChild(render_recommendation_atome(one_recommendation["category"]))
-    line.appendChild(render_recommendation_atome(one_recommendation["level"]))
-    line.appendChild(render_recommendation_atome(one_recommendation["from"]))
-
-    return line
-}
-
-function render_recommendation_atome(text_displayed) {
-    let atome = document.createElement("th")
-    atome.innerText = text_displayed
-    return atome
-}
-
-function render_question(_id) {
+/** 
+* If the modal template is already instatiated, the function open it else it creates 
+* the modal. It takes the configuration of the question to choose which elements need to 
+* be added to the modal (select, input, chips, ...)
+* @summary Display a modal template and fill it from config question
+* @param {_id} _id - question UUID
+*/
+function render_question(_id,question_data) {
     // Check if modal for this question already exists
     let question_modal = document.getElementById(`q-${_id}`)
     if (question_modal != undefined) {
@@ -60,8 +24,6 @@ function render_question(_id) {
         let template = document.getElementById("template-question-modal")
         question_modal = template.content.cloneNode(true).querySelector("div")
         question_modal.setAttribute("id", `q-${_id}`)
-
-        let question_data = JSON.parse(localStorage.getItem(_id))
 
         let question_title = question_modal.querySelector("#question-title")
         question_title.innerText = question_data.title
@@ -79,23 +41,40 @@ function render_question(_id) {
 
         question_container.appendChild(question_modal)
 
-        while (MATERIALIZE_FIFO.length > 0) {
-            let todo = MATERIALIZE_FIFO.pop()
-            switch (todo.element_type) {
-                case "formselect":
-                    let el = document.getElementById(todo.id)
-                    M.FormSelect.init(el, {})
-                    break;
-                default:
-                    break;
-            }
-        }
+        //Init Materialize component who needs to be initialize
+        initializeMaterializeComponent()
 
         M.Modal.init(question_modal)
         M.Modal.getInstance(question_modal).open()
     }
 }
 
+/** 
+* Initialize Material components. This function need to be called after adding components
+to the DOM. This method is useful because in our case, our components are returned
+by our functions before adding them to the DOM. Some errors appears with Select component
+* with this workflow.
+* It's base on global scope variable 'MATERIALIZE_FIFO'
+* @summary Initialize Material components wich need to be added to the DOM before
+* init
+*/
+function initializeMaterializeComponent() {
+    while (MATERIALIZE_FIFO.length > 0) {
+        let todo = MATERIALIZE_FIFO.pop()
+        switch (todo.element_type) {
+            case "formselect":
+                let el = document.getElementById(todo.id)
+                M.FormSelect.init(el, {})
+                break
+            default:
+                break
+        }
+    }
+}
+
+/** 
+* Create validation button and bind it with the click event.
+*/
 function render_question_btn(_id) {
     let div = document.createElement("div")
     div.classList.add(["right-align"])
@@ -141,6 +120,16 @@ function render_question_btn(_id) {
     return div
 }
 
+/** 
+* Render question from 'render_field_str' method in case of 'str' : input
+* Render question from 'render_field_list_str' method in case of 'list<str>' : chips
+* Render question from 'render_field_choice_str' method in case of 'choice<str>' : select
+* @summary Render question depending on the answer type
+* @param {_id} _id - UUID of the recommendation
+* @param {index} index - Index of question 
+* @param {one_field} one_field - configuration of the answer
+* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+*/
 function render_question_field(_id, index, one_field) {
     switch (one_field.type) {
         case "str":
@@ -154,6 +143,14 @@ function render_question_field(_id, index, one_field) {
     console.log(`ERROR : the type : ${one_field.type} is not implemented`);
 }
 
+
+/** 
+* Render question method in case of 'str' : it creates an input
+* @param {_id} _id - UUID of the recommendation
+* @param {index} index - Index of question 
+* @param {one_field} one_field - configuration of the answer
+* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+*/
 function render_field_str(_id, index, one_field) {
     let div = document.createElement("div")
     div.classList.add("input-field")
@@ -173,6 +170,13 @@ function render_field_str(_id, index, one_field) {
     return div
 }
 
+/** 
+* Render question method in case of 'list<str>' : it creates a chips element
+* @param {_id} _id - UUID of the recommendation
+* @param {index} index - Index of question 
+* @param {one_field} one_field - configuration of the answer
+* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+*/
 function render_field_list_str(_id, index, one_field) {
     let div_row = document.createElement("div")
     div_row.classList.add("row")
@@ -203,11 +207,21 @@ function render_field_list_str(_id, index, one_field) {
     return div_row
 }
 
+/** 
+* Render question method in case of 'choice<str>' : it creates a select element
+* The Select element is an 
+* @param {_id} _id - UUID of the recommendation
+* @param {index} index - Index of question 
+* @param {one_field} one_field - configuration of the answer
+* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+*/
 function render_field_choice_str(_id, index, one_field) {
+    //Parse type in order to get options
     let choices_to_parse = one_field.type.replace("choice<str>", "")
     choices_to_parse = choices_to_parse.replace("[", "").replace("]", "")
     let choices_allowed = choices_to_parse.split(",")
 
+    //Create element
     let div_row = document.createElement("div")
     div_row.classList.add(["row"])
 
@@ -253,6 +267,12 @@ function render_field_choice_str(_id, index, one_field) {
     return div_row
 }
 
+
+/** 
+* Get data from chips in case of 'list<str>', it takes values from a chips elements and
+add it to the local storage
+* @param {input_component} input_component - Chips element
+*/
 function retrieve_list_str_data(input_component) {
     let chip_instance = M.Chips.getInstance(input_component)
 
