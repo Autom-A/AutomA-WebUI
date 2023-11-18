@@ -1,0 +1,3 @@
+[submodule "playbooks"]
+	path = playbooks
+	url = git@github.com:Autom-A/AutomA-Playbooks.git
