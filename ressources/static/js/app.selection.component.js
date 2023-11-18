@@ -75,7 +75,6 @@ is already visible
 */
 function resetChildSelector(childName) {
     let selector = document.getElementById(childName);
-    console.log("selector", selector)
     if (!selector.classList.contains("hide")) {
         reinitSelector(selector)
         M.FormSelect.init(selector, {});
