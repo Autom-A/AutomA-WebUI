@@ -1,9 +1,8 @@
 #!/bin/env python3
 
-from os import listdir
-from os.path import join, abspath, exists, isdir
+from os.path import join, exists, isdir
 from utils.custom_exceptions import PathDoesNotExist, VariablePathNotDefined
-from yaml import safe_load
+from utils.path import list_dir_in_dir
 
 class SingletonSupportedSystems():
     _instances = {}
@@ -49,7 +48,7 @@ class SupportedSystems(SingletonSupportedSystems):
         if len(self._playbooks_location) <= 0:
             raise VariablePathNotDefined(f"Variables _playbooks_location musts be filled")
         else:
-            return listdir(self._playbooks_location)
+            return list_dir_in_dir(self._playbooks_location)
 
     def get_os_type(self) -> list[str]:
         if len(self._playbooks_location) <= 0 or len(self._os_selected) <= 0:
@@ -60,7 +59,7 @@ class SupportedSystems(SingletonSupportedSystems):
                 self.reset_params()
                 raise PathDoesNotExist(f"The following path does not exist : {p}")
             else:
-                return listdir(join(self._playbooks_location,self._os_selected))
+                return list_dir_in_dir(join(self._playbooks_location,self._os_selected))
 
     def get_os_version(self) -> list[str]:
         if len(self._playbooks_location) <= 0 or len(self._os_selected) <= 0 or len(self._os_type_selected) <= 0 :
@@ -71,7 +70,7 @@ class SupportedSystems(SingletonSupportedSystems):
                 self.reset_params()
                 raise PathDoesNotExist(f"The following path does not exist : {p}")
             else:
-                return listdir(join(self._playbooks_location,self._os_selected, self._os_type_selected))
+                return list_dir_in_dir(join(self._playbooks_location,self._os_selected, self._os_type_selected))
 
     def set_os(self, os : str) -> None:
         if len(os) >= 1:

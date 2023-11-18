@@ -1,8 +1,9 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from os.path import abspath, join
+from utils.id_management import RecommendationID
 from utils.custom_exceptions import PathDoesNotExist, VariablePathNotDefined
-from utils.questions_parser import list_anssi_recommandations, list_categories
+from utils.questions_parser import list_anssi_recommendations, list_categories, read_questions_file
 from utils.supported_systems import SupportedSystems
 
 STATIC_FOLDER = join(abspath("."),"ressources","static")
@@ -11,9 +12,20 @@ CORS(flask_app)
 
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = "9123"
+PLAYBOOK_LOCATION = "./playbooks"
+
+
+recommendation_id = RecommendationID()
+recommendation_id.set_id_file_location("id_management.yml")
+recommendation_id.set_playbooks_location(PLAYBOOK_LOCATION)
+try:
+    all_r = recommendation_id.through_playbooks()
+    new_r = recommendation_id.attribute_new_playbooks(all_r)
+except Exception as e:
+    print(e.with_traceback())
 
 supported_systems = SupportedSystems()
-supported_systems.set_playbooks_location("./playbooks")
+supported_systems.set_playbooks_location(PLAYBOOK_LOCATION)
 
 @flask_app.route("/")
 def index():
@@ -90,24 +102,45 @@ def post_os_version():
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
     
-@flask_app.route("/api/questions", methods=['GET'])
-def get_questions():
+@flask_app.route("/api/recommendations", methods=['GET'])
+def get_recommendations():
     try:
-        all_questions = []
+        all_recommendations = []
         for category in list_categories(supported_systems):
-            recommandations_in_cat = list_anssi_recommandations(category,supported_systems)
-            for level in recommandations_in_cat:
-                for recommandation in recommandations_in_cat[level]:
-                    split_name = recommandation.split("_")
+            recommendations_in_cat = list_anssi_recommendations(category,supported_systems)
+            # must use generic function to allow more directory than just ANSSI
+            for level in recommendations_in_cat:
+                for recommendation in recommendations_in_cat[level]:
+                    split_name = recommendation.split("_")
                     name = " ".join(split_name[1:])
                     level_name = " ".join(level.split("_")[1:])
-                    all_questions.append({"id":split_name[0],"name":name,"category":category,"level":level_name,"from":"ANSSI"})
-        return jsonify(all_questions), 200
+                    r_id = recommendation_id.get_id_from_path(join(supported_systems.get_entire_path(),category,"ANSSI",level,recommendation))
+                    all_recommendations.append({"id":split_name[0],
+                                                "name":name,
+                                                "category":category,
+                                                "level":level_name,
+                                                "from":"ANSSI",
+                                                "_id": r_id})
+                    
+        return jsonify(all_recommendations), 200
+    except PathDoesNotExist as e:
+        return jsonify({"ERROR":e.args}), 400
+    except Exception as e:
+        print(e.with_traceback())
+        return jsonify({"ERROR":"An error occured"}), 400 
+
+@flask_app.route("/api/question",methods=['GET'])
+def get_question():
+    try:
+        r_id = request.args["_id"]
+        r_path = recommendation_id.get_path_from_id(r_id)
+        question_data = read_questions_file(join(supported_systems._playbooks_location,r_path))
+        return jsonify(question_data)
     except PathDoesNotExist as e:
         return jsonify({"ERROR":e.args}), 400
     except Exception as e:
         print(e)
-        return jsonify({"ERROR":"An error occured"}), 400 
-        
+        return jsonify({"ERROR":"An error occured"}), 400
+
 
 flask_app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)
