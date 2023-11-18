@@ -91,7 +91,7 @@ function get_os_version() {
 }
 
 function fillSelector(type, xhttp, functionToVerify) {
-    console.log("jefill",type)
+
     if (xhttp.readyState == 4 && xhttp.status == 200) {
         let list = JSON.parse(xhttp.responseText);
         let select_item = document.getElementById(type);
