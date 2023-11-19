@@ -1,4 +1,4 @@
 
-.modal .modal-content {
+#os-selector-modal > .modal-content {
     height: 30em;
 }
