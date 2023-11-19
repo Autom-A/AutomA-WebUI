@@ -51,14 +51,17 @@ class RecommendationID(SingletonRecommendationID):
             path (str): Path of the file
 
         Raises:
-            PathDoesNotExist: If the specified path does not exist
             VariablePathNotDefined: If variables are not filled
         """
         if len(path) > 0:
             if exists(path):
                 self._id_file_location = path
             else:
-                raise PathDoesNotExist(f"The following path does not exist : {path}")
+                print(f"The following path does not exist : {path}")
+                print(f"Setting _id_file_location to 'id_management.yml'")
+                self._id_file_location = "id_management.yml"
+                with open(self._id_file_location,"w") as f:
+                    pass
         else:
             raise VariablePathNotDefined("The path must be a string with len > 0")
         
