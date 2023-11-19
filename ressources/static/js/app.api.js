@@ -73,7 +73,7 @@ function get_question(_id) {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let question = JSON.parse(xhttp.responseText);
-            render_question(_id, question)
+            renderQuestion(_id, question)
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : Can\'t retrieve the question', classes: 'rounded' });
         }
