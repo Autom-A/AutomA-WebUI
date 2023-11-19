@@ -11,3 +11,9 @@ class IDDoesNotExist(Exception):
 
 class VariableIDNotDefined(Exception):
     pass
+
+class WrongAnswerType(Exception):
+    pass
+
+class AnswerIsRequired(Exception):
+    pass
