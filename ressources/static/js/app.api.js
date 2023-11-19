@@ -57,8 +57,8 @@ function get_recommendation_list() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let recommendations = JSON.parse(xhttp.responseText);
-            localStorage.setItem("recommendations", JSON.stringify(recommendations))
-            render_recommendations()
+            sessionStorage.setItem("recommendations", JSON.stringify(recommendations))
+            renderRecommendations()
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : Can\'t retrieve the recommendation list', classes: 'rounded' });
         }
