@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/square.font.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static',filename='images/logo.png') }}">
 
     <script src="{{ url_for('static', filename='js/librairies/materialize.min.js') }}"></script>
@@ -73,6 +74,20 @@
                         </thead>
                         <tbody id="recommendations-container"></tbody>
                     </table>
+                    <div class="generations-buttons">
+                        <a class="waves-effect waves-light btn squared-button" onclick="launchGenerate()">
+                            <i class="material-icons left icon-3-squares-l"></i>
+                            <i class="material-icons left icon-1-square-45deg"></i>
+                            <span>Generate</span>
+                        </a>
+                        <div class="split-buttons">
+                            <a class="waves-effect waves-light btn" disabled><i class="material-symbols-outlined left">play_circle</i>Run</a>
+                            <a href="#!" class="waves-effect waves-light btn button-icon-arrow dropdown-trigger" data-target="dropdown1" disabled><i class="material-icons arrow-icon">expand_more</i></a>
+                        </div>
+                        <ul id="dropdown1" class="dropdown-content">
+                            <li><a href="#!"><i class="material-symbols-outlined left" disabled>download</i>Download</a></li>
+                          </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,7 +125,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <a id="valid" href="#!" class="modal-close waves-effect waves-green btn-flat" disabled onclick="valid_environment()">Next !</a>
+            <a id="valid" href="#!" class="modal-close waves-effect waves-green btn-flat" disabled
+                onclick="valid_environment()">Next !</a>
         </div>
     </div>
 

@@ -137,3 +137,33 @@ function verify_os_version(value) {
     xhttp.setRequestHeader("Content-Type", "application/json")
     xhttp.send(JSON.stringify({ "os_version": value }));
 }
+
+/** 
+ * API Methods to generate and download
+ * 
+ * 
+*/
+
+/** 
+* Launch generation with the selected answers written in local storage
+*/
+function launchGenerate() {
+    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/playbooks/render`;
+    let xhttp = new XMLHttpRequest();
+    let recommendations = {};
+    let recommendationsIdSelected = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
+    recommendationsIdSelected.forEach(id => {
+        let answers = JSON.parse(localStorage.getItem(id))
+        if(answers) {
+            recommendations[id] = answers
+        }
+    });
+    xhttp.onreadystatechange = function () {
+
+    }
+    xhttp.open("POST", endpoint, true);
+    xhttp.setRequestHeader("Content-Type", "application/json")
+    xhttp.send(JSON.stringify(recommendations));
+}
+
+
