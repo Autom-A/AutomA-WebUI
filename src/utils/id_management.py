@@ -8,19 +8,34 @@ from utils.custom_exceptions import IDDoesNotExist, PathDoesNotExist, VariableID
 from utils.path import list_dir_in_dir
 
 class SingletonRecommendationID():
-    _instances = {}
+    """Sigleton of the RecommendationID class
+    """
+    _instance = {}
 
     def __new__(class_, *args, **kwargs):
-        if class_ not in class_._instances:
-            class_._instances[class_] = super(SingletonRecommendationID, class_).__new__(class_, *args, **kwargs)
-        return class_._instances[class_]
+        if class_ not in class_._instance:
+            class_._instance[class_] = super(SingletonRecommendationID, class_).__new__(class_, *args, **kwargs)
+        return class_._instance[class_]
 
 class RecommendationID(SingletonRecommendationID):
+    """This class manage the ID of each recommendation. To avoid to put ID in recommendation
+    directories and files, the class RecommendationID manage dynamically ID by adding missing pair
+    ID/path in the ID file. Futhermore, all ID are UUID from the uuid.uuid4()
+    """
     _id_file_location = ""
     _playbooks_location = ""
     _recommendation_ids = {}
 
     def set_playbooks_location(self, path : str):
+        """Check and set the location of the playbook directory
+
+        Args:
+            path (str): The path of the playbook location
+
+        Raises:
+            PathDoesNotExist: If the specified path does not exist
+            VariablePathNotDefined: If variables are not filled
+        """
         if len(path) > 0:
             if exists(path):
                 self._playbooks_location = join(path)
@@ -30,6 +45,15 @@ class RecommendationID(SingletonRecommendationID):
             raise VariablePathNotDefined("The path must be a string with len > 0")
     
     def set_id_file_location(self, path : str):
+        """Set the location of the ID/PATH pair file
+
+        Args:
+            path (str): Path of the file
+
+        Raises:
+            PathDoesNotExist: If the specified path does not exist
+            VariablePathNotDefined: If variables are not filled
+        """
         if len(path) > 0:
             if exists(path):
                 self._id_file_location = path
@@ -39,6 +63,12 @@ class RecommendationID(SingletonRecommendationID):
             raise VariablePathNotDefined("The path must be a string with len > 0")
         
     def attribute_new_playbooks(self, all_recommendation_paths : list[str]):
+        """Add missing pair ID/PATH in the file. The pair ID/PATH are not deleted when
+        a playbook is removed.
+
+        Args:
+            all_recommendation_paths (list[str]): list of all recommendation paths
+        """
         with open(self._id_file_location,"r") as id_file:
             id_path_pair = safe_load(id_file)
         
@@ -62,7 +92,12 @@ class RecommendationID(SingletonRecommendationID):
             yml_dump(id_path_pair,id_file)
             self._recommendation_ids = id_path_pair.get("recommendation_ids")
 
-    def through_playbooks(self) -> list[str]:
+    def get_available_playbooks(self) -> list[str]:
+        """browse all folders in the playbook folder to retrieve all recommendation paths
+
+        Returns:
+            list[str]: all recommendation paths
+        """
         all_recommendation_paths = []
 
         for os in list_dir_in_dir(self._playbooks_location):
@@ -87,11 +122,25 @@ class RecommendationID(SingletonRecommendationID):
                                         rpath = join(os,os_type,os_version,category,rfrom,level,recommendation)
                                         all_recommendation_paths.append(rpath)
                             elif rfrom.upper() == "CIS":
+                                #NOT IMPLEMENTED
                                 pass
 
         return all_recommendation_paths
 
-    def get_id_from_path(self, path : str):
+    def get_id_from_path(self, path : str) -> str:
+        """Translate a path to an ID. The ID is used mainly in the front-end
+
+        Args:
+            path (str): path to translate
+
+        Raises:
+            IDDoesNotExist: If the path doesn't have an ID
+            PathDoesNotExist: If the specified path does not exist
+            VariablePathNotDefined: If variables are not filled
+
+        Returns:
+            str: The path's ID
+        """
         if len(path) > 0:
             if exists(path):
                 path = join(path.replace(self._playbooks_location,""))
@@ -104,7 +153,19 @@ class RecommendationID(SingletonRecommendationID):
         else:
             raise VariablePathNotDefined("The path must be a string with len > 0")
         
-    def get_path_from_id(self,id: str):
+    def get_path_from_id(self,id: str) -> str:
+        """Translate an ID to a path. The path is used mainly in the back-end
+
+        Args:
+            id (str): The id to translate
+
+        Raises:
+            IDDoesNotExist: If the ID does not exist
+            VariablePathNotDefined: If variables are not filled
+
+        Returns:
+            str: The ID's path
+        """
         if len(id) == 36:
                 for pair in self._recommendation_ids:
                     if pair.get("id") == id:
