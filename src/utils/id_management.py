@@ -145,7 +145,7 @@ class RecommendationID(SingletonRecommendationID):
             if exists(path):
                 path = join(path.replace(self._playbooks_location,""))
                 for pair in self._recommendation_ids:
-                    if pair.get("path").strip("/") == path.strip("/"):
+                    if pair.get("path").strip("/").strip('\\') == path.strip("/").strip('\\'):
                         return pair.get("id")
                 raise IDDoesNotExist(f"The following path does not have id: {path}")
             else:

@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <script src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static',filename='images/logo.png') }}">
+    
+    <script src="{{ url_for('static', filename='js/librairies/materialize.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.init.js') }}"></script>
 </head>
 
 <body id="body-background">
@@ -46,8 +48,8 @@
     </div>
 </body>
 
-<script src="{{ url_for('static', filename='js/three.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/vanta.net.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/librairies/three.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/librairies/vanta.net.min.js') }}"></script>
 <script>
     VANTA.NET({
         el: "#body-background",
