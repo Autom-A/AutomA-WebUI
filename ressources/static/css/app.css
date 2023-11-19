@@ -36,8 +36,9 @@
 
 .icon-1-square-45deg {
     font-size: 11px !important;
-    left: 2.2em;
+    left: 2.35em;
     top: -0.5em;
+    position: absolute;
 }
 
 .generations-buttons:hover .icon-1-square-45deg {

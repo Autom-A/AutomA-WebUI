@@ -5,12 +5,13 @@ from utils.id_management import RecommendationID
 from utils.custom_exceptions import AnswerIsRequired, IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
 from utils.playbook_renderer import playbook_render_write
 from utils.questions_parser import check_answers, list_anssi_recommendations, list_categories, read_questions_file
+from utils.recommendations_selected import RecommendationsSelected
 from utils.supported_systems import SupportedSystems
 
 STATIC_FOLDER = join(abspath("."),"ressources","static")
 flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
 
-CORS(flask_app,resources="/api/*")
+CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
 
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = "9123"
@@ -160,10 +161,16 @@ def get_question():
 def render_playbook():
     try:
         recommendations_selected = request.get_json()
+        recommendations_path_selected = []
         for recommendation in recommendations_selected:
             recommendation_path = recommendation_id.get_path_from_id(recommendation)
+            recommendations_path_selected.append(recommendation_path)
+
             answers_to_inject = check_answers(recommendation_path, recommendations_selected.get(recommendation))
             playbook_render_write(recommendation_path,answers_to_inject)
+
+        # Keep path for next steps
+        RecommendationsSelected(recommendations_path_selected)
 
         nb_playbooks = len(recommendations_selected)
         return jsonify({"SUCCESS": f"{nb_playbooks} playbook{'s'*(nb_playbooks%1)} {'has'*(nb_playbooks%1+1)}{'have'*(nb_playbooks%1)} been generated"})
@@ -178,5 +185,20 @@ def render_playbook():
     except Exception as e:
         print(e.with_traceback())
         return jsonify({"ERROR":"An error occured"}), 400
+    
+@flask_app.route("/api/playbook/launcher/run", methods=['POST'])
+def run_playbook_launcher():
+    recommendation_selected = RecommendationsSelected()
+    with open("./playbook.master.yml","w") as playbook_master_file:
+        playbook_master_file.write("---\n")
+        for recommendation in recommendation_selected._recommendations_selected:
+            recommendation_path = join(supported_systems._playbooks_location,recommendation)
+            playbook_master_file.write(f"- import_playbook: \"{recommendation_path}\"\n")
+
+    return jsonify({"SUCCESS":""})
+
+@flask_app.route("/api/playbook/launcher/download", methods=['GET'])
+def download_playbook_launcher():
+    pass
 
 flask_app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)
