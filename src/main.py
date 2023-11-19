@@ -2,31 +2,39 @@ from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from os.path import abspath, join
 from utils.id_management import RecommendationID
-from utils.custom_exceptions import PathDoesNotExist, VariablePathNotDefined
-from utils.questions_parser import list_anssi_recommendations, list_categories, read_questions_file
+from utils.custom_exceptions import AnswerIsRequired, IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
+from utils.playbook_renderer import playbook_render_write
+from utils.questions_parser import check_answers, list_anssi_recommendations, list_categories, read_questions_file
 from utils.supported_systems import SupportedSystems
 
 STATIC_FOLDER = join(abspath("."),"ressources","static")
 flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
 
-CORS(flask_app)
+CORS(flask_app,resources="/api/*")
 
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = "9123"
 PLAYBOOK_LOCATION = "./playbooks"
 
-
-recommendation_id = RecommendationID()
-recommendation_id.set_id_file_location("id_management.yml")
-recommendation_id.set_playbooks_location(PLAYBOOK_LOCATION)
 try:
-    all_r = recommendation_id.through_playbooks()
-    new_r = recommendation_id.attribute_new_playbooks(all_r)
+    # GENERATE FILE THAT CONTAINS PAIR ID/PATH OF EACH RECOMMENDATIONS
+    recommendation_id = RecommendationID()
+    recommendation_id.set_id_file_location("id_management.yml")
+    recommendation_id.set_playbooks_location(PLAYBOOK_LOCATION)
+
+    available_recommendations = recommendation_id.get_available_playbooks()
+    recommendation_id.attribute_new_playbooks(available_recommendations)
+
+    # SINGLETON TO SERVE PATH TO ALL FUNCTIONS
+    supported_systems = SupportedSystems()
+    supported_systems.set_playbooks_location(PLAYBOOK_LOCATION)
+except PathDoesNotExist as path_does_not_exist:
+    print(path_does_not_exist)
+except VariablePathNotDefined as variable_path_not_defined:
+    print(variable_path_not_defined)
 except Exception as e:
     print(e.with_traceback())
 
-supported_systems = SupportedSystems()
-supported_systems.set_playbooks_location(PLAYBOOK_LOCATION)
 
 @flask_app.route("/")
 def index():
@@ -41,8 +49,8 @@ def app():
 def get_os():
     try:
         return jsonify(supported_systems.get_os())
-    except VariablePathNotDefined as e:
-        return jsonify({"ERROR":e.args}), 400
+    except VariablePathNotDefined as variable_path_not_defined:
+        return jsonify({"ERROR":variable_path_not_defined.args}), 400
 
 @flask_app.route("/api/selector/os", methods=['POST'])
 def post_os():
@@ -53,8 +61,8 @@ def post_os():
         else:
             supported_systems.set_os(os)
             return jsonify({"SUCCESS":"os has been selected"}), 200
-    except VariablePathNotDefined as e:
-        return jsonify({"ERROR":e.args}), 400
+    except VariablePathNotDefined as variable_path_not_defined:
+        return jsonify({"ERROR":variable_path_not_defined.args}), 400
     except Exception as e:
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
@@ -63,8 +71,10 @@ def post_os():
 def get_os_type():
     try:
         return jsonify(supported_systems.get_os_type())
-    except VariablePathNotDefined or PathDoesNotExist as e:
-        return jsonify({"ERROR":e.args}), 400
+    except PathDoesNotExist as path_does_not_exist:
+        return jsonify({"ERROR":path_does_not_exist.args}), 400
+    except VariablePathNotDefined as variable_path_not_defined:
+        return jsonify({"ERROR":variable_path_not_defined.args}), 400
     
 @flask_app.route("/api/selector/os_type", methods=['POST'])
 def post_os_type():
@@ -75,8 +85,8 @@ def post_os_type():
         else:
             supported_systems.set_os_type(os)
             return jsonify({"SUCCESS":"os type has been selected"}), 200
-    except VariablePathNotDefined as e:
-        return jsonify({"ERROR":e.args}), 400
+    except VariablePathNotDefined as variable_path_not_defined:
+        return jsonify({"ERROR":variable_path_not_defined.args}), 400
     except Exception as e:
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
@@ -85,8 +95,10 @@ def post_os_type():
 def get_os_version():
     try:
         return jsonify(supported_systems.get_os_version())
-    except VariablePathNotDefined or PathDoesNotExist as e:
-        return jsonify({"ERROR":e.args}), 400
+    except PathDoesNotExist as path_does_not_exist:
+        return jsonify({"ERROR":path_does_not_exist.args}), 400
+    except VariablePathNotDefined as variable_path_not_defined:
+        return jsonify({"ERROR":variable_path_not_defined.args}), 400
 
 @flask_app.route("/api/selector/os_version", methods=['POST'])
 def post_os_version():
@@ -97,8 +109,8 @@ def post_os_version():
         else:
             supported_systems.set_os_version(os)
             return jsonify({"SUCCESS":"os version has been selected"}), 200
-    except VariablePathNotDefined as e:
-        return jsonify({"ERROR":e.args}), 400
+    except VariablePathNotDefined as variable_path_not_defined:
+        return jsonify({"ERROR":variable_path_not_defined.args}), 400
     except Exception as e:
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
@@ -124,8 +136,8 @@ def get_recommendations():
                                                 "_id": r_id})
                     
         return jsonify(all_recommendations), 200
-    except PathDoesNotExist as e:
-        return jsonify({"ERROR":e.args}), 400
+    except PathDoesNotExist as path_does_not_exist:
+        return jsonify({"ERROR":path_does_not_exist.args}), 400
     except Exception as e:
         print(e.with_traceback())
         return jsonify({"ERROR":"An error occured"}), 400 
@@ -137,11 +149,34 @@ def get_question():
         r_path = recommendation_id.get_path_from_id(r_id)
         question_data = read_questions_file(join(supported_systems._playbooks_location,r_path))
         return jsonify(question_data)
-    except PathDoesNotExist as e:
-        return jsonify({"ERROR":e.args}), 400
+    except PathDoesNotExist as path_does_not_exist:
+        return jsonify({"ERROR":path_does_not_exist.args}), 400
     except Exception as e:
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
 
+
+@flask_app.route("/api/playbooks/render", methods=['POST'])
+def render_playbook():
+    try:
+        recommendations_selected = request.get_json()
+        for recommendation in recommendations_selected:
+            recommendation_path = recommendation_id.get_path_from_id(recommendation)
+            answers_to_inject = check_answers(recommendation_path, recommendations_selected.get(recommendation))
+            playbook_render_write(recommendation_path,answers_to_inject)
+
+        nb_playbooks = len(recommendations_selected)
+        return jsonify({"SUCCESS": f"{nb_playbooks} playbook{'s'*(nb_playbooks%1)} {'has'*(nb_playbooks%1+1)}{'have'*(nb_playbooks%1)} been generated"})
+    except IDDoesNotExist as id_does_not_exist:
+        return jsonify({"ERROR":id_does_not_exist.args}), 400
+    except VariableIDNotDefined as variable_id_not_defined:
+        return jsonify({"ERROR":variable_id_not_defined.args}), 400
+    except WrongAnswerType as wrong_answer_type:
+        return jsonify({"ERROR":wrong_answer_type.args}), 400
+    except AnswerIsRequired as answer_is_required:
+        return jsonify({"ERROR":answer_is_required.args}), 400
+    except Exception as e:
+        print(e.with_traceback())
+        return jsonify({"ERROR":"An error occured"}), 400
 
 flask_app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)
