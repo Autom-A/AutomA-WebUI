@@ -1,5 +1,6 @@
 var MATERIALIZE_FIFO = []
 
+const SELECTED_ID_STORAGE = "SELECTED_ID_STORAGE"
 const TYPES_QUESTION_ENUM = {
     "str": 1,
     "list<str>": 2,
@@ -13,7 +14,7 @@ const TYPES_QUESTION_ENUM = {
 * @summary Display a modal template and fill it from config question
 * @param {_id} _id - question UUID
 */
-function render_question(_id,question_data) {
+function renderQuestion(_id, question_data) {
     // Check if modal for this question already exists
     let question_modal = document.getElementById(`q-${_id}`)
     if (question_modal != undefined) {
@@ -33,11 +34,11 @@ function render_question(_id,question_data) {
 
         let question_body = question_modal.querySelector('#question-body')
         for (let i = 0; i < question_data.questions.length; i++) {
-            let field = render_question_field(_id, i, question_data.questions[i])
+            let field = renderQuestionField(_id, i, question_data.questions[i])
             question_body.appendChild(field)
         }
 
-        question_body.appendChild(render_question_btn(_id))
+        question_body.appendChild(renderQuestionBtn(_id,question_data))
 
         question_container.appendChild(question_modal)
 
@@ -75,7 +76,7 @@ function initializeMaterializeComponent() {
 /** 
 * Create validation button and bind it with the click event.
 */
-function render_question_btn(_id) {
+function renderQuestionBtn(_id,question_data) {
     let div = document.createElement("div")
     div.classList.add(["right-align"])
 
@@ -83,18 +84,19 @@ function render_question_btn(_id) {
     btn.classList.add(["btn-floating"])
 
     btn.onclick = () => {
-        let question_data = JSON.parse(localStorage.getItem(_id))
         let nb_questions = question_data.questions.length
 
         for (let i = 0; i < nb_questions; i++) {
             let input = document.getElementById(`${_id}-${i}`)
             switch (parseInt(input.getAttribute("question-type"))) {
                 case TYPES_QUESTION_ENUM["str"]:
+                    retrieveStr(input,question_data[i])
                     break;
                 case TYPES_QUESTION_ENUM["list<str>"]:
-                    retrieve_list_str_data(input)
+                    retrieveListStrData(input,question_data[i])
                     break;
                 case TYPES_QUESTION_ENUM["choice<str>"]:
+                    retrieveStr(input,question_data[i])
                     break;
                 default:
                     console.log("rien....");
@@ -130,14 +132,14 @@ function render_question_btn(_id) {
 * @param {one_field} one_field - configuration of the answer
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function render_question_field(_id, index, one_field) {
+function renderQuestionField(_id, index, one_field) {
     switch (one_field.type) {
         case "str":
             return render_field_str(_id, index, one_field)
         case "list<str>":
-            return render_field_list_str(_id, index, one_field)
+            return renderFieldListStr(_id, index, one_field)
         default:
-            if (one_field.type.includes("choice<str>")) return render_field_choice_str(_id, index, one_field)
+            if (one_field.type.includes("choice<str>")) return renderFieldChoiceStr(_id, index, one_field)
     }
 
     console.log(`ERROR : the type : ${one_field.type} is not implemented`);
@@ -158,7 +160,7 @@ function render_field_str(_id, index, one_field) {
     let input = document.createElement("input")
     input.setAttribute("type", "text")
     input.setAttribute("id", `${_id}-${index}`)
-    input.setAttribute("question-type",TYPES_QUESTION_ENUM["str"])
+    input.setAttribute("question-type", TYPES_QUESTION_ENUM["str"])
 
     let label = document.createElement("label")
     label.innerText = one_field.title
@@ -177,7 +179,8 @@ function render_field_str(_id, index, one_field) {
 * @param {one_field} one_field - configuration of the answer
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function render_field_list_str(_id, index, one_field) {
+function renderFieldListStr(_id, index, one_field) {
+    console.log(one_field)
     let div_row = document.createElement("div")
     div_row.classList.add("row")
 
@@ -191,7 +194,7 @@ function render_field_list_str(_id, index, one_field) {
     let chips = document.createElement("div")
     chips.classList.add(["chips", "chips-placeholder"])
     chips.setAttribute("id", `${_id}-${index}`)
-    chips.setAttribute("question-type",TYPES_QUESTION_ENUM["list<str>"])
+    chips.setAttribute("question-type", TYPES_QUESTION_ENUM["list<str>"])
 
 
     let chips_opt = {
@@ -215,7 +218,7 @@ function render_field_list_str(_id, index, one_field) {
 * @param {one_field} one_field - configuration of the answer
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function render_field_choice_str(_id, index, one_field) {
+function renderFieldChoiceStr(_id, index, one_field) {
     //Parse type in order to get options
     let choices_to_parse = one_field.type.replace("choice<str>", "")
     choices_to_parse = choices_to_parse.replace("[", "").replace("]", "")
@@ -230,7 +233,7 @@ function render_field_choice_str(_id, index, one_field) {
 
     let select_choice = document.createElement("select")
     select_choice.setAttribute("id", `${_id}-${index}`)
-    select_choice.setAttribute("question-type",TYPES_QUESTION_ENUM["choice<str>"])
+    select_choice.setAttribute("question-type", TYPES_QUESTION_ENUM["choice<str>"])
 
 
     let option_dis = document.createElement("option")
@@ -271,19 +274,130 @@ function render_field_choice_str(_id, index, one_field) {
 /** 
 * Get data from chips in case of 'list<str>', it takes values from a chips elements and
 add it to the local storage
-* @param {input_component} input_component - Chips element
+* @param {input_component} inputComponent - Chips element
+* @param {configType} configType - Configuration of the field
 */
-function retrieve_list_str_data(input_component) {
-    let chip_instance = M.Chips.getInstance(input_component)
+function retrieveListStrData(inputComponent, configType) {
+    let chipInstance = M.Chips.getInstance(inputComponent)
 
-    let data_to_save = []
-    chip_instance.chipsData.forEach(chip => {
-        data_to_save.push(chip.tag)
+    let dataToSave = []
+    chipInstance.chipsData.forEach(chip => {
+        dataToSave.push(chip.tag)
     });
 
-    if (data_to_save.length > 0) {
-        localStorage.setItem(input_component.id, JSON.stringify(data_to_save))
+    storeInLocalStorage(inputComponent, dataToSave, configType)
+}
+
+/** 
+* Get data from input in case of 'str', it takes valueand
+add it to the local storage
+* @param {input_component} inputComponent - Chips element
+* @param {configType} configType - Configuration of the field
+*/
+function retrieveStr(input,question_data) {
+    storeInLocalStorage(input, input.value, question_data)
+}
+
+/** 
+* Update local storage with a new value. If the answer value is empty, it's remove from local storage.
+If there's already a value present, we update this value.
+* @summary Update local storage with a new value.
+* @param {inputComponent} inputComponent - inputComponent is a DOM Element, it has an id : UUIDRecommendation-index
+* @param {dataToSave} dataToSave - Data already process for the back, this value will be sent
+* @param {configType} configType - config type of the question
+*/
+function storeInLocalStorage(inputComponent, dataToSave, configType) {
+    let { id, valueFormat } = formatValueToStore(inputComponent, dataToSave, configType)
+
+    storeAnswerData(id, valueFormat, dataToSave)
+    storeSelectedIds(id)
+}
+
+/** 
+* Manage selected IDS. Based on verification about storage item with UUID of the recommendation.
+* If an item with the same id does not exists, we remove the id from the data
+* We also check the local storage to create it if it's not exists.
+* @summary Manage selected IDS stored in store
+* @param {ParamDataTypeHere} id - ID of recommendation
+*/
+function storeSelectedIds(id) {
+    let localStorageData = localStorage.getItem(SELECTED_ID_STORAGE)
+    if(!localStorageData) {
+        localStorageData = []
+        localStorage.setItem(SELECTED_ID_STORAGE,JSON.stringify(localStorageData))
     } else {
-        localStorage.removeItem(input_component.id)
+        localStorageData = JSON.parse(localStorageData)
     }
+
+    isDataToSave = localStorage.getItem(id)
+    //The localstorage exists, we need to save the answer but the id recommendation does not exist
+    if(isDataToSave && localStorageData.findIndex(val => val == id) == -1) {
+        localStorageData.push(id);
+        localStorage.setItem(SELECTED_ID_STORAGE,JSON.stringify(localStorageData))
+    } //There's no data, we are in case of delete, we delete only if the id exists in the array
+        else if(!isDataToSave && localStorageData.findIndex(val => val == id) != -1) {
+        localStorageData = localStorageData.filter((val) => val != id);
+        localStorage.setItem(SELECTED_ID_STORAGE,JSON.stringify(localStorageData))
+    }
+}
+
+
+/** 
+ * Store answer data to localStorage
+ * 
+* @param {inputComponent} id - Id of recommendation
+* @param {inputComponent} valueFormat - Data formated by our function to be store
+* @param {inputComponent} dataToSave - data to check if it's not empty in order to remove local storage
+*/
+function storeAnswerData(id, valueFormat, dataToSave) {
+    let localStorageData = localStorage.getItem(id) ? JSON.parse(localStorage.getItem(id)) : ''
+    let indexInLocalStorage = localStorageData ? localStorageData.findIndex(val => val.index == valueFormat.index) : -1
+
+    if (dataToSave.length != [] && dataToSave) {
+        // It's the first answer for this recommendation
+        if (!localStorageData) localStorage.setItem(id, JSON.stringify([valueFormat]));
+
+        // It's not the first answer for this recommendation but first answer at this question
+        else if (localStorageData && indexInLocalStorage == -1) {
+            localStorageData.push(valueFormat)
+            localStorage.setItem(id, JSON.stringify(localStorageData))
+        }
+
+        // There's a answer already written
+        else if (localStorageData && indexInLocalStorage != -1) {
+            localStorageData[indexInLocalStorage] = valueFormat
+            localStorage.setItem(id, JSON.stringify(localStorageData))
+        }
+    } else if (localStorageData && indexInLocalStorage != -1) {
+        localStorageData = localStorageData.filter((val) => val.index != indexInLocalStorage)
+        //After filter no more data in this recommendation
+        if (!localStorageData.length) {
+            localStorage.removeItem(id)
+        } else {
+            //Update the local storage with the filtered version
+            localStorage.setItem(id, JSON.stringify(localStorageData))
+        }
+    }
+}
+
+
+/** 
+ * Format a value in order to be store in local storage. It's a JSON format with three keys :
+ * value, formatType, index 
+ * 
+* @param {inputComponent} inputComponent - Input component is needed to retrieve the index of answer and id recommendation
+* @param {inputComponent} dataToSave - Data in value
+* @param {inputComponent} configType - Configuration of this answer to send type answer to the back
+* @return {string} Object - id, valueFormat
+*/
+function formatValueToStore(inputComponent, dataToSave, configType) {
+    let idFromHtml = inputComponent.id.split('-')
+    let index = idFromHtml.pop()
+    let id = idFromHtml.join("")
+    let valueFormat = {
+        index: index,
+        value: dataToSave,
+        formatType: configType,
+    }
+    return { id, valueFormat }
 }
