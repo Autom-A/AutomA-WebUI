@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function environment_selected_toggle() {
     document.getElementById("os-not-selected").classList.toggle("hide")
     document.getElementById("os-selected").classList.toggle("hide")
+    document.getElementById("os-version").classList.add('hide')
 }
 
 function valid_environment() {
