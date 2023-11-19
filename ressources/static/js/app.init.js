@@ -12,15 +12,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 250)
 });
 
-function select_os_model_open() {
-    let mod = document.getElementById("os-selector-modal")
-    M.Modal.getInstance(mod).open();
-    get_os()
-}
-
 function environment_selected_toggle() {
     document.getElementById("os-not-selected").classList.toggle("hide")
     document.getElementById("os-selected").classList.toggle("hide")
+    document.getElementById("os-version").classList.add('hide')
 }
 
 function valid_environment() {

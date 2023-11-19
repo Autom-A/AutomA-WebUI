@@ -9,6 +9,7 @@ from utils.supported_systems import SupportedSystems
 
 STATIC_FOLDER = join(abspath("."),"ressources","static")
 flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
+
 CORS(flask_app,resources="/api/*")
 
 SERVER_IP = "127.0.0.1"
