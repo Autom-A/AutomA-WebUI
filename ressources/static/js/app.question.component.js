@@ -34,7 +34,8 @@ function renderQuestion(_id, question_data) {
 
         let question_body = question_modal.querySelector('#question-body')
         for (let i = 0; i < question_data.questions.length; i++) {
-            let field = renderQuestionField(_id, i, question_data.questions[i])
+            let answer = getAnswersValues(_id,i)
+            let field = renderQuestionField(_id, i, question_data.questions[i], answer)
             question_body.appendChild(field)
         }
 
@@ -48,6 +49,20 @@ function renderQuestion(_id, question_data) {
         M.Modal.init(question_modal)
         M.Modal.getInstance(question_modal).open()
     }
+}
+/** 
+* Get answer value by id recommendation and index question from local storage
+* @param {string} id - id of recommendation
+* @param {number} indexQuestion  index of the question
+* @return {index,value,formatType} answer  answer if exists or null
+*/
+function getAnswersValues(id,indexQuestion) {
+    let localStorageData = JSON.parse(localStorage.getItem(id)) 
+    if(localStorageData) {
+        let answerValue = localStorageData.find((val) => val.index == indexQuestion)
+        return answerValue ? answerValue : null
+    }
+    return null;
 }
 
 /** 
@@ -130,16 +145,17 @@ function renderQuestionBtn(_id,question_data) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
+* @param {index,value,formatType} answerStored  answer if exists or null
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function renderQuestionField(_id, index, one_field) {
+function renderQuestionField(_id, index, one_field, answerStored) {
     switch (one_field.type) {
         case "str":
-            return render_field_str(_id, index, one_field)
+            return renderFieldStr(_id, index, one_field,answerStored)
         case "list<str>":
-            return renderFieldListStr(_id, index, one_field)
+            return renderFieldListStr(_id, index, one_field,answerStored)
         default:
-            if (one_field.type.includes("choice<str>")) return renderFieldChoiceStr(_id, index, one_field)
+            if (one_field.type.includes("choice<str>")) return renderFieldChoiceStr(_id, index, one_field,answerStored)
     }
 
     console.log(`ERROR : the type : ${one_field.type} is not implemented`);
@@ -151,9 +167,10 @@ function renderQuestionField(_id, index, one_field) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
+* @param {index,value,formatType} answerStored  answer if exists or null
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function render_field_str(_id, index, one_field) {
+function renderFieldStr(_id, index, one_field,answerStored) {
     let div = document.createElement("div")
     div.classList.add("input-field")
 
@@ -165,6 +182,10 @@ function render_field_str(_id, index, one_field) {
     let label = document.createElement("label")
     label.innerText = one_field.title
     label.setAttribute("for", `${_id}-${index}`)
+    if(answerStored?.value) {
+        input.value = answerStored.value
+        label.classList.add("active")
+    }
 
     div.appendChild(input)
     div.appendChild(label)
@@ -177,10 +198,10 @@ function render_field_str(_id, index, one_field) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
+* @param {index,value,formatType} answerStored  answer if exists or null
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function renderFieldListStr(_id, index, one_field) {
-    console.log(one_field)
+function renderFieldListStr(_id, index, one_field,answerStored) {
     let div_row = document.createElement("div")
     div_row.classList.add("row")
 
@@ -201,10 +222,18 @@ function renderFieldListStr(_id, index, one_field) {
         placeholder: `Press enter to add ${one_field.name.replace("_", " ")}`,
         secondaryPlaceholder: '+ More',
     }
-    M.Chips.init(chips, chips_opt)
+
+
+    let chipsInstance = M.Chips.init(chips, chips_opt)
 
     div_col.appendChild(title)
     div_col.appendChild(chips)
+
+    if(answerStored?.value) {
+        answerStored?.value.forEach((val, index) => {
+            chipsInstance.addChip({tag:val, id:index})
+        })
+    }
 
     div_row.appendChild(div_col)
     return div_row
@@ -216,9 +245,10 @@ function renderFieldListStr(_id, index, one_field) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
+* @param {index,value,formatType} answerStored  answer if exists or null
 * @return {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
-function renderFieldChoiceStr(_id, index, one_field) {
+function renderFieldChoiceStr(_id, index, one_field, answerStored) {
     //Parse type in order to get options
     let choices_to_parse = one_field.type.replace("choice<str>", "")
     choices_to_parse = choices_to_parse.replace("[", "").replace("]", "")
@@ -265,6 +295,12 @@ function renderFieldChoiceStr(_id, index, one_field) {
 
     div_row.appendChild(div_col)
 
+    if(answerStored?.value) {
+        select_choice.value = answerStored.value
+        label.classList.add("active")
+    }
+
+
     MATERIALIZE_FIFO.push({ element_type: "formselect", id: select_choice.id })
 
     return div_row
@@ -285,7 +321,7 @@ function retrieveListStrData(inputComponent, configType) {
         dataToSave.push(chip.tag)
     });
 
-    storeInLocalStorage(inputComponent, dataToSave, configType)
+    storeAnswerInLocalStorage(inputComponent, dataToSave, configType)
 }
 
 /** 
@@ -295,7 +331,7 @@ add it to the local storage
 * @param {configType} configType - Configuration of the field
 */
 function retrieveStr(input,question_data) {
-    storeInLocalStorage(input, input.value, question_data)
+    storeAnswerInLocalStorage(input, input.value, question_data)
 }
 
 /** 
@@ -306,7 +342,7 @@ If there's already a value present, we update this value.
 * @param {dataToSave} dataToSave - Data already process for the back, this value will be sent
 * @param {configType} configType - config type of the question
 */
-function storeInLocalStorage(inputComponent, dataToSave, configType) {
+function storeAnswerInLocalStorage(inputComponent, dataToSave, configType) {
     let { id, valueFormat } = formatValueToStore(inputComponent, dataToSave, configType)
 
     storeAnswerData(id, valueFormat, dataToSave)
@@ -321,12 +357,10 @@ function storeInLocalStorage(inputComponent, dataToSave, configType) {
 * @param {ParamDataTypeHere} id - ID of recommendation
 */
 function storeSelectedIds(id) {
-    let localStorageData = localStorage.getItem(SELECTED_ID_STORAGE)
+    let localStorageData = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
     if(!localStorageData) {
         localStorageData = []
         localStorage.setItem(SELECTED_ID_STORAGE,JSON.stringify(localStorageData))
-    } else {
-        localStorageData = JSON.parse(localStorageData)
     }
 
     isDataToSave = localStorage.getItem(id)
@@ -393,7 +427,7 @@ function storeAnswerData(id, valueFormat, dataToSave) {
 function formatValueToStore(inputComponent, dataToSave, configType) {
     let idFromHtml = inputComponent.id.split('-')
     let index = idFromHtml.pop()
-    let id = idFromHtml.join("")
+    let id = idFromHtml.join("-")
     let valueFormat = {
         index: index,
         value: dataToSave,
