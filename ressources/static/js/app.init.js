@@ -1,3 +1,5 @@
+
+const SELECTED_ID_STORAGE = "SELECTED_ID_STORAGE"
 /**
  * Wait that the page load to init JS components and to use font
  */

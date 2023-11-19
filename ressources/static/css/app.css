@@ -2,3 +2,56 @@
 #os-selector-modal > .modal-content {
     height: 30em;
 }
+
+.arrow-icon {
+    transition: transform 0.3s ease; /* Ajoute une transition douce pour une animation fluide */
+}
+
+/* Styles spécifiques au survol du bouton */
+.button-icon-arrow:hover .arrow-icon {
+    transform: rotate(-180deg);
+}
+
+.split-buttons, .generations-buttons, #dropdown1 a {
+    display: flex
+}
+
+.generations-buttons {
+    padding: 2em;
+    justify-content: space-between;
+    > a {
+        .material-icons {
+            position: absolute;
+        };
+         > span  {
+            margin-left: 2em
+        };
+    }
+}
+
+.icon-3-squares-l {
+    transform: rotate(-90deg);
+}
+
+
+.icon-1-square-45deg {
+    font-size: 11px !important;
+    left: 2.2em;
+    top: -0.5em;
+}
+
+.generations-buttons:hover .icon-1-square-45deg {
+    animation: rotation 1.3s infinite linear;
+}
+
+@keyframes rotation {
+    from{
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(360deg);
+    }
+    
+}
+
+
+

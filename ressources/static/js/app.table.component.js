@@ -1,6 +1,8 @@
 /** 
 * Render globally all recommendations based on session storage recommendations
 */
+
+
 function renderRecommendations() {
     let recommendation_container = document.getElementById("recommendations-container")
 
@@ -15,6 +17,10 @@ function renderRecommendations() {
         let r_line = renderRecommendationLine(one_recommendation)
         recommendation_container.appendChild(r_line)
     }
+
+    //Init dropdown
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    M.Dropdown.init(elems, {});
 }
 
 /** 

@@ -1,6 +1,5 @@
 var MATERIALIZE_FIFO = []
 
-const SELECTED_ID_STORAGE = "SELECTED_ID_STORAGE"
 const TYPES_QUESTION_ENUM = {
     "str": 1,
     "list<str>": 2,
@@ -105,13 +104,13 @@ function renderQuestionBtn(_id,question_data) {
             let input = document.getElementById(`${_id}-${i}`)
             switch (parseInt(input.getAttribute("question-type"))) {
                 case TYPES_QUESTION_ENUM["str"]:
-                    retrieveStr(input,question_data[i])
+                    retrieveStr(input,question_data.questions[i])
                     break;
                 case TYPES_QUESTION_ENUM["list<str>"]:
-                    retrieveListStrData(input,question_data[i])
+                    retrieveListStrData(input,question_data.questions[i])
                     break;
                 case TYPES_QUESTION_ENUM["choice<str>"]:
-                    retrieveStr(input,question_data[i])
+                    retrieveStr(input,question_data.questions[i])
                     break;
                 default:
                     console.log("rien....");
@@ -429,9 +428,9 @@ function formatValueToStore(inputComponent, dataToSave, configType) {
     let index = idFromHtml.pop()
     let id = idFromHtml.join("-")
     let valueFormat = {
-        index: index,
+        index: parseInt(index),
         value: dataToSave,
-        formatType: configType,
+        formatType: configType.type,
     }
     return { id, valueFormat }
 }
