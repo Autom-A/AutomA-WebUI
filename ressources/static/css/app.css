@@ -41,7 +41,7 @@
     position: absolute;
 }
 
-.generations-buttons:hover .icon-1-square-45deg {
+.generations-buttons > a:hover .icon-1-square-45deg {
     animation: rotation 1.3s infinite linear;
 }
 
