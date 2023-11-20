@@ -118,6 +118,11 @@ function renderQuestionBtn(_id,question_data) {
             }
         }
 
+        if(!question_data.questions.length) {
+            localStorage.setItem(_id, JSON.stringify([]))
+            storeSelectedIds(_id)
+        }
+
         let recommendation_line = document.getElementById(_id)
         let radio_btn = recommendation_line.querySelector("#r-radio-btn")
         radio_btn.innerText = "radio_button_checked"
