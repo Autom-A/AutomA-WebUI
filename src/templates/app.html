@@ -34,6 +34,12 @@
         </div>
     </nav>
 
+
+    <!-- 
+        ###################################################################
+        #### IF NO ENVIRONMENT HAS BEEN SELECTED
+        ###################################################################
+    -->
     <div id="os-not-selected">
         <div class="row" style="margin-top: 50px;">
             <div class="col s12 center">
@@ -44,54 +50,180 @@
                     </a>
                 </div>
             </div>
-            <div class="col s12 center">
-                <div class="center-align">
-                    <a class="waves-effect waves-light btn light-blue" href="#" onclick="environment_selected_toggle()">
-                        <i id="navigate_next" class="material-symbols-outlined left"></i>
-                        Skip
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 
 
+    <!-- 
+        ###################################################################
+        #### TABS TO SWITCH BETWEEN RECOMMENDATIONS ANS INVENTORY
+        ###################################################################
+    -->
+    <div class="row" style="margin-top: 30px;">
+        <div class="col s12">
+            <ul class="tabs" id="recommendation-inventory-tabs">
+                <li class="tab col offset-s3 s3"><a href="#recommendations">Hardening Action</a></li>
+                <li class="tab col s3"><a href="#inventory">Host Inventory</a></li>
+            </ul>
+        </div>
+    </div>
 
-    <div id="os-selected" class="hide">
-        <div class="row" style="margin-top: 50px;">
-            <div class="col s8 offset-s2 center">
-                <div class="center-align">
-                    <table class="highlight">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Level</th>
-                                <th>From</th>
-                            </tr>
-                        </thead>
-                        <tbody id="recommendations-container"></tbody>
-                    </table>
-                    <div class="generations-buttons">
-                        <a class="waves-effect waves-light btn squared-button" onclick="launchGenerate()">
-                            <i class="material-icons left icon-3-squares-l"></i>
-                            <i class="material-icons left icon-1-square-45deg"></i>
-                            <span>Generate</span>
-                        </a>
-                        <div class="split-buttons">
-                            <a class="waves-effect waves-light btn" disabled><i class="material-symbols-outlined left">play_circle</i>Run</a>
-                            <a href="#!" class="waves-effect waves-light btn button-icon-arrow dropdown-trigger" data-target="dropdown1" disabled><i class="material-icons arrow-icon">expand_more</i></a>
+    <!-- 
+        ###################################################################
+        #### RECOMMENDATIONS TAB
+        ###################################################################
+    -->
+    <div id="recommendations" class="col s12">
+        <div id="os-selected" class="hide">
+            <div class="row" style="margin-top: 50px;">
+                <div class="col s8 offset-s2 center">
+                    <div class="center-align">
+                        <table class="highlight">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Level</th>
+                                    <th>From</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recommendations-container"></tbody>
+                        </table>
+                        <div class="generations-buttons">
+                            <a class="waves-effect waves-light btn squared-button" onclick="launchGenerate()">
+                                <i class="material-icons left icon-3-squares-l"></i>
+                                <i class="material-icons left icon-1-square-45deg"></i>
+                                <span>Generate</span>
+                            </a>
+                            <div class="split-buttons">
+                                <a class="waves-effect waves-light btn" disabled><i
+                                        class="material-symbols-outlined left">play_circle</i>Run</a>
+                                <a href="#!" class="waves-effect waves-light btn button-icon-arrow dropdown-trigger"
+                                    data-target="dropdown1" disabled><i
+                                        class="material-icons arrow-icon">expand_more</i></a>
+                            </div>
+                            <ul id="dropdown1" class="dropdown-content">
+                                <li><a href="#!"><i class="material-symbols-outlined left"
+                                            disabled>download</i>Download</a></li>
+                            </ul>
                         </div>
-                        <ul id="dropdown1" class="dropdown-content">
-                            <li><a href="#!"><i class="material-symbols-outlined left" disabled>download</i>Download</a></li>
-                          </ul>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div id="question-container"></div>
     </div>
+
+
+    <!-- 
+        ###################################################################
+        #### INVENTORY TAB
+        ###################################################################
+    -->
+    <div id="inventory" class="col s12">
+        <div class="row">
+            <div class="col s10 offset-s1 center">
+                <div class="center-align">
+                    <table class="highlight">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>IP</th>
+                                <th>Port</th>
+                                <th>Connection Method</th>
+                                <th>Username</th>
+                                <th>Auth</th>
+                                <th>Sudo Username</th>
+                                <th>Sudo Password</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-container">
+                            <tr id="inventory-input">
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-name" type="text">
+                                            <label for="input-name">Name</label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-ip" type="text">
+                                            <label for="input-ip">IP or FQDN</label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-port" type="text">
+                                            <label for="input-port">Port</label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <select id="select-connection">
+                                                <option value="0" selected>Password based</option>
+                                                <option value="1">Keyfile based</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-username" type="text">
+                                            <label for="input-username">Username</label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-password-keyfile" type="text">
+                                            <label id="label-password-keyfile" for="input-password-keyfile"></label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-sudo-username" type="text">
+                                            <label for="input-sudo-username">Username</label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <input id="input-sudo-password" type="text">
+                                            <label for="input-sudo-password">Password</label>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="row" style="margin-bottom: 0px;">
+                                        <div class="input-field col s12" style="margin: 0px;">
+                                            <a class="waves-effect waves-light btn" onclick="addHost()">Add</a>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
     <!-- Modal Structure -->
@@ -146,7 +278,6 @@
         </div>
     </template>
 
-    <div id="question-container"></div>
 </body>
 
 </html>

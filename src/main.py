@@ -196,6 +196,7 @@ def add_host():
     except HostAlreadyAdded as host_already_added:
         return jsonify({"ERROR":host_already_added.args}), 400
     except ValueError as value_error:
+        print(value_error.with_traceback())
         return jsonify({"ERROR":value_error.args}), 400
     except Exception as e:
         print(e.with_traceback())

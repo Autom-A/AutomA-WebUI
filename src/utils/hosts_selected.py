@@ -47,7 +47,7 @@ class Host():
         else:
             raise ValueError("A value for host_port must be defined")
 
-    def set_connection_method(self,connection_method: HostConnectionMethod, username : str, pass_or_keyfile : str):
+    def set_connection_method(self,connection_method: int , username : str, pass_or_keyfile : str):
         """Fill connection_method, username and pass_or_keyfile.
 
         Args:
@@ -143,7 +143,7 @@ class HostsSelected(SingletonHostsSelected):
             if self.is_hostname_unique(host["hostname"]):
                 h = Host(host["hostname"],host["ip"],host["port"])
                 h.set_connection_method(host["connection"], host["username"], host["passwordOrKeyfile"])
-                h.set_sudo_access(host["sudo_username"], host["sudo_password"])
+                h.set_sudo_access(host["sudoUsername"], host["sudoPassword"])
                 self.hosts.append(h)
             else:
                 raise HostAlreadyAdded(f"A host with the name {host['hostname']} is already existing")
