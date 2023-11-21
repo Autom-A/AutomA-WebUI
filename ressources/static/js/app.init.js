@@ -1,5 +1,7 @@
 
 const SELECTED_ID_STORAGE = "SELECTED_ID_STORAGE"
+const RADIO_BUTTON_CHECKED_VALUE = "radio_button_checked"
+const RADIO_BUTTON_UNCHECKED_VALUE = "radio_button_unchecked"
 /**
  * Wait that the page load to init JS components and to use font
  */
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
         document.getElementById("radio_button_unchecked").innerText = "radio_button_unchecked"
     }, 250)
+
 });
 
 function environment_selected_toggle() {
@@ -49,3 +52,4 @@ function fillAuthFromConnectionMethodValue() {
         labelPasswordKeyfile.innerText = "Keyfile"
     }
 }
+
