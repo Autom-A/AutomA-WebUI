@@ -1,8 +1,9 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from os.path import abspath, join
+from utils.hosts_selected import HostsSelected
 from utils.id_management import RecommendationID
-from utils.custom_exceptions import AnswerIsRequired, IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
+from utils.custom_exceptions import AnswerIsRequired, HostAlreadyAdded, IDDoesNotExist, MissingHost, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
 from utils.playbook_renderer import playbook_render_write
 from utils.questions_parser import check_answers, list_anssi_recommendations, list_categories, read_questions_file
 from utils.recommendations_selected import RecommendationsSelected
@@ -156,7 +157,6 @@ def get_question():
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
 
-
 @flask_app.route("/api/playbooks/render", methods=['POST'])
 def render_playbook():
     try:
@@ -185,17 +185,46 @@ def render_playbook():
     except Exception as e:
         print(e.with_traceback())
         return jsonify({"ERROR":"An error occured"}), 400
-    
+
+@flask_app.route("/api/inventory/host", methods=['POST'])
+def add_host():
+    try:
+        host = request.get_json()
+        hosts_selected = HostsSelected()
+        hosts_selected.add_host(host) 
+        return jsonify({"SUCCESS":f"The host {host['hostname']} has been added"})
+    except HostAlreadyAdded as host_already_added:
+        return jsonify({"ERROR":host_already_added.args}), 400
+    except ValueError as value_error:
+        print(value_error.with_traceback())
+        return jsonify({"ERROR":value_error.args}), 400
+    except Exception as e:
+        print(e.with_traceback())
+        return jsonify({"ERROR":"An Error has occured"}), 400
+
+@flask_app.route("/api/inventory/host", methods=['UPDATE'])
+def update_host():
+    pass
+
+@flask_app.route("/api/inventory/host", methods=['DELETE'])
+def delete_host():
+    pass
+
 @flask_app.route("/api/playbook/launcher/run", methods=['POST'])
 def run_playbook_launcher():
-    recommendation_selected = RecommendationsSelected()
-    with open("./playbook.master.yml","w") as playbook_master_file:
-        playbook_master_file.write("---\n")
-        for recommendation in recommendation_selected._recommendations_selected:
-            recommendation_path = join(supported_systems._playbooks_location,recommendation)
-            playbook_master_file.write(f"- import_playbook: \"{recommendation_path}\"\n")
+    try:
+        recommendation_selected = RecommendationsSelected()
+        recommendation_selected.write_yml()
 
-    return jsonify({"SUCCESS":""})
+        hosts_selected = HostsSelected()
+        hosts_selected.write_yml()
+
+        #run_playbook()
+        return jsonify({"SUCCESS":"Running Ansible"})
+
+    except MissingHost as missing_host:
+        return jsonify({"ERROR":missing_host.args}), 400
+
 
 @flask_app.route("/api/playbook/launcher/download", methods=['GET'])
 def download_playbook_launcher():
