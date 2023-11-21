@@ -58,7 +58,7 @@ function get_recommendation_list() {
         if (this.readyState == 4 && this.status == 200) {
             let recommendations = JSON.parse(xhttp.responseText);
             sessionStorage.setItem("recommendations", JSON.stringify(recommendations))
-            renderRecommendations()
+            renderTable("recommendations-container", "recommendations",TYPE_TABLE_ENUM.RECOMMENDATIONS)
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : Can\'t retrieve the recommendation list', classes: 'rounded' });
         }
@@ -166,4 +166,21 @@ function launchGenerate() {
     xhttp.send(JSON.stringify(recommendations));
 }
 
+
+function sendHost(hostItem) {
+    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/inventory/host`;
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (hostItem) {
+            if (this.readyState == 4 && this.status == 200) {
+                addLineInTable(hostItem, TYPE_TABLE_ENUM.INVENTORY)
+            } else if (this.readyState == 4 && this.status == 400) {
+                M.toast({ html: 'ERROR : Host can\'t be added', classes: 'rounded' });
+            }
+        }
+    }
+    xhttp.open("POST", endpoint, true);
+    xhttp.setRequestHeader("Content-Type", "application/json")
+    xhttp.send(JSON.stringify(hostItem));
+}
 
