@@ -135,3 +135,13 @@ function retrieveInventoryTableInput() {
 
     return host
 }
+
+function fillAuthFromConnectionMethodValue() {
+    let labelPasswordKeyfile = document.getElementById("label-password-keyfile")
+    let selectConnectionMethod = document.getElementById("select-connection")
+    if (selectConnectionMethod.value == "0") {
+        labelPasswordKeyfile.innerText = "Password"
+    } else if (selectConnectionMethod.value == "1") {
+        labelPasswordKeyfile.innerText = "Keyfile"
+    }
+}
