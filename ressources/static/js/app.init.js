@@ -40,12 +40,10 @@ function addHost() {
     sendHost(hostItem)
 }
 
-function fillAuthFromConnectionMethodValue() {
-    let labelPasswordKeyfile = document.getElementById("label-password-keyfile")
-    let selectConnectionMethod = document.getElementById("select-connection")
-    if (selectConnectionMethod.value == "0") {
-        labelPasswordKeyfile.innerText = "Password"
-    } else if (selectConnectionMethod.value == "1") {
-        labelPasswordKeyfile.innerText = "Keyfile"
-    }
+function runBtnToogle(setDisabled) {
+    let btnGroup = document.getElementById("run-and-expand-btn").querySelectorAll("a")
+    btnGroup.forEach(el => {
+        if (setDisabled) el.setAttribute("disabled","")
+        else el.removeAttribute("disabled")
+    });
 }
