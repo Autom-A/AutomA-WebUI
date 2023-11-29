@@ -58,7 +58,7 @@ function get_recommendation_list() {
         if (this.readyState == 4 && this.status == 200) {
             let recommendations = JSON.parse(xhttp.responseText);
             sessionStorage.setItem("recommendations", JSON.stringify(recommendations))
-            renderTable("recommendations-container", "recommendations",TYPE_TABLE_ENUM.RECOMMENDATIONS)
+            renderTable("recommendations-container", "recommendations", TYPE_TABLE_ENUM.RECOMMENDATIONS)
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : Can\'t retrieve the recommendation list', classes: 'rounded' });
         }
@@ -154,12 +154,18 @@ function launchGenerate() {
     let recommendationsIdSelected = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
     recommendationsIdSelected.forEach(id => {
         let answers = JSON.parse(localStorage.getItem(id))
-        if(answers) {
+        if (answers) {
             recommendations[id] = answers
         }
     });
     xhttp.onreadystatechange = function () {
-
+        if (this.readyState == 4 && this.status == 200) {
+            let rep = JSON.parse(xhttp.responseText)
+            M.toast({ html: rep["SUCCESS"], classes: 'rounded' });
+            runBtnToogle()
+        } else if (this.readyState == 4 && this.status == 400) {
+            M.toast({ html: 'ERROR : Can\'t generate playbook', classes: 'rounded' });
+        }
     }
     xhttp.open("POST", endpoint, true);
     xhttp.setRequestHeader("Content-Type", "application/json")
@@ -184,3 +190,19 @@ function sendHost(hostItem) {
     xhttp.send(JSON.stringify(hostItem));
 }
 
+
+function runPlaybook() {
+    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/playbook/launcher/run`;
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            addLineInTable(hostItem, TYPE_TABLE_ENUM.INVENTORY)
+        } else if (this.readyState == 4 && this.status == 400) {
+            M.toast({ html: 'ERROR : You must add host in your inventory', classes: 'rounded' });
+            M.Tabs.getInstance(document.getElementById("recommendation-inventory-tabs")).select("inventory")
+        }
+    }
+    xhttp.open("POST", endpoint, true);
+    xhttp.setRequestHeader("Content-Type", "application/json")
+    xhttp.send();
+}
