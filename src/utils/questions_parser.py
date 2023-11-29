@@ -46,11 +46,31 @@ def list_categories(supported_systems: SupportedSystems) -> list[str]:
     except Exception as e:
         raise e
 
-def list_anssi_recommendations(category : str, supported_systems: SupportedSystems) -> list[str]:
-    """List recommendation available in the ANSSI directory in a category
+
+def list_reference(category : str, supported_systems: SupportedSystems) -> list[str]:
+    """List all reference base (ANSSI, CIS, etc) from a category
+
+    Args:
+        category (str): The category to list
+        supported_systems (SupportedSystems): singleton that contains the user env selection 
+
+    Returns:
+        list[str]: the list of references contained in the category
+    """
+    category = category.upper()
+
+    try:
+        entire_path = supported_systems.get_entire_path()
+        return listdir(join(entire_path,category))
+    except Exception as e:
+        raise e
+
+def list_recommendations(category : str, reference : str, supported_systems: SupportedSystems) -> list[str]:
+    """List recommendation available in the reference directory in a category
 
     Args:
         category (str): One of the category available in env selected
+        reference (str): The reference to list
         supported_systems (SupportedSystems): singleton that contains the user env selection
 
     Raises:
@@ -58,16 +78,18 @@ def list_anssi_recommendations(category : str, supported_systems: SupportedSyste
         VariablePathNotDefined: If variables are not filled
 
     Returns:
-        list[str]: The list of recommendations in the dir ANSSI from the category
+        list[str]: The list of recommendations in the reference dir from the category
     """
     category = category.upper()
+    reference = reference.upper()
+
     try:
         entire_path = supported_systems.get_entire_path()
         recommendations = {}
-        p = join(entire_path,category,"ANSSI")
+        p = join(entire_path,category,reference)
         if exists(p):
-            for anssi_level in listdir(p):
-                recommendations[anssi_level] = listdir(join(p,anssi_level))
+            for reference_level in listdir(p):
+                recommendations[reference_level] = listdir(join(p,reference_level))
             return recommendations
         else:
             raise PathDoesNotExist(f"The following path does not exist {p}")
