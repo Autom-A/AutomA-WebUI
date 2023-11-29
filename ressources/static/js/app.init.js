@@ -1,5 +1,7 @@
 
 const SELECTED_ID_STORAGE = "SELECTED_ID_STORAGE"
+const RADIO_BUTTON_CHECKED_VALUE = "radio_button_checked"
+const RADIO_BUTTON_UNCHECKED_VALUE = "radio_button_unchecked"
 /**
  * Wait that the page load to init JS components and to use font
  */
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
         document.getElementById("radio_button_unchecked").innerText = "radio_button_unchecked"
     }, 250)
+
 });
 
 function environment_selected_toggle() {
@@ -38,6 +41,16 @@ function valid_environment() {
 function addHost() {
     let hostItem = retrieveInventoryTableInput()
     sendHost(hostItem)
+}
+
+function fillAuthFromConnectionMethodValue() {
+    let labelPasswordKeyfile = document.getElementById("label-password-keyfile")
+    let selectConnectionMethod = document.getElementById("select-connection")
+    if (selectConnectionMethod.value == "0") {
+        labelPasswordKeyfile.innerText = "Password"
+    } else if (selectConnectionMethod.value == "1") {
+        labelPasswordKeyfile.innerText = "Keyfile"
+    }
 }
 
 function runBtnToogle(setDisabled) {
