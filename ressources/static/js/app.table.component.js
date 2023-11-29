@@ -42,14 +42,18 @@ function renderTable(containerID, storageItemName, tableType) {
 function renderRecommendationLine(item) {
     let line = document.createElement("tr")
     line.setAttribute("id", item["_id"])
+    
+    let c_selected = generateButtonRadio(line, item["_id"]);
 
     line.onclick = () => {
-        get_question(line.getAttribute("id"))
+        if(c_selected.innerText == RADIO_BUTTON_UNCHECKED_VALUE) {
+            get_question(line.getAttribute("id"))
+        } else {
+            c_selected.children[0].innerText = RADIO_BUTTON_UNCHECKED_VALUE
+            unSavedIdSelected(item["_id"])
+        }
     }
 
-    let c_selected = document.createElement("th")
-    c_selected.innerHTML = `<a id="r-radio-btn" class=material-symbols-outlined>radio_button_unchecked</a>`
-    line.appendChild(c_selected)
 
     line.appendChild(renderCell(item["id"]))
     line.appendChild(renderCell(item["name"]))
@@ -58,6 +62,36 @@ function renderRecommendationLine(item) {
     line.appendChild(renderCell(item["from"]))
 
     return line
+}
+
+/** 
+* Generate button radio and fill it from local storage
+* @param {Recommendation} line - Recommendation line HTML
+* @param {string} id - ID Item
+* @return {HTMLElement} th element containing a element with radio.
+*/
+function generateButtonRadio(line, id) {
+    let c_selected = document.createElement("th");
+    let ids = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
+    let innerRadioValue = RADIO_BUTTON_UNCHECKED_VALUE
+    if(ids && ids.length && ids.findIndex(val => val == id) != -1) {
+        innerRadioValue = RADIO_BUTTON_CHECKED_VALUE
+    }
+    c_selected.innerHTML = `<a id="r-radio-btn" class=material-symbols-outlined>${innerRadioValue}</a>`;
+    line.appendChild(c_selected);
+    return c_selected;
+}
+
+/** 
+* Unsave id from the local storage
+* @param {string} id - ID Item
+*/
+function unSavedIdSelected(_id) {
+    let ids = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
+    if(ids && ids.length) {
+        ids = ids.filter((val) => val != _id)
+        localStorage.setItem(SELECTED_ID_STORAGE,JSON.stringify(ids))
+    }
 }
 
 /** 
