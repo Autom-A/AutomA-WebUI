@@ -53,3 +53,10 @@ function fillAuthFromConnectionMethodValue() {
     }
 }
 
+function runBtnToogle(setDisabled) {
+    let btnGroup = document.getElementById("run-and-expand-btn").querySelectorAll("a")
+    btnGroup.forEach(el => {
+        if (setDisabled) el.setAttribute("disabled","")
+        else el.removeAttribute("disabled")
+    });
+}
