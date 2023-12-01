@@ -116,17 +116,13 @@ class RecommendationID(SingletonRecommendationID):
                         rfrom_path = join(category_path,category)
                         for rfrom in list_dir_in_dir(rfrom_path):
 
-                            if rfrom.upper() == "ANSSI":
-                                level_path = join(rfrom_path,rfrom)
-                                for level in list_dir_in_dir(level_path):
+                            level_path = join(rfrom_path,rfrom)
+                            for level in list_dir_in_dir(level_path):
 
-                                    recommendation_path = join(level_path,level)
-                                    for recommendation in list_dir_in_dir(recommendation_path):
-                                        rpath = join(os,os_type,os_version,category,rfrom,level,recommendation)
-                                        all_recommendation_paths.append(rpath)
-                            elif rfrom.upper() == "CIS":
-                                #NOT IMPLEMENTED
-                                pass
+                                recommendation_path = join(level_path,level)
+                                for recommendation in list_dir_in_dir(recommendation_path):
+                                    rpath = join(os,os_type,os_version,category,rfrom,level,recommendation)
+                                    all_recommendation_paths.append(rpath)
 
         return all_recommendation_paths
 
