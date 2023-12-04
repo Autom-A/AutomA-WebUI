@@ -1,5 +1,6 @@
 from enum import IntEnum
-
+from os.path import join
+from utils.configuration import Configuration
 from utils.custom_exceptions import HostAlreadyAdded, MissingHost
 
 class HostConnectionMethod(IntEnum):
@@ -178,7 +179,10 @@ class HostsSelected(SingletonHostsSelected):
             if len(self.hosts) == 0:
                 raise MissingHost("There must be at least one host")
 
-            with open("inventory.yml","w") as inventory_file:
+            config = Configuration()
+            
+            inventory_path = join(config.get("path_generated"),"inventory.yml")
+            with open(inventory_path,"w") as inventory_file:
                 inventory_file.write(f"all:\n  hosts:\n")
                 
                 for host in self.hosts:

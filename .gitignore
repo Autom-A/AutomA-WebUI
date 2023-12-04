@@ -1,6 +1,4 @@
-id_management.yml
-playbook.master.yml
-inventory.yml
+generated/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,10 +1,13 @@
 from ansible_runner import run
 from os.path import abspath, join,exists,isfile
+from utils.configuration import Configuration
 from utils.custom_exceptions import PathDoesNotExist
 
 def run_ansible_playbook():
-    playbook_path = join(abspath("."),'playbook.master.yml')
-    inventory_path = join(abspath("."),'inventory.yml')
+    config = Configuration()
+    generated_path = config.get("path_generated")
+    playbook_path = join(generated_path,'playbook.master.yml')
+    inventory_path = join(generated_path,'inventory.yml')
 
     if not exists(playbook_path) or not isfile(playbook_path):
         raise PathDoesNotExist(f"The following path does not exist : {playbook_path}")
