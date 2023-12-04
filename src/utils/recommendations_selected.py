@@ -31,5 +31,5 @@ class RecommendationsSelected(SingletonRecommendationsSelected):
         with open("./playbook.master.yml","w") as playbook_master_file:
             playbook_master_file.write("---\n")
             for recommendation in self._recommendations_selected:
-                recommendation_path = join(supported_systems._playbooks_location,recommendation)
+                recommendation_path = join(supported_systems._playbooks_location,recommendation,"playbook.yml")
                 playbook_master_file.write(f"- import_playbook: \"{recommendation_path}\"\n")
