@@ -5,7 +5,8 @@ from utils.hosts_selected import HostsSelected
 from utils.id_management import RecommendationID
 from utils.custom_exceptions import AnswerIsRequired, HostAlreadyAdded, IDDoesNotExist, MissingHost, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
 from utils.playbook_renderer import playbook_render_write
-from utils.questions_parser import check_answers, list_recommendations,list_reference, list_categories, read_questions_file
+from utils.playbook_runner import run_ansible_playbook
+from utils.questions_parser import check_answers, list_categories, list_recommendations, list_reference, read_questions_file
 from utils.recommendations_selected import RecommendationsSelected
 from utils.supported_systems import SupportedSystems
 
@@ -220,7 +221,7 @@ def run_playbook_launcher():
         hosts_selected = HostsSelected()
         hosts_selected.write_yml()
 
-        #run_playbook()
+        run_ansible_playbook()
         return jsonify({"SUCCESS":"Running Ansible"})
 
     except MissingHost as missing_host:
