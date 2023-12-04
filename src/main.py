@@ -6,7 +6,7 @@ from utils.id_management import RecommendationID
 from utils.custom_exceptions import AnswerIsRequired, HostAlreadyAdded, IDDoesNotExist, MissingHost, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
 from utils.playbook_renderer import playbook_render_write
 from utils.playbook_runner import run_ansible_playbook
-from utils.questions_parser import check_answers, list_anssi_recommendations, list_categories, read_questions_file
+from utils.questions_parser import check_answers, list_categories, list_recommendations, list_reference, read_questions_file
 from utils.recommendations_selected import RecommendationsSelected
 from utils.supported_systems import SupportedSystems
 
@@ -123,20 +123,21 @@ def get_recommendations():
     try:
         all_recommendations = []
         for category in list_categories(supported_systems):
-            recommendations_in_cat = list_anssi_recommendations(category,supported_systems)
-            # must use generic function to allow more directory than just ANSSI
-            for level in recommendations_in_cat:
-                for recommendation in recommendations_in_cat[level]:
-                    split_name = recommendation.split("_")
-                    name = " ".join(split_name[1:])
-                    level_name = " ".join(level.split("_")[1:])
-                    r_id = recommendation_id.get_id_from_path(join(supported_systems.get_entire_path(),category,"ANSSI",level,recommendation))
-                    all_recommendations.append({"id":split_name[0],
-                                                "name":name,
-                                                "category":category,
-                                                "level":level_name,
-                                                "from":"ANSSI",
-                                                "_id": r_id})
+            for reference in list_reference(category,supported_systems):
+                recommendations_in_cat = list_recommendations(category,reference,supported_systems)
+
+                for level in recommendations_in_cat:
+                    for recommendation in recommendations_in_cat[level]:
+                        split_name = recommendation.split("_")
+                        name = " ".join(split_name[1:])
+                        level_name = " ".join(level.split("_")[1:])
+                        r_id = recommendation_id.get_id_from_path(join(supported_systems.get_entire_path(),category,reference,level,recommendation))
+                        all_recommendations.append({"id":split_name[0],
+                                                    "name":name,
+                                                    "category":category,
+                                                    "level":level_name,
+                                                    "from":reference,
+                                                    "_id": r_id})
                     
         return jsonify(all_recommendations), 200
     except PathDoesNotExist as path_does_not_exist:
