@@ -115,11 +115,13 @@ class Host():
         else:
             raise ValueError("The variable connection_method must be an element of HostConnectionMethod Enum")
         
-        ret_str+= f"      ansible_become: yes\n"
-        ret_str+= f"      ansible_become_method: sudo\n"
+        ret_str+= f"      ansible_become: true\n"
+        ret_str+= f"      ansible_become_method: su\n"
         ret_str+= f"      ansible_become_user: {self.sudo_username}\n"
         ret_str+= f"      ansible_become_password: {self.sudo_password}\n"
 
+
+        ret_str+= f"      ansible_ssh_extra_args: '-o IdentitiesOnly=yes'"
         return ret_str
 
 
