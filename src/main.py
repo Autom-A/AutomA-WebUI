@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from os.path import abspath, join
+from utils.configuration import Configuration
 from utils.hosts_selected import HostsSelected
 from utils.id_management import RecommendationID
 from utils.custom_exceptions import AnswerIsRequired, HostAlreadyAdded, IDDoesNotExist, MissingHost, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
@@ -15,22 +16,26 @@ flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
 
 CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
 
-SERVER_IP = "127.0.0.1"
-SERVER_PORT = "9123"
-PLAYBOOK_LOCATION = "./playbooks"
-
 try:
+    # RETRIEVE CONFIGURATION
+    config = Configuration()
+    config.read_configuration()
+
     # GENERATE FILE THAT CONTAINS PAIR ID/PATH OF EACH RECOMMENDATIONS
+    id_file_path = join(config.get("path_generated"),"id_management.yml")
+    playbooks_dir_path = config.get("path_playbooks")
+
     recommendation_id = RecommendationID()
-    recommendation_id.set_id_file_location("id_management.yml")
-    recommendation_id.set_playbooks_location(PLAYBOOK_LOCATION)
+    recommendation_id.set_id_file_location(id_file_path)
+    recommendation_id.set_playbooks_location(playbooks_dir_path)
 
     available_recommendations = recommendation_id.get_available_playbooks()
     recommendation_id.attribute_new_playbooks(available_recommendations)
 
     # SINGLETON TO SERVE PATH TO ALL FUNCTIONS
     supported_systems = SupportedSystems()
-    supported_systems.set_playbooks_location(PLAYBOOK_LOCATION)
+    supported_systems.set_playbooks_location(playbooks_dir_path)
+
 except PathDoesNotExist as path_does_not_exist:
     print(path_does_not_exist)
 except VariablePathNotDefined as variable_path_not_defined:
@@ -45,8 +50,10 @@ def index():
 
 @flask_app.route("/app")
 def app():
-    return render_template("app.html",SERVER_IP=SERVER_IP, SERVER_PORT=SERVER_PORT)
-
+    return render_template("app.html",
+                           SERVER_IP=config.get("server_ip"),
+                           SERVER_PORT=config.get("server_port")
+                           )
 
 @flask_app.route("/api/selector/os", methods=['GET'])
 def get_os():
@@ -232,4 +239,7 @@ def run_playbook_launcher():
 def download_playbook_launcher():
     pass
 
-flask_app.run(host=SERVER_IP, port=SERVER_PORT, debug=True)
+flask_app.run(host=config.get("server_ip"),
+              port=config.get("server_port"),
+              debug=True
+              )

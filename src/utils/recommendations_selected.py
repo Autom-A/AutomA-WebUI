@@ -1,4 +1,5 @@
 from os.path import join
+from utils.configuration import Configuration
 from utils.custom_exceptions import MissingRecommendation
 
 from utils.supported_systems import SupportedSystems
@@ -28,7 +29,9 @@ class RecommendationsSelected(SingletonRecommendationsSelected):
         if len(self._recommendations_selected) == 0:
             raise MissingRecommendation("There must be at least one recommendation to apply")
         supported_systems = SupportedSystems()
-        with open("./playbook.master.yml","w") as playbook_master_file:
+        config = Configuration()
+        playbook_master_path = join(config.get("path_generated"),"playbook.master.yml")
+        with open (playbook_master_path,"w") as playbook_master_file:
             playbook_master_file.write("---\n")
             for recommendation in self._recommendations_selected:
                 recommendation_path = join(supported_systems._playbooks_location,recommendation,"playbook.yml")
