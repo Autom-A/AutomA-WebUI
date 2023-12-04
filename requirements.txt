@@ -1,4 +1,5 @@
-jinja2
+ansible-runner
 Flask
-pyyaml
 flask-cors
+jinja2
+pyyaml
