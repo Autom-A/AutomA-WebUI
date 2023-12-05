@@ -4,6 +4,13 @@ from utils.configuration import Configuration
 from utils.custom_exceptions import PathDoesNotExist
 
 def run_ansible_playbook():
+    """This function call runner function from ansible to run the playbook.master.yml with 
+        the inventory.yml
+
+    Raises:
+        PathDoesNotExist: If the path of playbook.master.yml or inventory.yml does not exist
+    """
+    
     config = Configuration()
     generated_path = config.get("path_generated")
     playbook_path = join(generated_path,'playbook.master.yml')
