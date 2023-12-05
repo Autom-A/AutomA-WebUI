@@ -3,6 +3,7 @@ from yaml import safe_load, dump as yml_dump
 
 from os import listdir
 from os.path import join, exists, isdir
+from utils.configuration import Configuration
 
 from utils.custom_exceptions import IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined
 from utils.path import list_dir_in_dir
@@ -59,7 +60,10 @@ class RecommendationID(SingletonRecommendationID):
             else:
                 print(f"The following path does not exist : {path}")
                 print(f"Setting _id_file_location to 'id_management.yml'")
-                self._id_file_location = "id_management.yml"
+
+                config = Configuration()
+
+                self._id_file_location = join(config.get("path_generated"),"id_management.yml")
                 with open(self._id_file_location,"w") as f:
                     pass
         else:

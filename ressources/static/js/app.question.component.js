@@ -52,8 +52,8 @@ function renderQuestion(_id, question_data) {
 /** 
 * Get answer value by id recommendation and index question from local storage
 * @param {string} id - id of recommendation
-* @param {number} indexQuestion  index of the question
-* @return {index,value,formatType} answer  answer if exists or null
+* @param {number} indexQuestion - index of the question
+* @returns {answer} answer - if exists or null
 */
 function getAnswersValues(id,indexQuestion) {
     let localStorageData = JSON.parse(localStorage.getItem(id)) 
@@ -149,8 +149,8 @@ function renderQuestionBtn(_id,question_data) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
-* @param {index,value,formatType} answerStored  answer if exists or null
-* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+* @param {answerStored} answerStored - answer if exists or null
+* @returns {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
 function renderQuestionField(_id, index, one_field, answerStored) {
     switch (one_field.type) {
@@ -171,8 +171,8 @@ function renderQuestionField(_id, index, one_field, answerStored) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
-* @param {index,value,formatType} answerStored  answer if exists or null
-* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+* @param {answerStored} answerStored - answer if exists or null
+* @returns {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
 function renderFieldStr(_id, index, one_field,answerStored) {
     let div = document.createElement("div")
@@ -202,8 +202,8 @@ function renderFieldStr(_id, index, one_field,answerStored) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
-* @param {index,value,formatType} answerStored  answer if exists or null
-* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+* @param {answerStored} answerStored - answer if exists or null
+* @returns {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
 function renderFieldListStr(_id, index, one_field,answerStored) {
     let div_row = document.createElement("div")
@@ -249,8 +249,8 @@ function renderFieldListStr(_id, index, one_field,answerStored) {
 * @param {_id} _id - UUID of the recommendation
 * @param {index} index - Index of question 
 * @param {one_field} one_field - configuration of the answer
-* @param {index,value,formatType} answerStored  answer if exists or null
-* @return {HTMLElement} HTMLElement - Brief description of the returning value here.
+* @param {answerStored} answerStored  answer if exists or null
+* @returns {HTMLElement} HTMLElement - Brief description of the returning value here.
 */
 function renderFieldChoiceStr(_id, index, one_field, answerStored) {
     //Parse type in order to get options
@@ -426,7 +426,7 @@ function storeAnswerData(id, valueFormat, dataToSave) {
 * @param {inputComponent} inputComponent - Input component is needed to retrieve the index of answer and id recommendation
 * @param {inputComponent} dataToSave - Data in value
 * @param {inputComponent} configType - Configuration of this answer to send type answer to the back
-* @return {string} Object - id, valueFormat
+* @returns {string} Object - id, valueFormat
 */
 function formatValueToStore(inputComponent, dataToSave, configType) {
     let idFromHtml = inputComponent.id.split('-')
