@@ -68,7 +68,7 @@ function renderRecommendationLine(item) {
 * Generate button radio and fill it from local storage
 * @param {Recommendation} line - Recommendation line HTML
 * @param {string} id - ID Item
-* @return {HTMLElement} th element containing a element with radio.
+* @returns {HTMLElement} th element containing a element with radio.
 */
 function generateButtonRadio(line, id) {
     let c_selected = document.createElement("th");
