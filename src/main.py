@@ -205,7 +205,6 @@ def add_host():
     except HostAlreadyAdded as host_already_added:
         return jsonify({"ERROR":host_already_added.args}), 400
     except ValueError as value_error:
-        print(value_error.with_traceback())
         return jsonify({"ERROR":value_error.args}), 400
     except Exception as e:
         print(e.with_traceback())
@@ -218,6 +217,15 @@ def update_host():
 @flask_app.route("/api/inventory/host", methods=['DELETE'])
 def delete_host():
     pass
+
+@flask_app.route("/api/inventory/hosts", methods=['GET'])
+def get_hosts():
+    try:
+        hosts_selected = HostsSelected()
+        return jsonify(hosts_selected.to_json())
+    except Exception as e:
+        print(e.with_traceback())
+        return jsonify({"ERROR":"An Error has occured"}), 400
 
 @flask_app.route("/api/playbook/launcher/run", methods=['POST'])
 def run_playbook_launcher():

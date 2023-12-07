@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     M.FormSelect.init(select_inventory, {})
 
-    select_os_model_open()
+    selectOsModelOpen()
 
     setTimeout(() => {
         document.getElementById("radio_button_unchecked").innerText = "radio_button_unchecked"
@@ -27,15 +27,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function environment_selected_toggle() {
+function environmentSelectedToggle() {
     document.getElementById("os-not-selected").classList.toggle("hide")
     document.getElementById("os-selected").classList.toggle("hide")
     document.getElementById("os-version").classList.add('hide')
 }
 
 function valid_environment() {
-    get_recommendation_list()
-    environment_selected_toggle()
+    getRecommendationList()
+    environmentSelectedToggle()
+    getInventoryList()
 }
 
 function addHost() {
