@@ -6,10 +6,10 @@
 const NAME_STORAGE = "OS_ENVIRONNEMENT"
 
 
-function select_os_model_open() {
+function selectOsModelOpen() {
     let mod = document.getElementById("os-selector-modal")
     M.Modal.getInstance(mod).open();
-    get_os()
+    getOs()
 }
 
 
