@@ -21,26 +21,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     select_os_model_open()
 
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    M.Dropdown.init(elems, {});
+
     setTimeout(() => {
         document.getElementById("radio_button_unchecked").innerText = "radio_button_unchecked"
-    }, 250)
+    }, 450)
 
 });
 
-function environment_selected_toggle() {
+function environmentSelectedToggle() {
     document.getElementById("os-not-selected").classList.toggle("hide")
     document.getElementById("os-selected").classList.toggle("hide")
     document.getElementById("os-version").classList.add('hide')
 }
 
-function valid_environment() {
-    get_recommendation_list()
-    environment_selected_toggle()
-}
+function validEnvironment() {
+    getRecommendationList()
+    environmentSelectedToggle()
 
-function addHost() {
-    let hostItem = retrieveInventoryTableInput()
-    sendHost(hostItem)
+    renderTable("inventory-container","inventory",TYPE_TABLE_ENUM.INVENTORY, TYPE_STORAGE.LOCAL)
 }
 
 function fillAuthFromConnectionMethodValue() {
