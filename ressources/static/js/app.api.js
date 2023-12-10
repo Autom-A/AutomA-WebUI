@@ -82,6 +82,25 @@ function getQuestion(_id) {
     xhttp.send();
 }
 
+function getInventoryList() {
+    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/inventory/hosts`;
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let inventory = JSON.parse(xhttp.responseText);
+            if (inventory.hosts.length > 0) {
+                inventory.hosts.forEach(host => {
+                    addLineInTable(host,TYPE_TABLE_ENUM.INVENTORY)
+                });
+            }
+        } else if (this.readyState == 4 && this.status == 400) {
+            M.toast({ html: 'ERROR : Can\'t retrieve the recommendation list', classes: 'rounded' });
+        }
+    }
+    xhttp.open("GET", endpoint, true);
+    xhttp.send();   
+}
+
 /**
  * Setting and verifying informations
  */

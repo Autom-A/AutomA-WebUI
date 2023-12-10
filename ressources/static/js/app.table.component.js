@@ -166,7 +166,10 @@ function addLineInTable(item, tableType) {
             break;
     }
 
-    // container.insertBefore(lineToAdd, container.firstChild)        
+    if (lineToAdd != null) {
+        let container = document.getElementById(containerID)
+        container.insertBefore(lineToAdd, container.firstChild)
+    }
 }
 
 function retrieveInventoryTableInput() {

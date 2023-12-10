@@ -125,6 +125,17 @@ class Host():
         ret_str+= f"      ansible_ssh_extra_args: '-o IdentitiesOnly=yes'"
         return ret_str
 
+    def to_json(self):
+        return {
+            "hostname": self.hostname,
+            "ip": self.host_ip,
+            "port": self.host_port,
+            "connection": self.connection_method,
+            "username": self.username,
+            "passwordOrKeyfile": self.pass_or_keyfile,
+            "sudoUsername": self.sudo_username,
+            "sudoPassword": self.sudo_password
+        }
 
 class HostsSelected(SingletonHostsSelected):
     """This class keep in memory which hosts are selected and their configuration
@@ -165,7 +176,7 @@ class HostsSelected(SingletonHostsSelected):
         Returns:
             bool: True if the hostname is unique else False
         """
-        if len(new_hostname) > 1:
+        if len(new_hostname) > 0:
             for host in self.hosts:
                 if host.hostname.strip() == new_hostname.strip():
                     return False
@@ -189,3 +200,9 @@ class HostsSelected(SingletonHostsSelected):
                     inventory_file.write(host.get_yml())
         except ValueError as value_error:
             raise value_error
+
+    def to_json(self):
+        inventory = {"hosts": []}
+        for host in self.hosts:
+            inventory.get("hosts").append(host.to_json())
+        return inventory
