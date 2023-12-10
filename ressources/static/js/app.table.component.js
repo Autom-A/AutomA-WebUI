@@ -47,7 +47,7 @@ function renderRecommendationLine(item) {
 
     line.onclick = () => {
         if(c_selected.innerText == RADIO_BUTTON_UNCHECKED_VALUE) {
-            get_question(line.getAttribute("id"))
+            getQuestion(line.getAttribute("id"))
         } else {
             c_selected.children[0].innerText = RADIO_BUTTON_UNCHECKED_VALUE
             unSavedIdSelected(item["_id"])
@@ -140,8 +140,10 @@ function addLineInTable(item, tableType) {
             break;
     }
 
-    let container = document.getElementById(containerID)
-    container.insertBefore(lineToAdd, container.firstChild)
+    if (lineToAdd != null) {
+        let container = document.getElementById(containerID)
+        container.insertBefore(lineToAdd, container.firstChild)
+    }
 }
 
 function retrieveInventoryTableInput() {
