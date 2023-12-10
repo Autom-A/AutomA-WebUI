@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     M.FormSelect.init(select_inventory, {})
 
-    select_os_model_open()
+    selectOsModelOpen()
 
     var elems = document.querySelectorAll('.dropdown-trigger');
     M.Dropdown.init(elems, {});
