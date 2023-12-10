@@ -6,13 +6,13 @@
  * Retrieve informations
  */
 
-function get_os() {
+function getOs() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             let list = JSON.parse(xhttp.responseText);
-            fillSelector("os-selection", list, verify_os);
+            fillSelector("os-selection", list, verifyOs);
         } else if (xhttp.readyState == 4 && xhttp.status == 400) {
             M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
         }
@@ -21,13 +21,13 @@ function get_os() {
     xhttp.send();
 }
 
-function get_os_type() {
+function getOsType() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os_type`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             let list = JSON.parse(xhttp.responseText);
-            fillSelector("os-type", list, verify_os_type);
+            fillSelector("os-type", list, verifyOsType);
         } else if (xhttp.readyState == 4 && xhttp.status == 400) {
             M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
         }
@@ -36,13 +36,13 @@ function get_os_type() {
     xhttp.send();
 }
 
-function get_os_version() {
+function getOsVersion() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os_version`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             let list = JSON.parse(xhttp.responseText);
-            fillSelector("os-version", list, verify_os_version);
+            fillSelector("os-version", list, verifyOsVersion);
         } else if (xhttp.readyState == 4 && xhttp.status == 400) {
             M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
         }
@@ -51,7 +51,7 @@ function get_os_version() {
     xhttp.send();
 }
 
-function get_recommendation_list() {
+function getRecommendationList() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/recommendations`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -67,7 +67,7 @@ function get_recommendation_list() {
     xhttp.send();
 }
 
-function get_question(_id) {
+function getQuestion(_id) {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/question?_id=${_id}`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -82,15 +82,34 @@ function get_question(_id) {
     xhttp.send();
 }
 
+function getInventoryList() {
+    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/inventory/hosts`;
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let inventory = JSON.parse(xhttp.responseText);
+            if (inventory.hosts.length > 0) {
+                inventory.hosts.forEach(host => {
+                    addLineInTable(host,TYPE_TABLE_ENUM.INVENTORY)
+                });
+            }
+        } else if (this.readyState == 4 && this.status == 400) {
+            M.toast({ html: 'ERROR : Can\'t retrieve the recommendation list', classes: 'rounded' });
+        }
+    }
+    xhttp.open("GET", endpoint, true);
+    xhttp.send();   
+}
+
 /**
  * Setting and verifying informations
  */
-function verify_os(value) {
+function verifyOs(value) {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            get_os_type()
+            getOsType()
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
         }
@@ -100,13 +119,13 @@ function verify_os(value) {
     xhttp.send(JSON.stringify({ "os": value }));
 }
 
-function verify_os_type(value) {
+function verifyOsType(value) {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os_type`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (value) {
             if (this.readyState == 4 && this.status == 200) {
-                get_os_version()
+                getOsVersion()
             } else if (this.readyState == 4 && this.status == 400) {
                 M.toast({ html: 'ERROR : Your selection is not correct', classes: 'rounded' });
             }
@@ -119,7 +138,7 @@ function verify_os_type(value) {
     xhttp.send(JSON.stringify({ "os_type": value }));
 }
 
-function verify_os_version(value) {
+function verifyOsVersion(value) {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/selector/os_version`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
