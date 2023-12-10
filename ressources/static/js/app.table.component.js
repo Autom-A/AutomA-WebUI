@@ -7,7 +7,12 @@ const TYPE_TABLE_ENUM = {
     "INVENTORY" : 1
 }
 
-function renderTable(containerID, storageItemName, tableType) {
+const TYPE_STORAGE = {
+    "SESSION": 0,
+    "LOCAL": 1
+}
+
+function renderTable(containerID, storageItemName, tableType, storageType) {
     let container = document.getElementById(containerID)
 
     // clear table before filling
@@ -15,18 +20,37 @@ function renderTable(containerID, storageItemName, tableType) {
         container.removeChild(container.lastChild);
     }
 
-    let allItems = JSON.parse(sessionStorage.getItem(storageItemName))
+    let allItems;
+    switch (storageType) {
+        case TYPE_STORAGE.SESSION:
+            allItems = JSON.parse(sessionStorage.getItem(storageItemName))
+            break
+        case TYPE_STORAGE.LOCAL:
+            allItems = JSON.parse(localStorage.getItem(storageItemName))
+            break
+        default:
+            print("renderTable() : Switch case default (no storage)")
+            break;
+    }
+
+    switch (tableType) {
+        case TYPE_TABLE_ENUM.INVENTORY:
+            allItems = allItems.hosts
+            break;
+    }
+
+    if (allItems == null) allItems = []
+
     for (let i = 0; i < allItems.length; i++) {
         const item = allItems[i];
         let tableLine;
         switch (tableType) {
             case TYPE_TABLE_ENUM.RECOMMENDATIONS:
                 tableLine = renderRecommendationLine(item)
-                var elems = document.querySelectorAll('.dropdown-trigger');
-                M.Dropdown.init(elems, {});
                 break;
             case TYPE_TABLE_ENUM.INVENTORY:
                 tableLine = renderInventoryLine(item)
+                break
             default:
                 print("renderTable() : Switch case default")
                 break;
@@ -134,6 +158,8 @@ function addLineInTable(item, tableType) {
         case TYPE_TABLE_ENUM.INVENTORY:
             lineToAdd = renderInventoryLine(item)
             containerID = "inventory-container"
+            let container = document.getElementById(containerID)
+            container.appendChild(lineToAdd)
             break;
         default:
             print("addLineInTable() : Switch case default")
@@ -173,11 +199,43 @@ function retrieveInventoryTableInput() {
 }
 
 function fillAuthFromConnectionMethodValue() {
-    let labelPasswordKeyfile = document.getElementById("label-password-keyfile")
-    let selectConnectionMethod = document.getElementById("select-connection")
+    let labelPasswordKeyfile = document.getElementById("label-password-keyfile");
+    let selectConnectionMethod = document.getElementById("select-connection");
     if (selectConnectionMethod.value == "0") {
-        labelPasswordKeyfile.innerText = "Password"
+        labelPasswordKeyfile.innerText = "Password";
     } else if (selectConnectionMethod.value == "1") {
-        labelPasswordKeyfile.innerText = "Keyfile"
+        labelPasswordKeyfile.innerText = "Keyfile";
     }
+}
+
+function addHostInTable() {
+    let hostItem = retrieveInventoryTableInput();
+    
+    let inventory = JSON.parse(localStorage.getItem("inventory"));
+    if (inventory == null) inventory = {"hosts":[]}
+    else {
+        hosts = inventory.hosts
+        for (let i = 0; i < hosts.length; i++) {
+            const host = hosts[i];
+            if (host.hostname == hostItem.hostname) {
+                M.toast({ html: 'ERROR : An host with the same name already exists', classes: 'rounded' });
+                return;
+            } else if (host.ip == hostItem.ip && host.port == hostItem.port) {
+                M.toast({ html: 'ERROR : An host with the same pair ip:port already exists', classes: 'rounded' });
+                return;
+            } else if (hostItem.ip < 0 || hostItem.ip > 65535) {
+                M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535[', classes: 'rounded' });
+                return;
+            } else if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
+                        || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
+                M.toast({ html: 'ERROR : All fields must be filled', classes: 'rounded' });
+                return;
+            }
+        }
+    }
+
+    inventory.hosts.push(hostItem)
+    localStorage.setItem("inventory", JSON.stringify(inventory))
+
+    addLineInTable(hostItem, TYPE_TABLE_ENUM.INVENTORY);
 }

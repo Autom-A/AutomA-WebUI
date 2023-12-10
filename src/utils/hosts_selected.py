@@ -152,7 +152,7 @@ class HostsSelected(SingletonHostsSelected):
             HostAlreadyAdded : If the hostname already exists
             ValueError: If there are missing value, raise the Exception
         """
-        
+
         try:
             if self.is_hostname_unique(host["hostname"]):
                 h = Host(host["hostname"],host["ip"],host["port"])

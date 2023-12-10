@@ -21,9 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     selectOsModelOpen()
 
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    M.Dropdown.init(elems, {});
+
     setTimeout(() => {
         document.getElementById("radio_button_unchecked").innerText = "radio_button_unchecked"
-    }, 250)
+    }, 450)
 
 });
 
@@ -33,15 +36,11 @@ function environmentSelectedToggle() {
     document.getElementById("os-version").classList.add('hide')
 }
 
-function valid_environment() {
+function validEnvironment() {
     getRecommendationList()
     environmentSelectedToggle()
-    getInventoryList()
-}
 
-function addHost() {
-    let hostItem = retrieveInventoryTableInput()
-    sendHost(hostItem)
+    renderTable("inventory-container","inventory",TYPE_TABLE_ENUM.INVENTORY, TYPE_STORAGE.LOCAL)
 }
 
 function fillAuthFromConnectionMethodValue() {

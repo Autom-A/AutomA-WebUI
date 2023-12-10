@@ -92,7 +92,7 @@
                             <tbody id="recommendations-container"></tbody>
                         </table>
                         <div class="generations-buttons">
-                            <a class="waves-effect waves-light btn squared-button" onclick="launchGenerate()">
+                            <a class="waves-effect waves-light btn squared-button" onclick="generateAction()">
                                 <i class="material-icons left icon-3-squares-l"></i>
                                 <i class="material-icons left icon-1-square-45deg"></i>
                                 <span>Generate</span>
@@ -140,7 +140,8 @@
                                 <th>Sudo Password</th>
                             </tr>
                         </thead>
-                        <tbody id="inventory-container">
+                        <tbody id="inventory-container"></tbody>
+                        <tbody>
                             <tr id="inventory-input">
                                 <th>
                                     <div class="row" style="margin-bottom: 0px;">
@@ -211,7 +212,7 @@
                                 <th>
                                     <div class="row" style="margin-bottom: 0px;">
                                         <div class="input-field col s12" style="margin: 0px;">
-                                            <a class="waves-effect waves-light btn" onclick="addHost()">Add</a>
+                                            <a class="waves-effect waves-light btn" onclick="addHostInTable()">Add</a>
                                         </div>
                                     </div>
                                 </th>
@@ -258,7 +259,7 @@
         </div>
         <div class="modal-footer">
             <a id="valid" href="#!" class="modal-close waves-effect waves-green btn-flat" disabled
-                onclick="valid_environment()">Next !</a>
+                onclick="validEnvironment()">Next !</a>
         </div>
     </div>
 

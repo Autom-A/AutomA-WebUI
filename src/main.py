@@ -195,34 +195,21 @@ def render_playbook():
         print(e.with_traceback())
         return jsonify({"ERROR":"An error occured"}), 400
 
-@flask_app.route("/api/inventory/host", methods=['POST'])
-def add_host():
+@flask_app.route("/api/inventory/hosts", methods=['POST'])
+def add_hosts():
     try:
-        host = request.get_json()
-        hosts_selected = HostsSelected()
-        hosts_selected.add_host(host) 
-        return jsonify({"SUCCESS":f"The host {host['hostname']} has been added"})
+        inventory_hosts = request.get_json().get("hosts")
+        inventory = HostsSelected()
+
+        for host in inventory_hosts:
+            inventory.add_host(host)
+
+        return jsonify({"SUCCESS":f"{len(inventory_hosts)} host{'s'* (len(inventory_hosts) >= 1)} added"})
+    
     except HostAlreadyAdded as host_already_added:
         return jsonify({"ERROR":host_already_added.args}), 400
     except ValueError as value_error:
         return jsonify({"ERROR":value_error.args}), 400
-    except Exception as e:
-        print(e.with_traceback())
-        return jsonify({"ERROR":"An Error has occured"}), 400
-
-@flask_app.route("/api/inventory/host", methods=['UPDATE'])
-def update_host():
-    pass
-
-@flask_app.route("/api/inventory/host", methods=['DELETE'])
-def delete_host():
-    pass
-
-@flask_app.route("/api/inventory/hosts", methods=['GET'])
-def get_hosts():
-    try:
-        hosts_selected = HostsSelected()
-        return jsonify(hosts_selected.to_json())
     except Exception as e:
         print(e.with_traceback())
         return jsonify({"ERROR":"An Error has occured"}), 400
@@ -246,6 +233,7 @@ def run_playbook_launcher():
 @flask_app.route("/api/playbook/launcher/download", methods=['GET'])
 def download_playbook_launcher():
     pass
+
 
 flask_app.run(host=config.get("server_ip"),
               port=config.get("server_port"),

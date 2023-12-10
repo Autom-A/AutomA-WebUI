@@ -58,7 +58,7 @@ function getRecommendationList() {
         if (this.readyState == 4 && this.status == 200) {
             let recommendations = JSON.parse(xhttp.responseText);
             sessionStorage.setItem("recommendations", JSON.stringify(recommendations))
-            renderTable("recommendations-container", "recommendations", TYPE_TABLE_ENUM.RECOMMENDATIONS)
+            renderTable("recommendations-container", "recommendations", TYPE_TABLE_ENUM.RECOMMENDATIONS, TYPE_STORAGE.SESSION)
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : Can\'t retrieve the recommendation list', classes: 'rounded' });
         }
@@ -166,7 +166,7 @@ function verifyOsVersion(value) {
 /** 
 * Launch generation with the selected answers written in local storage
 */
-function launchGenerate() {
+function generatePlaybooks() {
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/playbooks/render`;
     let xhttp = new XMLHttpRequest();
     let recommendations = {};
@@ -192,21 +192,27 @@ function launchGenerate() {
 }
 
 
-function sendHost(hostItem) {
-    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/inventory/host`;
+function sendInventory() {
+    let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/inventory/hosts`;
     let xhttp = new XMLHttpRequest();
+
+    let inventory = localStorage.getItem("inventory");
+    if (inventory == null) inventory = {"hosts": []}
+    else {
+        inventory = JSON.parse(inventory)
+    }
+
     xhttp.onreadystatechange = function () {
-        if (hostItem) {
-            if (this.readyState == 4 && this.status == 200) {
-                addLineInTable(hostItem, TYPE_TABLE_ENUM.INVENTORY)
-            } else if (this.readyState == 4 && this.status == 400) {
-                M.toast({ html: 'ERROR : Host can\'t be added', classes: 'rounded' });
-            }
+        if (this.readyState == 4 && this.status == 200) {
+            let rep = JSON.parse(xhttp.responseText)
+            M.toast({ html: rep["SUCCESS"], classes: 'rounded' });
+        } else if (this.readyState == 4 && this.status == 400) {
+            M.toast({ html: 'ERROR : Inventory can\'t be added', classes: 'rounded' });
         }
     }
     xhttp.open("POST", endpoint, true);
     xhttp.setRequestHeader("Content-Type", "application/json")
-    xhttp.send(JSON.stringify(hostItem));
+    xhttp.send(JSON.stringify(inventory));
 }
 
 
@@ -224,4 +230,9 @@ function runPlaybook() {
     xhttp.open("POST", endpoint, true);
     xhttp.setRequestHeader("Content-Type", "application/json")
     xhttp.send();
+}
+
+function generateAction() {
+    generatePlaybooks();
+    sendInventory();
 }
