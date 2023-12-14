@@ -14,6 +14,16 @@ const TYPES_QUESTION_ENUM = {
 * @param {_id} _id - question UUID
 */
 function renderQuestion(_id, question_data) {
+
+    // Check if there are any questions
+    if(question_data.questions.length == 0) {
+        localStorage.setItem(_id, JSON.stringify([]))
+        storeSelectedIds(_id)
+
+        checkRadioBtn(_id)
+        return
+    }
+
     // Check if modal for this question already exists
     let question_modal = document.getElementById(`q-${_id}`)
     if (question_modal != undefined) {
@@ -118,14 +128,7 @@ function renderQuestionBtn(_id,question_data) {
             }
         }
 
-        if(!question_data.questions.length) {
-            localStorage.setItem(_id, JSON.stringify([]))
-            storeSelectedIds(_id)
-        }
-
-        let recommendation_line = document.getElementById(_id)
-        let radio_btn = recommendation_line.querySelector("#r-radio-btn")
-        radio_btn.innerText = "radio_button_checked"
+        checkRadioBtn(_id)
 
         let question_modal = document.getElementById(`q-${_id}`)
         M.Modal.getInstance(question_modal).close()

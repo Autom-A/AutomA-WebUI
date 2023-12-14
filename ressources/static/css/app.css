@@ -1,10 +1,10 @@
-
-#os-selector-modal > .modal-content {
+#os-selector-modal>.modal-content {
     height: 30em;
 }
 
 .arrow-icon {
-    transition: transform 0.3s ease; /* Ajoute une transition douce pour une animation fluide */
+    transition: transform 0.3s ease;
+    /* Ajoute une transition douce pour une animation fluide */
 }
 
 /* Styles spécifiques au survol du bouton */
@@ -12,20 +12,28 @@
     transform: rotate(-180deg);
 }
 
-.split-buttons, .generations-buttons, #dropdown1 a {
+.split-buttons,
+.generations-buttons,
+#dropdown1 a {
     display: flex
 }
 
 .generations-buttons {
     padding: 2em;
     justify-content: space-between;
-    > a {
+
+    >a {
         .material-icons {
             position: absolute;
-        };
-         > span  {
+        }
+
+        ;
+
+        >span {
             margin-left: 2em
-        };
+        }
+
+        ;
     }
 }
 
@@ -41,18 +49,55 @@
     position: absolute;
 }
 
-.generations-buttons > a:hover .icon-1-square-45deg {
+.generations-buttons>a:hover .icon-1-square-45deg {
     animation: rotation 1.3s infinite linear;
 }
 
 @keyframes rotation {
-    from{
+    from {
         transform: rotate(0deg);
-    } to {
+    }
+
+    to {
         transform: rotate(360deg);
     }
-    
+
 }
 
+#r-radio-btn:hover {
+    cursor: pointer;
+}
 
+.prevent-select {
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
 
+.modal-footer.recommendations-footer {
+    margin-left: 24px;
+}
+
+.modal-footer.recommendations-footer>.row {
+    margin-bottom: 0px;
+}
+
+#question-body>.row {
+    width: 90%;
+}
+
+#question-body>.row {
+    width: 90%;
+}
+
+#question-body>div.right-align>a {
+    top: -15px;
+    left: -35px;
+}
+
+#question-container>div {
+    overflow-x: hidden;
+}

@@ -35,7 +35,7 @@ function renderTable(containerID, storageItemName, tableType, storageType) {
 
     switch (tableType) {
         case TYPE_TABLE_ENUM.INVENTORY:
-            allItems = allItems.hosts
+            if (allItems != null) allItems = allItems.hosts
             break;
     }
 
@@ -59,6 +59,16 @@ function renderTable(containerID, storageItemName, tableType, storageType) {
     }
 }
 
+/**
+ * Check the radio btn of a recommendation line
+ * @param {uuid} _id id of recommendation 
+ */
+function checkRadioBtn(_id) {
+    let recommendation_line = document.getElementById(_id)
+    let radio_btn = recommendation_line.querySelector("#r-radio-btn")
+    radio_btn.innerText = RADIO_BUTTON_CHECKED_VALUE
+}
+
 /** 
 * Render recommendation line adding elements to the DOM
 * @param {Recommendation} item Recommendation retrieve by the back
@@ -69,13 +79,12 @@ function renderRecommendationLine(item) {
     
     let c_selected = generateButtonRadio(line, item["_id"]);
 
-    line.onclick = () => {
-        if(c_selected.innerText == RADIO_BUTTON_UNCHECKED_VALUE) {
+    line.onclick = (event) => {
+        if(event.originalTarget.getAttribute("skipEvent") != 1) {
             getQuestion(line.getAttribute("id"))
-        } else {
-            c_selected.children[0].innerText = RADIO_BUTTON_UNCHECKED_VALUE
-            unSavedIdSelected(item["_id"])
         }
+
+        event.originalTarget.setAttribute("skipEvent","0")
     }
 
 
@@ -101,7 +110,21 @@ function generateButtonRadio(line, id) {
     if(ids && ids.length && ids.findIndex(val => val == id) != -1) {
         innerRadioValue = RADIO_BUTTON_CHECKED_VALUE
     }
-    c_selected.innerHTML = `<a id="r-radio-btn" class=material-symbols-outlined>${innerRadioValue}</a>`;
+
+    let a = document.createElement("a")
+    a.setAttribute("id","r-radio-btn")
+    a.classList.add("prevent-select", "material-symbols-outlined")
+    a.innerText = innerRadioValue
+
+    a.onclick = () => {
+        if (a.innerText == RADIO_BUTTON_CHECKED_VALUE) {
+            a.innerText = RADIO_BUTTON_UNCHECKED_VALUE
+            a.setAttribute("skipEvent","1")
+            unSavedIdSelected(id)
+        }
+    }
+
+    c_selected.appendChild(a)
     line.appendChild(c_selected);
     return c_selected;
 }
