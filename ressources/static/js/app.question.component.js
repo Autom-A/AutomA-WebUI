@@ -14,6 +14,16 @@ const TYPES_QUESTION_ENUM = {
 * @param {_id} _id - question UUID
 */
 function renderQuestion(_id, question_data) {
+
+    // Check if there are any questions
+    if(question_data.questions.length == 0) {
+        localStorage.setItem(_id, JSON.stringify([]))
+        storeSelectedIds(_id)
+
+        checkRadioBtn(_id)
+        return
+    }
+
     // Check if modal for this question already exists
     let question_modal = document.getElementById(`q-${_id}`)
     if (question_modal != undefined) {
@@ -24,6 +34,8 @@ function renderQuestion(_id, question_data) {
         let template = document.getElementById("template-question-modal")
         question_modal = template.content.cloneNode(true).querySelector("div")
         question_modal.setAttribute("id", `q-${_id}`)
+        question_modal.classList.add("question-modal")
+
 
         let question_title = question_modal.querySelector("#question-title")
         question_title.innerText = question_data.title
@@ -79,7 +91,7 @@ function initializeMaterializeComponent() {
         switch (todo.element_type) {
             case "formselect":
                 let el = document.getElementById(todo.id)
-                M.FormSelect.init(el, {})
+                M.FormSelect.init(el, {dropdownOptions:{container:document.body}})
                 break
             default:
                 break
@@ -118,14 +130,7 @@ function renderQuestionBtn(_id,question_data) {
             }
         }
 
-        if(!question_data.questions.length) {
-            localStorage.setItem(_id, JSON.stringify([]))
-            storeSelectedIds(_id)
-        }
-
-        let recommendation_line = document.getElementById(_id)
-        let radio_btn = recommendation_line.querySelector("#r-radio-btn")
-        radio_btn.innerText = "radio_button_checked"
+        checkRadioBtn(_id)
 
         let question_modal = document.getElementById(`q-${_id}`)
         M.Modal.getInstance(question_modal).close()
@@ -176,7 +181,7 @@ function renderQuestionField(_id, index, one_field, answerStored) {
 */
 function renderFieldStr(_id, index, one_field,answerStored) {
     let div = document.createElement("div")
-    div.classList.add("input-field")
+    div.classList.add("input-field", "col", "s12")
 
     let input = document.createElement("input")
     input.setAttribute("type", "text")
@@ -210,7 +215,7 @@ function renderFieldListStr(_id, index, one_field,answerStored) {
     div_row.classList.add("row")
 
     let div_col = document.createElement("div")
-    div_col.classList.add(["input-field", "col", "s12"])
+    div_col.classList.add("input-field", "col", "s12")
 
     let title = document.createElement("p")
     title.classList.add(["caption"])
@@ -263,7 +268,7 @@ function renderFieldChoiceStr(_id, index, one_field, answerStored) {
     div_row.classList.add(["row"])
 
     let div_col = document.createElement("div")
-    div_col.classList.add(["input-field", "col", "s12"])
+    div_col.classList.add("input-field", "col", "s12")
 
     let select_choice = document.createElement("select")
     select_choice.setAttribute("id", `${_id}-${index}`)
@@ -289,6 +294,7 @@ function renderFieldChoiceStr(_id, index, one_field, answerStored) {
         select_choice.appendChild(option_choice)
     }
 
+    
     let label = document.createElement("label")
     label.innerText = one_field.title
     label.setAttribute("for", `${_id}-${index}`)
