@@ -12,6 +12,11 @@ const TYPE_STORAGE = {
     "LOCAL": 1
 }
 
+const TYPE_INPUT = {
+    "TEXT": 0,
+    "SELECT": 1,
+}
+
 function renderTable(containerID, storageItemName, tableType, storageType) {
     let container = document.getElementById(containerID)
 
@@ -87,6 +92,7 @@ function renderRecommendationLine(item) {
         event.originalTarget.setAttribute("skipEvent","0")
     }
 
+    line.appendChild(c_selected);
 
     line.appendChild(renderCell(item["id"]))
     line.appendChild(renderCell(item["name"]))
@@ -125,7 +131,6 @@ function generateButtonRadio(line, id) {
     }
 
     c_selected.appendChild(a)
-    line.appendChild(c_selected);
     return c_selected;
 }
 
@@ -161,7 +166,98 @@ function renderInventoryLine(host) {
     line.appendChild(renderCell(host["sudoUsername"]))
     line.appendChild(renderCell(host["sudoPassword"]))
 
+    line.onclick = () => {
+        switchEditInventoryLine(line)
+    }
+
     return line
+}
+
+function switchEditInventoryLine(line) {
+    if (line.getAttribute("hidden")) return
+
+    let editLine = document.createElement("tr")
+    editLine.setAttribute("id",`${line}-edit`)
+
+    editLine.appendChild(renderEditCell("hostname",line.id, TYPE_INPUT.TEXT, line.childNodes[0].innerText))
+    editLine.appendChild(renderEditCell("ip",line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
+    editLine.appendChild(renderEditCell("port",line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
+    editLine.appendChild(renderEditCell("connection",line.id, TYPE_INPUT.SELECT, line.childNodes[3].innerText))
+    editLine.appendChild(renderEditCell("username",line.id, TYPE_INPUT.TEXT, line.childNodes[4].innerText))
+    editLine.appendChild(renderEditCell("password-keyfile",line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
+    editLine.appendChild(renderEditCell("sudo-username",line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
+    editLine.appendChild(renderEditCell("sudo-password",line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
+
+    line.parentNode.insertBefore(editLine, line.nextSibling);
+    line.setAttribute("hidden","true")
+
+    while (MATERIALIZE_FIFO.length > 0) {
+        let todo = MATERIALIZE_FIFO.pop()
+        switch (todo.element_type) {
+            case "formselect":
+                let el = document.getElementById(todo.id)
+                M.FormSelect.init(el, {dropdownOptions:{container:document.body}})
+                break
+            default:
+                break
+        }
+    }
+}
+
+function renderEditCell(colname, hostname, inputType, userValue) {
+    let editCell = document.createElement("th");
+    
+    let divRow = document.createElement("div");
+    divRow.classList.add("row", "edit-row");
+    
+    let divInput = document.createElement("div");
+    divInput.classList.add("input-field", "col", "s12");
+
+    switch (inputType) {
+        case TYPE_INPUT.TEXT:
+            let input = document.createElement("input");
+            input.id = `input-${colname}-${hostname}`;
+            input.setAttribute("type","text"); 
+    
+            let label = document.createElement("label");
+            label.setAttribute("for",`input-${colname}-${hostname}`);
+            label.innerText = userValue
+    
+            divInput.appendChild(input);
+            divInput.appendChild(label);
+            break;
+    
+        case TYPE_INPUT.SELECT:
+            let select = document.createElement("select")
+            select.id = `select-connection-${hostname}`
+
+            let opt1 = document.createElement("option")
+            opt1.innerText = "Password based"
+            opt1.value = 0
+
+            let opt2 = document.createElement("option")
+            opt2.innerText = "Keyfile based"
+            opt2.value = 1
+
+            if (userValue == "Password based") opt1.setAttribute("selected","")
+            else opt2.setAttribute("selected","")
+
+            select.appendChild(opt1)
+            select.appendChild(opt2)
+
+            divInput.appendChild(select)
+
+            MATERIALIZE_FIFO.push({ element_type: "formselect", id: select.id })
+            break;
+        default:
+            break;
+    }
+
+    divRow.appendChild(divInput);
+
+    editCell.appendChild(divRow);
+
+    return editCell
 }
 
 /** 
