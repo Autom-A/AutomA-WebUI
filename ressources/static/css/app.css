@@ -111,3 +111,11 @@
 #question-body > ul.dropdown-content.select-dropdown {
     overflow-y: auto;
 }
+
+.edit-row {
+    margin-bottom: 0px;
+}
+
+.edit-row > .input-field {
+    margin: 0px;
+}

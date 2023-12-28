@@ -12,6 +12,17 @@ const TYPE_STORAGE = {
     "LOCAL": 1
 }
 
+const TYPE_INPUT = {
+    "TEXT": 0,
+    "SELECT": 1,
+}
+/**
+ * Render a table. This function call the right table renderer according to the tableType arg.
+ * @param {string} containerID - Container where the table must be append
+ * @param {string} storageItemName - Name of the item to retrieve
+ * @param {TYPE_TABLE_ENUM} tableType - RECOMMENDATIONS or INVENTORY
+ * @param {TYPE_STORAGE} storageType - SESSION or LOCAL - stands for sessionStorage and localStorage
+ */
 function renderTable(containerID, storageItemName, tableType, storageType) {
     let container = document.getElementById(containerID)
 
@@ -80,13 +91,14 @@ function renderRecommendationLine(item) {
     let c_selected = generateButtonRadio(line, item["_id"]);
 
     line.onclick = (event) => {
-        if(event.originalTarget.getAttribute("skipEvent") != 1) {
+        if(event.target.getAttribute("skipEvent") != 1) {
             getQuestion(line.getAttribute("id"))
         }
 
-        event.originalTarget.setAttribute("skipEvent","0")
+        event.target.setAttribute("skipEvent","0")
     }
 
+    line.appendChild(c_selected);
 
     line.appendChild(renderCell(item["id"]))
     line.appendChild(renderCell(item["name"]))
@@ -125,7 +137,6 @@ function generateButtonRadio(line, id) {
     }
 
     c_selected.appendChild(a)
-    line.appendChild(c_selected);
     return c_selected;
 }
 
@@ -153,20 +164,125 @@ function renderInventoryLine(host) {
     line.appendChild(renderCell(host["ip"]))
     line.appendChild(renderCell(host["port"]))
 
-    if (host["connection"] == "0") line.appendChild(renderCell("Password based"))
-    else if (host["connection"] == "1") line.appendChild(renderCell("Keyfile based"))
+    if (host["connection"] == 0) line.appendChild(renderCell("Password based"))
+    else if (host["connection"] == 1) line.appendChild(renderCell("Keyfile based"))
     
     line.appendChild(renderCell(host["username"]))
     line.appendChild(renderCell(host["passwordOrKeyfile"]))
     line.appendChild(renderCell(host["sudoUsername"]))
     line.appendChild(renderCell(host["sudoPassword"]))
 
+    line.onclick = () => {
+        switchEditInventoryLine(line)
+    }
+
     return line
 }
 
+/**
+ * This function render a input line to replace the text line
+ * @param {*} line text line to "transform" to a input line
+ */
+function switchEditInventoryLine(line) {
+    if (line.getAttribute("hidden")) return
+
+    let editLine = document.createElement("tr")
+    editLine.setAttribute("id",`${line.id}-edit`)
+
+    editLine.appendChild(renderEditCell("hostname",line.id, TYPE_INPUT.TEXT, line.childNodes[0].innerText))
+    editLine.appendChild(renderEditCell("ip",line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
+    editLine.appendChild(renderEditCell("port",line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
+    editLine.appendChild(renderEditCell("connection",line.id, TYPE_INPUT.SELECT, line.childNodes[3].innerText))
+    editLine.appendChild(renderEditCell("username",line.id, TYPE_INPUT.TEXT, line.childNodes[4].innerText))
+    editLine.appendChild(renderEditCell("password-keyfile",line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
+    editLine.appendChild(renderEditCell("sudo-username",line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
+    editLine.appendChild(renderEditCell("sudo-password",line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
+
+    editLine.appendChild(renderValidHostModificationBtn(`${line.id}-edit`))
+
+    line.parentNode.insertBefore(editLine, line.nextSibling);
+    line.setAttribute("hidden","true")
+
+    while (MATERIALIZE_FIFO.length > 0) {
+        let todo = MATERIALIZE_FIFO.pop()
+        switch (todo.element_type) {
+            case "formselect":
+                let el = document.getElementById(todo.id)
+                M.FormSelect.init(el, {dropdownOptions:{container:document.body}})
+                break
+            default:
+                break
+        }
+    }
+}
+
+/**
+ * 
+ * @param {string} colname The name of the column
+ * @param {string} hostname The name of the host
+ * @param {TYPE_INPUT} inputType The type of the input
+ * @param {string|int} userValue The value already given by the user
+ * @returns a input cell (th) for the column and the host given. 
+ */
+function renderEditCell(colname, hostname, inputType, userValue) {
+    let editCell = document.createElement("th");
+    
+    let divRow = document.createElement("div");
+    divRow.classList.add("row", "edit-row");
+    
+    let divInput = document.createElement("div");
+    divInput.classList.add("input-field", "col", "s12");
+
+    switch (inputType) {
+        case TYPE_INPUT.TEXT:
+            let input = document.createElement("input");
+            input.id = `input-${colname}-${hostname}`;
+            input.setAttribute("type","text"); 
+    
+            let label = document.createElement("label");
+            label.setAttribute("for",`input-${colname}-${hostname}`);
+            label.innerText = userValue
+    
+            divInput.appendChild(input);
+            divInput.appendChild(label);
+            break;
+    
+        case TYPE_INPUT.SELECT:
+            let select = document.createElement("select")
+            select.id = `select-connection-${hostname}`
+
+            let opt1 = document.createElement("option")
+            opt1.innerText = "Password based"
+            opt1.value = 0
+
+            let opt2 = document.createElement("option")
+            opt2.innerText = "Keyfile based"
+            opt2.value = 1
+
+            if (userValue == "Password based") opt1.setAttribute("selected","")
+            else opt2.setAttribute("selected","")
+
+            select.appendChild(opt1)
+            select.appendChild(opt2)
+
+            divInput.appendChild(select)
+
+            MATERIALIZE_FIFO.push({ element_type: "formselect", id: select.id })
+            break;
+        default:
+            break;
+    }
+
+    divRow.appendChild(divInput);
+
+    editCell.appendChild(divRow);
+
+    return editCell
+}
+
 /** 
-* Render cell 
-* @param {Recommendation} textDisplayed Text added in the celle
+* Render text cell 
+* @param {string} textDisplayed Text added in the celle
 */
 function renderCell(textDisplayed) {
     let cell = document.createElement("th")
@@ -174,6 +290,11 @@ function renderCell(textDisplayed) {
     return cell
 }
 
+/**
+ * Add a new line in the table
+ * @param {} item the item that will be used to display information in the line
+ * @param {TYPE_TABLE_ENUM} tableType RECOMMENDATIONS or INVENTORY
+ */
 function addLineInTable(item, tableType) {
     let lineToAdd;
     let containerID;
@@ -182,30 +303,32 @@ function addLineInTable(item, tableType) {
             lineToAdd = renderInventoryLine(item)
             containerID = "inventory-container"
             let container = document.getElementById(containerID)
+            console.log(container);
             container.appendChild(lineToAdd)
             break;
         default:
             print("addLineInTable() : Switch case default")
             break;
     }
-
-    if (lineToAdd != null) {
-        let container = document.getElementById(containerID)
-        container.insertBefore(lineToAdd, container.firstChild)
-    }
 }
 
-function retrieveInventoryTableInput() {
-    let inventoryInput = document.getElementById("inventory-input")
+/**
+ * Retrieve information filled in the input line
+ * @param {string} inputId the unique identifier of the line
+ * @param {string} suffix an optionnal argument to specifiy an suffix. Is used on edit lines
+ * @returns an host object
+ */
+function retrieveInventoryTableInput(inputId, suffix="") {
+    let inventoryInput = document.getElementById(inputId)
 
-    let hostname = inventoryInput.querySelector("#input-name").value
-    let ip = inventoryInput.querySelector("#input-ip").value
-    let port = inventoryInput.querySelector("#input-port").value
-    let connection = inventoryInput.querySelector("#select-connection").value
-    let username = inventoryInput.querySelector("#input-username").value
-    let passwordOrKeyfile = inventoryInput.querySelector("#input-password-keyfile").value
-    let sudoUsername = inventoryInput.querySelector("#input-sudo-username").value
-    let sudoPassword = inventoryInput.querySelector("#input-sudo-password").value
+    let hostname = inventoryInput.querySelector(`#input-hostname${suffix}`).value.trim()
+    let ip = inventoryInput.querySelector(`#input-ip${suffix}`).value.trim()
+    let port = inventoryInput.querySelector(`#input-port${suffix}`).value.trim()
+    let connection = inventoryInput.querySelector(`#select-connection${suffix}`).value.trim()
+    let username = inventoryInput.querySelector(`#input-username${suffix}`).value.trim()
+    let passwordOrKeyfile = inventoryInput.querySelector(`#input-password-keyfile${suffix}`).value.trim()
+    let sudoUsername = inventoryInput.querySelector(`#input-sudo-username${suffix}`).value.trim()
+    let sudoPassword = inventoryInput.querySelector(`#input-sudo-password${suffix}`).value.trim()
     
     let host = {
         "hostname": hostname,
@@ -221,18 +344,11 @@ function retrieveInventoryTableInput() {
     return host
 }
 
-function fillAuthFromConnectionMethodValue() {
-    let labelPasswordKeyfile = document.getElementById("label-password-keyfile");
-    let selectConnectionMethod = document.getElementById("select-connection");
-    if (selectConnectionMethod.value == "0") {
-        labelPasswordKeyfile.innerText = "Password";
-    } else if (selectConnectionMethod.value == "1") {
-        labelPasswordKeyfile.innerText = "Keyfile";
-    }
-}
-
+/**
+ * Add a host in the inventory table
+ */
 function addHostInTable() {
-    let hostItem = retrieveInventoryTableInput();
+    let hostItem = retrieveInventoryTableInput("inventory-input");
     
     let inventory = JSON.parse(localStorage.getItem("inventory"));
     if (inventory == null) inventory = {"hosts":[]}
@@ -246,8 +362,8 @@ function addHostInTable() {
             } else if (host.ip == hostItem.ip && host.port == hostItem.port) {
                 M.toast({ html: 'ERROR : An host with the same pair ip:port already exists', classes: 'rounded' });
                 return;
-            } else if (hostItem.ip < 0 || hostItem.ip > 65535) {
-                M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535[', classes: 'rounded' });
+            } else if (hostItem.port < 0 || hostItem.port > 65535) {
+                M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535]', classes: 'rounded' });
                 return;
             } else if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
                         || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
@@ -261,4 +377,132 @@ function addHostInTable() {
     localStorage.setItem("inventory", JSON.stringify(inventory))
 
     addLineInTable(hostItem, TYPE_TABLE_ENUM.INVENTORY);
+}
+
+/**
+ * Render the btn 'Ok' when the user selects a line to edit host
+ * @param {string} inputId the unique identifier of the line
+ * @returns the cell that contains a btn
+ */
+function renderValidHostModificationBtn(inputId) {
+    let th = document.createElement("th");
+
+    let rowDiv = document.createElement("div");
+    rowDiv.classList.add("row","edit-row");
+
+    let colDiv = document.createElement("div");
+    colDiv.classList.add("input-field","col","s12");
+
+    let btn = document.createElement("a");
+    btn.classList.add("waves-effect","waves-light","btn");
+    btn.innerText = "Ok";
+
+    btn.onclick = () => {
+        modifyHost(inputId);
+    }
+
+    colDiv.appendChild(btn);
+    rowDiv.append(colDiv);
+    th.appendChild(rowDiv);
+
+    return th;
+}
+
+function modifyHost(inputId) {
+    let hostObj = undefined;
+    let hostname = inputId.replace("-edit","")
+    modifiedHost = retrieveInventoryTableInput(inputId,"-"+hostname);
+
+    let inventory = JSON.parse(localStorage.getItem("inventory"))
+    
+    for (let i = 0; i < inventory.hosts.length; i++) {
+        const host = inventory.hosts[i];
+
+        if (host.hostname == hostname) {
+            hostObj = host
+            if (modifiedHost.hostname.length > 0) {
+                for (let i = 0; i < inventory.hosts.length; i++) {
+                    const el = inventory.hosts[i];
+                    if (el.hostname == modifiedHost.hostname) {
+                        M.toast({ html: 'ERROR : An host with the same name already exists', classes: 'rounded' });
+                        return;
+                    }
+                }
+                host.hostname = modifiedHost.hostname;
+            }
+
+            if (!isNaN(modifiedHost.port) || modifiedHost.ip.length > 0) {
+
+                let tmpIP = host.ip;
+                if (modifiedHost.ip.length > 0) {
+                    tmpIP = modifiedHost.ip;
+                }
+
+                let tmpPort = host.port;
+                if (!isNaN(modifiedHost.port)) {
+                    tmpPort = modifiedHost.port;
+                }
+
+                if (!isNaN(modifiedHost.port)) {
+                    if (modifiedHost.port < 0 || modifiedHost.port > 65535) {
+                        M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535]', classes: 'rounded' });
+                        return;
+                    }
+                }
+
+                for (let i = 0; i < inventory.hosts.length; i++) {
+                    const el = inventory.hosts[i];
+                    if (tmpIP.ip == el.ip && tmpPort.port == el.port) {
+                        M.toast({ html: 'ERROR : An host with the same pair ip:port already exists', classes: 'rounded' });
+                        return;
+                    }
+                }
+
+                if (modifiedHost.ip.length > 0) {
+                    host.ip = modifiedHost.ip;
+                }
+
+                if (!isNaN(modifiedHost.port)) {
+                    host.port = modifiedHost.port;
+                }
+
+            }
+
+            if (modifiedHost.username.length > 0) {
+                host.username = modifiedHost.username;
+            }
+
+            if (modifiedHost.passwordOrKeyfile.length > 0) {
+                host.passwordOrKeyfile = modifiedHost.passwordOrKeyfile;
+            }
+
+            if (modifiedHost.sudoUsername.length > 0) {
+                host.sudoUsername = modifiedHost.sudoUsername;
+            }
+
+            if (modifiedHost.sudoPassword.length > 0) {
+                host.sudoPassword = modifiedHost.sudoPassword;
+            }
+
+            host.connection = modifiedHost.connection
+        }
+    }
+
+    localStorage.setItem("inventory",JSON.stringify(inventory))
+
+    let textLine = document.getElementById(hostname);
+    textLine.childNodes.item(0).innerText = hostObj.hostname;
+    textLine.childNodes.item(1).innerText = hostObj.ip;
+    textLine.childNodes.item(2).innerText = hostObj.port;
+
+    if (hostObj.connection == 0) textLine.childNodes.item(3).innerText = "Password based";
+    else if (hostObj.connection == 1) textLine.childNodes.item(3).innerText = "Keyfile based";
+    
+    textLine.childNodes.item(4).innerText = hostObj.username;
+    textLine.childNodes.item(5).innerText = hostObj.passwordOrKeyfile;
+    textLine.childNodes.item(6).innerText = hostObj.sudoUsername;
+    textLine.childNodes.item(7).innerText = hostObj.sudoPassword;
+
+    textLine.removeAttribute("hidden")
+    document.getElementById(inputId).remove();
 }
