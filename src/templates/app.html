@@ -130,6 +130,9 @@
                     <table class="highlight">
                         <thead>
                             <tr>
+                                <th>
+                                    <a class="prevent-select material-symbols-outlined" onclick="deleteAllHosts()">delete</a>
+                                </th>
                                 <th>Name</th>
                                 <th>IP</th>
                                 <th>Port</th>
@@ -143,6 +146,7 @@
                         <tbody id="inventory-container"></tbody>
                         <tbody>
                             <tr id="inventory-input">
+                                <th></th>
                                 <th>
                                     <div class="row edit-row">
                                         <div class="input-field col s12">
