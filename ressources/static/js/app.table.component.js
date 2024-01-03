@@ -125,7 +125,7 @@ function generateButtonRadio(line, id) {
 
     let a = document.createElement("a")
     a.setAttribute("id","r-radio-btn")
-    a.classList.add("prevent-select", "material-symbols-outlined")
+    a.classList.add("prevent-select", "material-symbols-outlined","clickable")
     a.innerText = innerRadioValue
 
     a.onclick = () => {
@@ -160,6 +160,8 @@ function renderInventoryLine(host) {
     let line = document.createElement("tr")
     line.setAttribute("id", host["hostname"])
 
+    line.appendChild(renderDeleteHostLineBtn())
+
     line.appendChild(renderCell(host["hostname"]))
     line.appendChild(renderCell(host["ip"]))
     line.appendChild(renderCell(host["port"]))
@@ -184,19 +186,20 @@ function renderInventoryLine(host) {
  * @param {*} line text line to "transform" to a input line
  */
 function switchEditInventoryLine(line) {
-    if (line.getAttribute("hidden")) return
+    if (line.getAttribute("hidden") || line.parentNode == null) return
 
     let editLine = document.createElement("tr")
     editLine.setAttribute("id",`${line.id}-edit`)
 
-    editLine.appendChild(renderEditCell("hostname",line.id, TYPE_INPUT.TEXT, line.childNodes[0].innerText))
-    editLine.appendChild(renderEditCell("ip",line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
-    editLine.appendChild(renderEditCell("port",line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
-    editLine.appendChild(renderEditCell("connection",line.id, TYPE_INPUT.SELECT, line.childNodes[3].innerText))
-    editLine.appendChild(renderEditCell("username",line.id, TYPE_INPUT.TEXT, line.childNodes[4].innerText))
-    editLine.appendChild(renderEditCell("password-keyfile",line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
-    editLine.appendChild(renderEditCell("sudo-username",line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
-    editLine.appendChild(renderEditCell("sudo-password",line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
+    editLine.appendChild(renderDeleteHostLineBtn())
+    editLine.appendChild(renderEditCell("hostname",line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
+    editLine.appendChild(renderEditCell("ip",line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
+    editLine.appendChild(renderEditCell("port",line.id, TYPE_INPUT.TEXT, line.childNodes[3].innerText))
+    editLine.appendChild(renderEditCell("connection",line.id, TYPE_INPUT.SELECT, line.childNodes[4].innerText))
+    editLine.appendChild(renderEditCell("username",line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
+    editLine.appendChild(renderEditCell("password-keyfile",line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
+    editLine.appendChild(renderEditCell("sudo-username",line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
+    editLine.appendChild(renderEditCell("sudo-password",line.id, TYPE_INPUT.TEXT, line.childNodes[8].innerText))
 
     editLine.appendChild(renderValidHostModificationBtn(`${line.id}-edit`))
 
@@ -228,7 +231,7 @@ function renderEditCell(colname, hostname, inputType, userValue) {
     let editCell = document.createElement("th");
     
     let divRow = document.createElement("div");
-    divRow.classList.add("row", "edit-row");
+    divRow.classList.add("row", "edit-cell");
     
     let divInput = document.createElement("div");
     divInput.classList.add("input-field", "col", "s12");
@@ -303,7 +306,6 @@ function addLineInTable(item, tableType) {
             lineToAdd = renderInventoryLine(item)
             containerID = "inventory-container"
             let container = document.getElementById(containerID)
-            console.log(container);
             container.appendChild(lineToAdd)
             break;
         default:
@@ -388,7 +390,7 @@ function renderValidHostModificationBtn(inputId) {
     let th = document.createElement("th");
 
     let rowDiv = document.createElement("div");
-    rowDiv.classList.add("row","edit-row");
+    rowDiv.classList.add("row","edit-cell");
 
     let colDiv = document.createElement("div");
     colDiv.classList.add("input-field","col","s12");
@@ -491,18 +493,67 @@ function modifyHost(inputId) {
     localStorage.setItem("inventory",JSON.stringify(inventory))
 
     let textLine = document.getElementById(hostname);
-    textLine.childNodes.item(0).innerText = hostObj.hostname;
-    textLine.childNodes.item(1).innerText = hostObj.ip;
-    textLine.childNodes.item(2).innerText = hostObj.port;
+    textLine.childNodes.item(1).innerText = hostObj.hostname;
+    textLine.childNodes.item(2).innerText = hostObj.ip;
+    textLine.childNodes.item(3).innerText = hostObj.port;
 
-    if (hostObj.connection == 0) textLine.childNodes.item(3).innerText = "Password based";
-    else if (hostObj.connection == 1) textLine.childNodes.item(3).innerText = "Keyfile based";
+    if (hostObj.connection == 0) textLine.childNodes.item(4).innerText = "Password based";
+    else if (hostObj.connection == 1) textLine.childNodes.item(4).innerText = "Keyfile based";
     
-    textLine.childNodes.item(4).innerText = hostObj.username;
-    textLine.childNodes.item(5).innerText = hostObj.passwordOrKeyfile;
-    textLine.childNodes.item(6).innerText = hostObj.sudoUsername;
-    textLine.childNodes.item(7).innerText = hostObj.sudoPassword;
+    textLine.childNodes.item(5).innerText = hostObj.username;
+    textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
+    textLine.childNodes.item(7).innerText = hostObj.sudoUsername;
+    textLine.childNodes.item(8).innerText = hostObj.sudoPassword;
 
     textLine.removeAttribute("hidden")
     document.getElementById(inputId).remove();
+}
+
+function renderDeleteHostLineBtn(){
+    let deleteLineBtn = document.createElement('th');
+
+    let a = document.createElement("a")
+    a.classList.add("prevent-select", "material-symbols-outlined", "vertical-align","clickable");
+    a.innerText = "delete_forever";
+
+    a.onclick = () => {
+        let lineID = a.parentElement.parentElement.id;
+        if (lineID.endsWith("-edit")) {
+            document.getElementById(lineID).remove();
+
+            lineID = lineID.replace("-edit","");
+            document.getElementById(lineID).remove();
+        } else {
+            document.getElementById(lineID).remove();
+        }
+
+        const oldInventory = JSON.parse(localStorage.getItem("inventory"));
+        const newInventory = {"hosts": []};
+
+        for (let i = 0; i < oldInventory.hosts.length; i++) {
+            const host = oldInventory.hosts[i];
+
+            if (host.hostname != lineID) {
+                newInventory.hosts.push(host);
+            }
+        }
+
+        console.log(newInventory);
+        localStorage.setItem("inventory",JSON.stringify(newInventory));
+    }
+
+    deleteLineBtn.appendChild(a);
+
+    return deleteLineBtn;
+}
+
+function deleteAllHosts() {
+    const inventory = {"hosts": []};
+    localStorage.setItem("inventory",JSON.stringify(inventory));
+
+    let hostsBody = document.getElementById("inventory-container");
+
+    while (hostsBody.firstChild) {
+        hostsBody.removeChild(hostsBody.firstChild);
+    }
 }

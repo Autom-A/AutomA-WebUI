@@ -11,6 +11,11 @@
     /* Ajoute une transition douce pour une animation fluide */
 }
 
+#inventory > .row, #recommendations > #os-selected > .row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 /* Styles spécifiques au survol du bouton */
 .button-icon-arrow:hover .arrow-icon {
     transform: rotate(-180deg);
@@ -68,7 +73,7 @@
 
 }
 
-#r-radio-btn:hover {
+.clickable:hover {
     cursor: pointer;
 }
 
@@ -112,10 +117,13 @@
     overflow-y: auto;
 }
 
-.edit-row {
+.edit-cell {
     margin-bottom: 0px;
 }
 
-.edit-row > .input-field {
+.edit-cell > .input-field {
     margin: 0px;
+}
+.vertical-align {
+    vertical-align: middle;
 }
