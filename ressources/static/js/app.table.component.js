@@ -125,7 +125,7 @@ function generateButtonRadio(line, id) {
 
     let a = document.createElement("a")
     a.setAttribute("id","r-radio-btn")
-    a.classList.add("prevent-select", "material-symbols-outlined")
+    a.classList.add("prevent-select", "material-symbols-outlined","clickable")
     a.innerText = innerRadioValue
 
     a.onclick = () => {
@@ -231,7 +231,7 @@ function renderEditCell(colname, hostname, inputType, userValue) {
     let editCell = document.createElement("th");
     
     let divRow = document.createElement("div");
-    divRow.classList.add("row", "edit-row");
+    divRow.classList.add("row", "edit-cell");
     
     let divInput = document.createElement("div");
     divInput.classList.add("input-field", "col", "s12");
@@ -390,7 +390,7 @@ function renderValidHostModificationBtn(inputId) {
     let th = document.createElement("th");
 
     let rowDiv = document.createElement("div");
-    rowDiv.classList.add("row","edit-row");
+    rowDiv.classList.add("row","edit-cell");
 
     let colDiv = document.createElement("div");
     colDiv.classList.add("input-field","col","s12");
@@ -513,7 +513,7 @@ function renderDeleteHostLineBtn(){
     let deleteLineBtn = document.createElement('th');
 
     let a = document.createElement("a")
-    a.classList.add("prevent-select", "material-symbols-outlined", "vertical-align");
+    a.classList.add("prevent-select", "material-symbols-outlined", "vertical-align","clickable");
     a.innerText = "delete_forever";
 
     a.onclick = () => {
