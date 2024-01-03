@@ -513,7 +513,7 @@ function renderDeleteHostLineBtn(){
     let deleteLineBtn = document.createElement('th');
 
     let a = document.createElement("a")
-    a.classList.add("prevent-select", "material-symbols-outlined");
+    a.classList.add("prevent-select", "material-symbols-outlined", "vertical-align");
     a.innerText = "delete_forever";
 
     a.onclick = () => {

@@ -119,3 +119,6 @@
 .edit-row > .input-field {
     margin: 0px;
 }
+.vertical-align {
+    vertical-align: middle;
+}
