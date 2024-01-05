@@ -221,14 +221,27 @@ function renderFieldListStr(_id, index, one_field,answerStored) {
     title.classList.add(["caption"])
     title.innerText = one_field.title
 
+    let deleteBtn = document.createElement('a')
+    deleteBtn.classList.add("prevent-select", "material-symbols-outlined", "vertical-align", "clickable")
+    deleteBtn.innerText = "delete_forever"
+
+    deleteBtn.onclick = () => {
+        let chipsInstance = M.Chips.getInstance(document.getElementById(`${_id}-${index}`))
+
+        const size = chipsInstance.chipsData.length;
+        for (let i = 0; i < size; i++) {
+            chipsInstance.deleteChip(0);
+        }
+    }
+
     let chips = document.createElement("div")
-    chips.classList.add(["chips", "chips-placeholder"])
+    chips.classList.add("chips", "chips-placeholder")
     chips.setAttribute("id", `${_id}-${index}`)
     chips.setAttribute("question-type", TYPES_QUESTION_ENUM["list<str>"])
 
 
     let chips_opt = {
-        placeholder: `Press enter to add ${one_field.name.replace("_", " ")}`,
+        placeholder: `Press enter`,
         secondaryPlaceholder: '+ More',
     }
 
@@ -236,6 +249,7 @@ function renderFieldListStr(_id, index, one_field,answerStored) {
     let chipsInstance = M.Chips.init(chips, chips_opt)
 
     div_col.appendChild(title)
+    div_col.appendChild(deleteBtn)
     div_col.appendChild(chips)
 
     if(answerStored?.value) {

@@ -117,6 +117,13 @@
     overflow-y: auto;
 }
 
+#question-body a.prevent-select.material-symbols-outlined.vertical-align.clickable {
+    position: absolute;
+    right: 1%;
+    bottom: 20%;
+    z-index: 2000;
+}
+
 .edit-cell {
     margin-bottom: 0px;
 }
