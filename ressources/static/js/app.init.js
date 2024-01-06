@@ -24,10 +24,31 @@ document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('.dropdown-trigger');
     M.Dropdown.init(elems, {});
 
-    setTimeout(() => {
-        document.getElementById("radio_button_unchecked").innerText = "radio_button_unchecked"
-    }, 450)
 
+    const fontMI = new FontFace(
+        "MaterialIcons",
+        "url(/static/font/MaterialIcons-Regular.ttf)",
+        {
+            style: "normal",
+            weight: "400",
+            stretch: "condensed",
+        },
+    );
+
+    const fontMSO = new FontFace(
+        "MaterialSymbolsOutlined",
+        "url(/static/font/MaterialSymbolsOutlined.ttf)",
+        {
+            style: "normal",
+            weight: "400",
+            stretch: "condensed",
+        },
+    ); 
+    
+    document.fonts.add(fontMI);
+    document.fonts.add(fontMSO);
+
+    setIconsAfterFontsLoaded(fontMI, fontMSO)
 });
 
 function environmentSelectedToggle() {
@@ -59,4 +80,9 @@ function runBtnToogle(setDisabled) {
         if (setDisabled) el.setAttribute("disabled","")
         else el.removeAttribute("disabled")
     });
+}
+
+async function setIconsAfterFontsLoaded(fontMI, fontMSO) {
+    await fontMI.load()
+    await fontMSO.load()
 }
