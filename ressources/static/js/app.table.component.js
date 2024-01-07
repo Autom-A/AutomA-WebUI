@@ -598,7 +598,6 @@ function sortBy(tableType, order, colName) {
     }
     
     if (array.length == 0) {
-        M.toast({ html: 'Can\'t sort, your table is empty !', classes: 'rounded' });
         return;
     }
 
