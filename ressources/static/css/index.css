@@ -13,3 +13,11 @@ body {
 .welcome-title {
     font-size: 2.5em !important;
 }
+
+.nav-wrapper, a.btn {
+    background-color: #4ed6db !important;
+}
+
+a, .welcome-title {
+    color: #4ed6db;
+}
