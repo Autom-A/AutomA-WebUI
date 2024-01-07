@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     selectOsModelOpen()
 
     var elems = document.querySelectorAll('.dropdown-trigger');
-    M.Dropdown.init(elems, {});
+    M.Dropdown.init(elems, {"constrainWidth":false});
 
 
     const fontMI = new FontFace(

@@ -1,19 +1,123 @@
+/* CSS FILE FOR APP.HTML */
+
+.tabs .tab a {
+    color: rgba(251, 141, 64, 0.7);
+}
+
+.tabs .tab a:focus,
+.tabs .tab a:focus.active {
+    background-color: rgba(251, 141, 64, 0.2);
+    outline: none;
+}
+
+.tabs .tab a:hover,
+.tabs .tab a.active {
+    color: #fb8d40;
+}
+
+ul.tabs>li.indicator {
+    background-color: #fb8d40;
+}
+
+
+.btn {
+    background-color: #fb8d40;
+}
+
+.btn:hover {
+    background-color: #ffa15e;
+}
+
+.btn:focus {
+    background-color: #fb8d40;
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+    color: #fb8d40;
+}
+
+/*  #############################
+    ####### GLOBAL CONFIG #######
+    #############################   */
+
 .modal {
     border-radius: 0.5em;
 }
+
+.vertical-align {
+    vertical-align: middle;
+}
+
+#inventory>.row,
+#recommendations>#os-selected>.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}
+
+.prevent-select {
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+/*  ############################
+    ####### OS SELECTION #######
+    ############################    */
 
 #os-selector-modal>.modal-content {
     height: 30em;
 }
 
+/*  ###################################
+    ####### RECOMMENDATIONS TAB #######
+    ################################### */
+
+.question-modal {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    overflow: hidden;
+}
+
+.question-modal>.modal-content {
+    margin-top: 1em;
+    padding: 0px;
+}
+
+.question-modal #question-body,
+.question-modal .recommendations-footer {
+    padding: 0px;
+}
+
+.question-modal div.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+#question-body>div.right-align {
+    margin-bottom: 1em;
+}
+
+#question-body>ul.dropdown-content.select-dropdown {
+    overflow-y: auto;
+}
+
+#question-body a.prevent-select.material-symbols-outlined.vertical-align.clickable {
+    position: absolute;
+    right: 1%;
+    bottom: 20%;
+    z-index: 2000;
+}
+
 .arrow-icon {
     transition: transform 0.3s ease;
     /* Ajoute une transition douce pour une animation fluide */
-}
-
-#inventory > .row, #recommendations > #os-selected > .row {
-    margin-left: 0px;
-    margin-right: 0px;
 }
 
 /* Styles spécifiques au survol du bouton */
@@ -50,7 +154,6 @@
     transform: rotate(-90deg);
 }
 
-
 .icon-1-square-45deg {
     font-size: 11px !important;
     left: 2.35em;
@@ -73,64 +176,15 @@
 
 }
 
-.clickable:hover {
-    cursor: pointer;
-}
 
-.prevent-select {
-    -webkit-user-select: none;
-    /* Safari */
-    -ms-user-select: none;
-    /* IE 10 and IE 11 */
-    user-select: none;
-    /* Standard syntax */
-}
-
-
-/* QUESTION MODAL STYLE */
-
-.question-modal {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    overflow: hidden;
-}
-
-.question-modal>.modal-content {
-    margin-top: 1em;
-    padding: 0px;
-}
-
-.question-modal #question-body, .question-modal .recommendations-footer {
-    padding: 0px;
-}
-
-.question-modal div.row {
-    margin-left: 0px;
-    margin-right: 0px;
-}
-
-#question-body > div.right-align {
-    margin-bottom: 1em;
-}
-
-#question-body > ul.dropdown-content.select-dropdown {
-    overflow-y: auto;
-}
-
-#question-body a.prevent-select.material-symbols-outlined.vertical-align.clickable {
-    position: absolute;
-    right: 1%;
-    bottom: 20%;
-    z-index: 2000;
-}
+/*  #############################
+    ####### INVENTORY TAB #######
+    ############################# */
 
 .edit-cell {
     margin-bottom: 0px;
 }
 
-.edit-cell > .input-field {
+.edit-cell>.input-field {
     margin: 0px;
-}
-.vertical-align {
-    vertical-align: middle;
 }
