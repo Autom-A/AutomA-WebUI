@@ -3,8 +3,8 @@
 */
 
 const TYPE_TABLE_ENUM = {
-    "RECOMMENDATIONS" : 0,
-    "INVENTORY" : 1
+    "RECOMMENDATIONS": 0,
+    "INVENTORY": 1
 }
 
 const TYPE_STORAGE = {
@@ -87,15 +87,15 @@ function checkRadioBtn(_id) {
 function renderRecommendationLine(item) {
     let line = document.createElement("tr")
     line.setAttribute("id", item["_id"])
-    
+
     let c_selected = generateButtonRadio(line, item["_id"]);
 
     line.onclick = (event) => {
-        if(event.target.getAttribute("skipEvent") != 1) {
+        if (event.target.getAttribute("skipEvent") != 1) {
             getQuestion(line.getAttribute("id"))
         }
 
-        event.target.setAttribute("skipEvent","0")
+        event.target.setAttribute("skipEvent", "0")
     }
 
     line.appendChild(c_selected);
@@ -119,19 +119,19 @@ function generateButtonRadio(line, id) {
     let c_selected = document.createElement("th");
     let ids = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
     let innerRadioValue = RADIO_BUTTON_UNCHECKED_VALUE
-    if(ids && ids.length && ids.findIndex(val => val == id) != -1) {
+    if (ids && ids.length && ids.findIndex(val => val == id) != -1) {
         innerRadioValue = RADIO_BUTTON_CHECKED_VALUE
     }
 
     let a = document.createElement("a")
-    a.setAttribute("id","r-radio-btn")
-    a.classList.add("prevent-select", "material-symbols-outlined","clickable")
+    a.setAttribute("id", "r-radio-btn")
+    a.classList.add("prevent-select", "material-symbols-outlined", "clickable")
     a.innerText = innerRadioValue
 
     a.onclick = () => {
         if (a.innerText == RADIO_BUTTON_CHECKED_VALUE) {
             a.innerText = RADIO_BUTTON_UNCHECKED_VALUE
-            a.setAttribute("skipEvent","1")
+            a.setAttribute("skipEvent", "1")
             unSavedIdSelected(id)
         }
     }
@@ -146,9 +146,9 @@ function generateButtonRadio(line, id) {
 */
 function unSavedIdSelected(_id) {
     let ids = JSON.parse(localStorage.getItem(SELECTED_ID_STORAGE))
-    if(ids && ids.length) {
+    if (ids && ids.length) {
         ids = ids.filter((val) => val != _id)
-        localStorage.setItem(SELECTED_ID_STORAGE,JSON.stringify(ids))
+        localStorage.setItem(SELECTED_ID_STORAGE, JSON.stringify(ids))
     }
 }
 
@@ -168,7 +168,7 @@ function renderInventoryLine(host) {
 
     if (host["connection"] == 0) line.appendChild(renderCell("Password based"))
     else if (host["connection"] == 1) line.appendChild(renderCell("Keyfile based"))
-    
+
     line.appendChild(renderCell(host["username"]))
     line.appendChild(renderCell(host["passwordOrKeyfile"]))
     line.appendChild(renderCell(host["sudoUsername"]))
@@ -189,29 +189,29 @@ function switchEditInventoryLine(line) {
     if (line.getAttribute("hidden") || line.parentNode == null) return
 
     let editLine = document.createElement("tr")
-    editLine.setAttribute("id",`${line.id}-edit`)
+    editLine.setAttribute("id", `${line.id}-edit`)
 
     editLine.appendChild(renderDeleteHostLineBtn())
-    editLine.appendChild(renderEditCell("hostname",line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
-    editLine.appendChild(renderEditCell("ip",line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
-    editLine.appendChild(renderEditCell("port",line.id, TYPE_INPUT.TEXT, line.childNodes[3].innerText))
-    editLine.appendChild(renderEditCell("connection",line.id, TYPE_INPUT.SELECT, line.childNodes[4].innerText))
-    editLine.appendChild(renderEditCell("username",line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
-    editLine.appendChild(renderEditCell("password-keyfile",line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
-    editLine.appendChild(renderEditCell("sudo-username",line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
-    editLine.appendChild(renderEditCell("sudo-password",line.id, TYPE_INPUT.TEXT, line.childNodes[8].innerText))
+    editLine.appendChild(renderEditCell("hostname", line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
+    editLine.appendChild(renderEditCell("ip", line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
+    editLine.appendChild(renderEditCell("port", line.id, TYPE_INPUT.TEXT, line.childNodes[3].innerText))
+    editLine.appendChild(renderEditCell("connection", line.id, TYPE_INPUT.SELECT, line.childNodes[4].innerText))
+    editLine.appendChild(renderEditCell("username", line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
+    editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
+    editLine.appendChild(renderEditCell("sudo-username", line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
+    editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.TEXT, line.childNodes[8].innerText))
 
     editLine.appendChild(renderValidHostModificationBtn(`${line.id}-edit`))
 
     line.parentNode.insertBefore(editLine, line.nextSibling);
-    line.setAttribute("hidden","true")
+    line.setAttribute("hidden", "true")
 
     while (MATERIALIZE_FIFO.length > 0) {
         let todo = MATERIALIZE_FIFO.pop()
         switch (todo.element_type) {
             case "formselect":
                 let el = document.getElementById(todo.id)
-                M.FormSelect.init(el, {dropdownOptions:{container:document.body}})
+                M.FormSelect.init(el, { dropdownOptions: { container: document.body } })
                 break
             default:
                 break
@@ -229,10 +229,10 @@ function switchEditInventoryLine(line) {
  */
 function renderEditCell(colname, hostname, inputType, userValue) {
     let editCell = document.createElement("th");
-    
+
     let divRow = document.createElement("div");
     divRow.classList.add("row", "edit-cell");
-    
+
     let divInput = document.createElement("div");
     divInput.classList.add("input-field", "col", "s12");
 
@@ -240,16 +240,16 @@ function renderEditCell(colname, hostname, inputType, userValue) {
         case TYPE_INPUT.TEXT:
             let input = document.createElement("input");
             input.id = `input-${colname}-${hostname}`;
-            input.setAttribute("type","text"); 
-    
+            input.setAttribute("type", "text");
+
             let label = document.createElement("label");
-            label.setAttribute("for",`input-${colname}-${hostname}`);
+            label.setAttribute("for", `input-${colname}-${hostname}`);
             label.innerText = userValue
-    
+
             divInput.appendChild(input);
             divInput.appendChild(label);
             break;
-    
+
         case TYPE_INPUT.SELECT:
             let select = document.createElement("select")
             select.id = `select-connection-${hostname}`
@@ -262,8 +262,8 @@ function renderEditCell(colname, hostname, inputType, userValue) {
             opt2.innerText = "Keyfile based"
             opt2.value = 1
 
-            if (userValue == "Password based") opt1.setAttribute("selected","")
-            else opt2.setAttribute("selected","")
+            if (userValue == "Password based") opt1.setAttribute("selected", "")
+            else opt2.setAttribute("selected", "")
 
             select.appendChild(opt1)
             select.appendChild(opt2)
@@ -320,7 +320,7 @@ function addLineInTable(item, tableType) {
  * @param {string} suffix an optionnal argument to specifiy an suffix. Is used on edit lines
  * @returns an host object
  */
-function retrieveInventoryTableInput(inputId, suffix="") {
+function retrieveInventoryTableInput(inputId, suffix = "") {
     let inventoryInput = document.getElementById(inputId)
 
     let hostname = inventoryInput.querySelector(`#input-hostname${suffix}`).value.trim()
@@ -331,7 +331,7 @@ function retrieveInventoryTableInput(inputId, suffix="") {
     let passwordOrKeyfile = inventoryInput.querySelector(`#input-password-keyfile${suffix}`).value.trim()
     let sudoUsername = inventoryInput.querySelector(`#input-sudo-username${suffix}`).value.trim()
     let sudoPassword = inventoryInput.querySelector(`#input-sudo-password${suffix}`).value.trim()
-    
+
     let host = {
         "hostname": hostname,
         "ip": ip,
@@ -351,9 +351,16 @@ function retrieveInventoryTableInput(inputId, suffix="") {
  */
 function addHostInTable() {
     let hostItem = retrieveInventoryTableInput("inventory-input");
-    
+
+    if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
+        || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
+            
+        M.toast({ html: 'ERROR : All fields must be filled', classes: 'rounded' });
+        return;
+    }
+
     let inventory = JSON.parse(localStorage.getItem("inventory"));
-    if (inventory == null) inventory = {"hosts":[]}
+    if (inventory == null) inventory = { "hosts": [] }
     else {
         hosts = inventory.hosts
         for (let i = 0; i < hosts.length; i++) {
@@ -366,10 +373,6 @@ function addHostInTable() {
                 return;
             } else if (hostItem.port < 0 || hostItem.port > 65535) {
                 M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535]', classes: 'rounded' });
-                return;
-            } else if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
-                        || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
-                M.toast({ html: 'ERROR : All fields must be filled', classes: 'rounded' });
                 return;
             }
         }
@@ -390,13 +393,13 @@ function renderValidHostModificationBtn(inputId) {
     let th = document.createElement("th");
 
     let rowDiv = document.createElement("div");
-    rowDiv.classList.add("row","edit-cell");
+    rowDiv.classList.add("row", "edit-cell");
 
     let colDiv = document.createElement("div");
-    colDiv.classList.add("input-field","col","s12");
+    colDiv.classList.add("input-field", "col", "s12");
 
     let btn = document.createElement("a");
-    btn.classList.add("waves-effect","waves-light","btn");
+    btn.classList.add("waves-effect", "waves-light", "btn");
     btn.innerText = "Ok";
 
     btn.onclick = () => {
@@ -412,11 +415,11 @@ function renderValidHostModificationBtn(inputId) {
 
 function modifyHost(inputId) {
     let hostObj = undefined;
-    let hostname = inputId.replace("-edit","")
-    modifiedHost = retrieveInventoryTableInput(inputId,"-"+hostname);
+    let hostname = inputId.replace("-edit", "")
+    modifiedHost = retrieveInventoryTableInput(inputId, "-" + hostname);
 
     let inventory = JSON.parse(localStorage.getItem("inventory"))
-    
+
     for (let i = 0; i < inventory.hosts.length; i++) {
         const host = inventory.hosts[i];
 
@@ -490,7 +493,7 @@ function modifyHost(inputId) {
         }
     }
 
-    localStorage.setItem("inventory",JSON.stringify(inventory))
+    localStorage.setItem("inventory", JSON.stringify(inventory))
 
     let textLine = document.getElementById(hostname);
     textLine.childNodes.item(1).innerText = hostObj.hostname;
@@ -499,7 +502,7 @@ function modifyHost(inputId) {
 
     if (hostObj.connection == 0) textLine.childNodes.item(4).innerText = "Password based";
     else if (hostObj.connection == 1) textLine.childNodes.item(4).innerText = "Keyfile based";
-    
+
     textLine.childNodes.item(5).innerText = hostObj.username;
     textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
     textLine.childNodes.item(7).innerText = hostObj.sudoUsername;
@@ -509,11 +512,11 @@ function modifyHost(inputId) {
     document.getElementById(inputId).remove();
 }
 
-function renderDeleteHostLineBtn(){
+function renderDeleteHostLineBtn() {
     let deleteLineBtn = document.createElement('th');
 
     let a = document.createElement("a")
-    a.classList.add("prevent-select", "material-symbols-outlined", "vertical-align","clickable");
+    a.classList.add("prevent-select", "material-symbols-outlined", "vertical-align", "clickable");
     a.innerText = "delete_forever";
 
     a.onclick = () => {
@@ -521,14 +524,14 @@ function renderDeleteHostLineBtn(){
         if (lineID.endsWith("-edit")) {
             document.getElementById(lineID).remove();
 
-            lineID = lineID.replace("-edit","");
+            lineID = lineID.replace("-edit", "");
             document.getElementById(lineID).remove();
         } else {
             document.getElementById(lineID).remove();
         }
 
         const oldInventory = JSON.parse(localStorage.getItem("inventory"));
-        const newInventory = {"hosts": []};
+        const newInventory = { "hosts": [] };
 
         for (let i = 0; i < oldInventory.hosts.length; i++) {
             const host = oldInventory.hosts[i];
@@ -539,7 +542,7 @@ function renderDeleteHostLineBtn(){
         }
 
         console.log(newInventory);
-        localStorage.setItem("inventory",JSON.stringify(newInventory));
+        localStorage.setItem("inventory", JSON.stringify(newInventory));
     }
 
     deleteLineBtn.appendChild(a);
@@ -548,8 +551,8 @@ function renderDeleteHostLineBtn(){
 }
 
 function deleteAllHosts() {
-    const inventory = {"hosts": []};
-    localStorage.setItem("inventory",JSON.stringify(inventory));
+    const inventory = { "hosts": [] };
+    localStorage.setItem("inventory", JSON.stringify(inventory));
 
     let hostsBody = document.getElementById("inventory-container");
 
