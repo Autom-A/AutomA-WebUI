@@ -27,7 +27,7 @@
 
 <body>
     <nav>
-        <div class="nav-wrapper light-blue">
+        <div class="nav-wrapper">
             <a href="/" class="brand-logo center"><img src="{{ url_for('static', filename='images/logo.png') }}"
                     height="80">
             </a>
@@ -155,12 +155,18 @@
                                 <a class="waves-effect waves-light btn" disabled onclick="runPlaybook()"><i
                                         class="material-symbols-outlined left">play_circle</i>Run</a>
                                 <a href="#!" class="waves-effect waves-light btn button-icon-arrow dropdown-trigger"
-                                    data-target="dropdown1" disabled><i
-                                        class="material-icons arrow-icon">expand_more</i></a>
+                                    data-target="dropdown-download" disabled>
+                                    <i class="material-icons arrow-icon">expand_more</i>
+                                </a>
                             </div>
-                            <ul id="dropdown1" class="dropdown-content">
-                                <li><a href="#!"><i class="material-symbols-outlined left"
-                                            disabled>download</i>Download</a></li>
+                            <ul id="dropdown-download" class="dropdown-content">
+                                <li>
+                                    <a href="#!">
+                                        <i class="material-symbols-outlined left" disabled>
+                                            download
+                                        </i>Download
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -365,9 +371,6 @@
             </div>
         </div>
     </div>
-
-
-
 
     <!-- Modal Structure -->
     <div id="os-selector-modal" class="modal">

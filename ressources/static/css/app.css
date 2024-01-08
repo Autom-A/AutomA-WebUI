@@ -1,3 +1,113 @@
+/* CSS FILE FOR APP.HTML */
+.nav-wrapper {
+    background-color: #4ed6db !important;
+}
+
+a {
+    color: #4ed6db;
+}
+
+.tabs .tab a {
+    color: rgba(251, 141, 64, 0.7);
+}
+
+.tabs .tab a:focus,
+.tabs .tab a:focus.active {
+    background-color: rgba(251, 141, 64, 0.2);
+    outline: none;
+}
+
+.tabs .tab a:hover,
+.tabs .tab a.active {
+    color: #fb8d40;
+}
+
+ul.tabs>li.indicator {
+    background-color: #fb8d40;
+}
+
+.btn-floating {
+    background-color: #4ed6db;
+}
+
+.btn-floating:hover {
+    background-color: #81d6d9;
+}
+
+.btn {
+    background-color: #fb8d40;
+}
+
+.btn:hover {
+    background-color: #ffa15e;
+}
+
+.btn:focus {
+    background-color: #fb8d40;
+}
+
+.dropdown-content li>a,
+.dropdown-content li>span {
+    color: #fb8d40;
+}
+
+input[type="text"]:not(.browser-default):focus:not([readonly]) {
+    border-bottom: 1px solid #fb8d40;
+    box-shadow: 0 1px 0 0 #fb8d40;
+}
+
+input[type="text"]:not(.browser-default):focus:not([readonly])+label {
+    color: #fb8d40;
+}
+
+.chips.focus {
+    border-bottom: 1px solid #fb8d40;
+    box-shadow: 0 1px 0 0 #fb8d40;
+}
+
+.chip:focus {
+    background-color: #fb8d40;
+}
+
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid #fb8d40;
+}
+
+/*  #############################
+    ####### GLOBAL CONFIG #######
+    #############################   */
+
+.invisible {
+    opacity: 0%;
+}
+
+.modal {
+    border-radius: 0.5em;
+}
+
+.vertical-align {
+    vertical-align: middle;
+}
+
+#inventory>.row,
+#recommendations>#os-selected>.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}
+
+.prevent-select {
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
 .no-margin {
     margin: 0px !important;
 }
@@ -7,22 +117,58 @@
     padding-right: 0px;
 }
 
-.modal {
-    border-radius: 0.5em;
-}
+/*  ############################
+    ####### OS SELECTION #######
+    ############################    */
 
 #os-selector-modal>.modal-content {
     height: 30em;
 }
 
+/*  ###################################
+    ####### RECOMMENDATIONS TAB #######
+    ################################### */
+
+
+.question-modal {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    overflow: hidden;
+}
+
+.question-modal>.modal-content {
+    margin-top: 1em;
+    padding: 0px;
+}
+
+.question-modal #question-body,
+.question-modal .recommendations-footer {
+    padding: 0px;
+}
+
+.question-modal div.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+#question-body>div.right-align {
+    margin-bottom: 1em;
+}
+
+#question-body>ul.dropdown-content.select-dropdown {
+    overflow-y: auto;
+}
+
+#question-body a.prevent-select.material-symbols-outlined.vertical-align.clickable {
+    position: absolute;
+    right: 1%;
+    bottom: 20%;
+    z-index: 2000;
+}
+
 .arrow-icon {
     transition: transform 0.3s ease;
     /* Ajoute une transition douce pour une animation fluide */
-}
-
-#inventory > .row, #recommendations > #os-selected > .row {
-    margin-left: 0px;
-    margin-right: 0px;
 }
 
 /* Styles spécifiques au survol du bouton */
@@ -59,7 +205,6 @@
     transform: rotate(-90deg);
 }
 
-
 .icon-1-square-45deg {
     font-size: 11px !important;
     left: 2.35em;
@@ -82,76 +227,15 @@
 
 }
 
-.clickable:hover {
-    cursor: pointer;
-}
 
-.prevent-select {
-    -webkit-user-select: none;
-    /* Safari */
-    -ms-user-select: none;
-    /* IE 10 and IE 11 */
-    user-select: none;
-    /* Standard syntax */
-}
-
-
-/* QUESTION MODAL STYLE */
-
-.question-modal {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    overflow: hidden;
-}
-
-.question-modal>.modal-content {
-    margin-top: 1em;
-    padding: 0px;
-}
-
-.question-modal #question-body, .question-modal .recommendations-footer {
-    padding: 0px;
-}
-
-.question-modal div.row {
-    margin-left: 0px;
-    margin-right: 0px;
-}
-
-#question-body > div.right-align {
-    margin-bottom: 1em;
-}
-
-#question-body > ul.dropdown-content.select-dropdown {
-    overflow-y: auto;
-}
-
-#question-body a.prevent-select.material-symbols-outlined.vertical-align.clickable {
-    position: absolute;
-    right: 1%;
-    bottom: 20%;
-    z-index: 2000;
-}
+/*  #############################
+    ####### INVENTORY TAB #######
+    ############################# */
 
 .edit-cell {
     margin-bottom: 0px;
 }
 
-.edit-cell > .input-field {
+.edit-cell>.input-field {
     margin: 0px;
-}
-.vertical-align {
-    vertical-align: middle;
-}
-
-.invisible {
-    opacity: 0% ;
-}
-
-.recommendations-head th.hover:hover, .inventory-head th.hover:hover {
-    background-color: rgba(242,242,242,0.5);
-}
-.recommendations-head th, .inventory-head th.hover:hover {
-    -webkit-transition:background-color .25s ease;
-    transition:background-color .25s ease
 }

@@ -57,6 +57,7 @@ function getRecommendationList() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let recommendations = JSON.parse(xhttp.responseText);
+            recommendations.sort(dynamicSort("id","ASC"))
             sessionStorage.setItem("recommendations", JSON.stringify(recommendations))
             renderTable("recommendations-container", "recommendations", TYPE_TABLE_ENUM.RECOMMENDATIONS, TYPE_STORAGE.SESSION)
         } else if (this.readyState == 4 && this.status == 400) {
