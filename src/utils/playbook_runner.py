@@ -29,9 +29,6 @@ def run_ansible_playbook():
         quiet= True,
         )
 
-
-
-
 def realtime_log(event_data):
     print(event_data['stdout'])
 
