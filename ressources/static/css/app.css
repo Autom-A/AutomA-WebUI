@@ -1,3 +1,12 @@
+.no-margin {
+    margin: 0px !important;
+}
+
+.recommendations-head > tr > th > div.row > div.col, .inventory-head > tr > th > div.row > div.col{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
 .modal {
     border-radius: 0.5em;
 }
@@ -133,4 +142,16 @@
 }
 .vertical-align {
     vertical-align: middle;
+}
+
+.invisible {
+    opacity: 0% ;
+}
+
+.recommendations-head th.hover:hover, .inventory-head th.hover:hover {
+    background-color: rgba(242,242,242,0.5);
+}
+.recommendations-head th, .inventory-head th.hover:hover {
+    -webkit-transition:background-color .25s ease;
+    transition:background-color .25s ease
 }
