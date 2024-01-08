@@ -1,5 +1,5 @@
 from ansible_runner import run
-from os.path import abspath, join,exists,isfile
+from os.path import join,exists,isfile
 from utils.configuration import Configuration
 from utils.custom_exceptions import PathDoesNotExist
 
@@ -25,12 +25,23 @@ def run_ansible_playbook():
         playbook=playbook_path,
         inventory=inventory_path,
         extravars={},
-    )
+        event_handler=realtime_log,
+        quiet= True,
+        )
 
-    # Retrieve status of the Ansible runner
-    status = len(runner.stats['failures']) == 0 and len(runner.stats['dark']) == 0
 
-    if status:
-        print("Le playbook s'est exécuté avec succès.")
-    else:
-        print("Le playbook a rencontré des erreurs lors de son exécution.")
+
+
+def realtime_log(event_data):
+    print(event_data['stdout'])
+
+    if event_data["event"] == "playbook_on_stats":
+        # Retrieve status of the Ansible runner
+        stats = event_data["event_data"]
+
+        has_error = len(stats["failures"]) > 0 or len(stats["dark"]) > 0
+
+        if has_error:
+            print("Le playbook a rencontré des erreurs lors de son exécution.")
+        else:
+            print("Le playbook s'est exécuté avec succès.") 
