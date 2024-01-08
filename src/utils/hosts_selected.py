@@ -122,7 +122,7 @@ class Host():
         ret_str+= f"      ansible_become_password: {self.sudo_password}\n"
 
 
-        ret_str+= f"      ansible_ssh_extra_args: '-o IdentitiesOnly=yes'"
+        ret_str+= f"      ansible_ssh_extra_args: '-o IdentitiesOnly=yes'\n"
         return ret_str
 
     def to_json(self):
