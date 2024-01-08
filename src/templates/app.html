@@ -79,14 +79,68 @@
                 <div class="col s8 offset-s2 center">
                     <div class="center-align">
                         <table class="highlight">
-                            <thead>
+                            <thead class="recommendations-head">
                                 <tr>
                                     <th></th>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Level</th>
-                                    <th>From</th>
+                                    <th class="hover prevent-select"
+                                        onclick="askToSort(TYPE_TABLE_ENUM.RECOMMENDATIONS,'id')">
+                                        <div class="row valign-wrapper no-margin">
+                                            <div class="col s8">
+                                                ID
+                                            </div>
+                                            <div class="col s4 valign-wrapper right-align">
+                                                <a id="id" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            </div>
+                                        </div>
+                                    </th>
+
+                                    <th class="hover prevent-select"
+                                        onclick="askToSort(TYPE_TABLE_ENUM.RECOMMENDATIONS,'name')">
+                                        <div class="row valign-wrapper no-margin">
+                                            <div class="col s8">
+                                                Name
+                                            </div>
+                                            <div class="col s4 align-wrapper right-align">
+                                                <a id="name" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            </div>
+                                        </div>
+                                    </th>
+
+                                    <th class="hover prevent-select"
+                                        onclick="askToSort(TYPE_TABLE_ENUM.RECOMMENDATIONS,'category')">
+                                        <div class="row valign-wrapper no-margin">
+                                            <div class="col s8">
+                                                Category
+                                            </div>
+                                            <div class="col s4 align-wrapper right-align">
+                                                <a id="category" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            </div>
+                                        </div>
+                                    </th>
+
+                                    <th class="hover prevent-select"
+                                        onclick="askToSort(TYPE_TABLE_ENUM.RECOMMENDATIONS,'level')">
+                                        <div class="row valign-wrapper no-margin">
+                                            <div class="col s8">
+                                                Level
+                                            </div>
+                                            <div class="col s4 align-wrapper right-align">
+                                                <a id="level" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            </div>
+                                        </div>
+                                    </th>
+
+                                    <th class="hover prevent-select"
+                                        onclick="askToSort(TYPE_TABLE_ENUM.RECOMMENDATIONS,'from')">
+                                        <div class="row valign-wrapper no-margin">
+                                            <div class="col s8">
+                                                From
+                                            </div>
+                                            <div class="col s4 align-wrapper right-align">
+                                                <a id="from" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            </div>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody id="recommendations-container"></tbody>
@@ -134,19 +188,103 @@
             <div class="col s10 offset-s1 center">
                 <div class="center-align">
                     <table class="highlight">
-                        <thead>
+                        <thead class="inventory-head">
                             <tr>
                                 <th>
-                                    <a class="prevent-select material-symbols-outlined vertical-align clickable" onclick="deleteAllHosts()">delete</a>
+                                    <a class="prevent-select material-symbols-outlined vertical-align clickable"
+                                        onclick="deleteAllHosts()">delete</a>
                                 </th>
-                                <th>Name</th>
-                                <th>IP</th>
-                                <th>Port</th>
-                                <th>Connection Method</th>
-                                <th>Username</th>
-                                <th>Auth</th>
-                                <th>Sudo Username</th>
-                                <th>Sudo Password</th>
+
+                                <th class="hover prevent-select"
+                                    onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'hostname')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Name
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="hostname" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'ip')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            IP
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="ip" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'port')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Port
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="port" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'connection')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Connection Method
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="connection" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'username')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Username
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="username" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'passwordOrKeyfile')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Auth
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="passwordOrKeyfile" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select"
+                                    onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'sudoUsername')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Sudo Username
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="sudoUsername" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th class="hover prevent-select"
+                                    onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'sudoPassword')">
+                                    <div class="row valign-wrapper no-margin">
+                                        <div class="col s8">
+                                            Sudo Password
+                                        </div>
+                                        <div class="col s4 valign-wrapper right-align">
+                                            <a id="sudoPassword" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                        </div>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="inventory-container"></tbody>

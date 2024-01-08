@@ -77,6 +77,10 @@ input[type="text"]:not(.browser-default):focus:not([readonly])+label {
     ####### GLOBAL CONFIG #######
     #############################   */
 
+.invisible {
+    opacity: 0%;
+}
+
 .modal {
     border-radius: 0.5em;
 }
@@ -104,6 +108,15 @@ input[type="text"]:not(.browser-default):focus:not([readonly])+label {
     /* Standard syntax */
 }
 
+.no-margin {
+    margin: 0px !important;
+}
+
+.recommendations-head > tr > th > div.row > div.col, .inventory-head > tr > th > div.row > div.col{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
 /*  ############################
     ####### OS SELECTION #######
     ############################    */
@@ -115,6 +128,7 @@ input[type="text"]:not(.browser-default):focus:not([readonly])+label {
 /*  ###################################
     ####### RECOMMENDATIONS TAB #######
     ################################### */
+
 
 .question-modal {
     padding-left: 1.5em;

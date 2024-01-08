@@ -16,6 +16,7 @@ const TYPE_INPUT = {
     "TEXT": 0,
     "SELECT": 1,
 }
+
 /**
  * Render a table. This function call the right table renderer according to the tableType arg.
  * @param {string} containerID - Container where the table must be append
@@ -220,7 +221,7 @@ function switchEditInventoryLine(line) {
 }
 
 /**
- * 
+ * Render a cell (th) that allow user to modify a value
  * @param {string} colname The name of the column
  * @param {string} hostname The name of the host
  * @param {TYPE_INPUT} inputType The type of the input
@@ -347,7 +348,7 @@ function retrieveInventoryTableInput(inputId, suffix = "") {
 }
 
 /**
- * Add a host in the inventory table
+ * Add a host in the inventory table. Value are retrieved by the input form
  */
 function addHostInTable() {
     let hostItem = retrieveInventoryTableInput("inventory-input");
@@ -413,6 +414,10 @@ function renderValidHostModificationBtn(inputId) {
     return th;
 }
 
+/**
+ * Modify a host with new values 
+ * @param {string} inputId id of the host to modify
+ */
 function modifyHost(inputId) {
     let hostObj = undefined;
     let hostname = inputId.replace("-edit", "")
@@ -512,7 +517,11 @@ function modifyHost(inputId) {
     document.getElementById(inputId).remove();
 }
 
-function renderDeleteHostLineBtn() {
+/**
+ * Render a btn which delete a host line
+ * @returns the cell containing the delete btn
+ */
+function renderDeleteHostLineBtn(){
     let deleteLineBtn = document.createElement('th');
 
     let a = document.createElement("a")
@@ -541,8 +550,7 @@ function renderDeleteHostLineBtn() {
             }
         }
 
-        console.log(newInventory);
-        localStorage.setItem("inventory", JSON.stringify(newInventory));
+        localStorage.setItem("inventory",JSON.stringify(newInventory));
     }
 
     deleteLineBtn.appendChild(a);
@@ -550,6 +558,9 @@ function renderDeleteHostLineBtn() {
     return deleteLineBtn;
 }
 
+/**
+ * Remove all host from the table
+ */
 function deleteAllHosts() {
     const inventory = { "hosts": [] };
     localStorage.setItem("inventory", JSON.stringify(inventory));
@@ -559,4 +570,102 @@ function deleteAllHosts() {
     while (hostsBody.firstChild) {
         hostsBody.removeChild(hostsBody.firstChild);
     }
+}
+
+/**
+ * Sort a table
+ * @param {TYPE_TABLE_ENUM} tableType the table type
+ * @param {boolean} order true for ASC, false for DESC
+ * @param {string} colName on which column do the sort 
+ */
+function sortBy(tableType, order, colName) {
+    let array;
+    let containerID;
+    let storageItemName;
+    let storageType;
+    switch (tableType) {
+        case TYPE_TABLE_ENUM.RECOMMENDATIONS:
+            array = JSON.parse(sessionStorage.getItem("recommendations"))
+            containerID = "recommendations-container";
+            storageItemName = "recommendations";
+            storageType = TYPE_STORAGE.SESSION;
+            break;
+        case TYPE_TABLE_ENUM.INVENTORY:
+            array = JSON.parse(localStorage.getItem("inventory")).hosts;
+            containerID = "inventory-container";
+            storageItemName = "inventory";
+            storageType = TYPE_STORAGE.LOCAL;
+            break;
+        default:
+            return;
+    }
+    
+    if (array.length == 0) {
+        return;
+    }
+
+    array.sort(dynamicSort(colName,order))
+
+    sessionStorage.setItem("lastSort" ,JSON.stringify({"colName":colName, "order":order}))
+
+    switch (tableType) {
+        case TYPE_TABLE_ENUM.RECOMMENDATIONS:
+            sessionStorage.setItem("recommendations",JSON.stringify(array))
+            break;
+        case TYPE_TABLE_ENUM.INVENTORY:
+            localStorage.setItem("inventory",JSON.stringify({"hosts":array}))
+            break;
+        default:
+            return;
+    }
+    renderTable(containerID,storageItemName,tableType,storageType)
+}
+
+/**
+ * This function allows to sort any array of object (only with 1 depth)
+ * @param {string} colName column to compare
+ * @param {string} order either ASC either DESC
+ * @returns 1,-1 or 0
+ */
+function dynamicSort(colName, order) {
+    var sortOrder;
+    if (order == "ASC") sortOrder = 1;
+    else if (order == "DESC") sortOrder = -1;
+    else return 0
+
+    return (a,b) => {
+        let compareResult = (a[colName] > b[colName]) ? 1 : (b[colName] > a[colName]) ? - 1 : 0;
+        return compareResult * sortOrder;
+    }
+}
+
+function askToSort(tableType, colName) {
+    lastSortRequest = JSON.parse(sessionStorage.getItem("lastSort"))
+
+    let order = "ASC"
+    if (lastSortRequest != null && lastSortRequest.colName == colName) {
+        order = (lastSortRequest.order == "ASC" ? "DESC" : "ASC");
+    }
+
+    sortBy(tableType,order,colName)
+
+    let containerClassName;
+    switch (tableType) {
+        case TYPE_TABLE_ENUM.RECOMMENDATIONS:
+            containerClassName = "recommendations-head";
+            break;
+        case TYPE_TABLE_ENUM.INVENTORY:
+            containerClassName = "inventory-head";
+            break;
+        default:
+            break;
+    }
+
+    let headCellIcons = document.getElementsByClassName(containerClassName).item(0).querySelectorAll(".sort-icon")
+    headCellIcons.forEach(headCellIcon => {
+        if (headCellIcon.id == colName) {
+            headCellIcon.classList.remove("invisible")
+            headCellIcon.innerText = (order == "ASC" ? "arrow_drop_down" : "arrow_drop_up")
+        } else headCellIcon.classList.add("invisible")
+    });
 }

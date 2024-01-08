@@ -125,7 +125,6 @@ function renderQuestionBtn(_id,question_data) {
                     retrieveStr(input,question_data.questions[i])
                     break;
                 default:
-                    console.log("rien....");
                     break;
             }
         }
@@ -167,7 +166,7 @@ function renderQuestionField(_id, index, one_field, answerStored) {
             if (one_field.type.includes("choice<str>")) return renderFieldChoiceStr(_id, index, one_field,answerStored)
     }
 
-    console.log(`ERROR : the type : ${one_field.type} is not implemented`);
+    console.error(`ERROR : the type : ${one_field.type} is not implemented`);
 }
 
 
