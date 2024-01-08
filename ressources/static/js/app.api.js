@@ -222,7 +222,7 @@ function runPlaybook() {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            addLineInTable(hostItem, TYPE_TABLE_ENUM.INVENTORY)
+
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : You must add host in your inventory', classes: 'rounded' });
             M.Tabs.getInstance(document.getElementById("recommendation-inventory-tabs")).select("inventory")
@@ -231,6 +231,9 @@ function runPlaybook() {
     xhttp.open("POST", endpoint, true);
     xhttp.setRequestHeader("Content-Type", "application/json")
     xhttp.send();
+
+
+    runBtnToogle(true)
 }
 
 function generateAction() {

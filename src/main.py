@@ -200,6 +200,7 @@ def add_hosts():
     try:
         inventory_hosts = request.get_json().get("hosts")
         inventory = HostsSelected()
+        inventory.hosts = []
 
         for host in inventory_hosts:
             inventory.add_host(host)
