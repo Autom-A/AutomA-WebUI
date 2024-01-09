@@ -1,6 +1,7 @@
-from socket import SocketIO
 from ansible_runner import run
+from datetime import datetime
 from os.path import join,exists,isfile
+from socket import SocketIO 
 from utils.configuration import Configuration
 from utils.custom_exceptions import PathDoesNotExist
 
@@ -52,10 +53,16 @@ def run_ansible_playbook(socketio : SocketIO):
         )
 
 def realtime_log(event_data):
-    print(event_data['stdout'])
+    logstr : str = event_data["stdout"].strip()
+
+    if len(logstr) > 0:
+        socket = Socket()
     
-    socket = Socket()
-    socket.socketio.emit('logEvent', {'data': event_data["stdout"]})
+        strtime : str = f"\u001b[1;34m{datetime.now().ctime()}\u001b[0m"
+
+        logstrlines : list = logstr.split("\n")
+        for line in logstrlines:
+            socket.socketio.emit('logEvent', {'data': f"{strtime} {line}"})
 
 
     if event_data["event"] == "playbook_on_stats":

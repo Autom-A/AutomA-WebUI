@@ -93,7 +93,8 @@
                                                 ID
                                             </div>
                                             <div class="col s4 valign-wrapper right-align">
-                                                <a id="id" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                                <a id="id"
+                                                    class="sort-icon material-icons invisible">arrow_drop_down</a>
                                             </div>
                                         </div>
                                     </th>
@@ -105,7 +106,8 @@
                                                 Name
                                             </div>
                                             <div class="col s4 align-wrapper right-align">
-                                                <a id="name" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                                <a id="name"
+                                                    class="sort-icon material-icons invisible">arrow_drop_down</a>
                                             </div>
                                         </div>
                                     </th>
@@ -117,7 +119,8 @@
                                                 Category
                                             </div>
                                             <div class="col s4 align-wrapper right-align">
-                                                <a id="category" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                                <a id="category"
+                                                    class="sort-icon material-icons invisible">arrow_drop_down</a>
                                             </div>
                                         </div>
                                     </th>
@@ -129,7 +132,8 @@
                                                 Level
                                             </div>
                                             <div class="col s4 align-wrapper right-align">
-                                                <a id="level" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                                <a id="level"
+                                                    class="sort-icon material-icons invisible">arrow_drop_down</a>
                                             </div>
                                         </div>
                                     </th>
@@ -141,7 +145,8 @@
                                                 From
                                             </div>
                                             <div class="col s4 align-wrapper right-align">
-                                                <a id="from" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                                <a id="from"
+                                                    class="sort-icon material-icons invisible">arrow_drop_down</a>
                                             </div>
                                         </div>
                                     </th>
@@ -179,6 +184,12 @@
         </div>
 
         <div id="question-container"></div>
+
+        <!-- Element Showed -->
+        <a id="btn-modal-log" class="waves-effect waves-light btn btn-floating invisible" onclick="openLogModal()">
+            <i class="material-icons">menu</i>
+        </a>
+
     </div>
 
 
@@ -206,7 +217,8 @@
                                             Name
                                         </div>
                                         <div class="col s4 valign-wrapper right-align">
-                                            <a id="hostname" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            <a id="hostname"
+                                                class="sort-icon material-icons invisible">arrow_drop_down</a>
                                         </div>
                                     </div>
                                 </th>
@@ -233,35 +245,41 @@
                                     </div>
                                 </th>
 
-                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'connection')">
+                                <th class="hover prevent-select"
+                                    onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'connection')">
                                     <div class="row valign-wrapper no-margin">
                                         <div class="col s8">
                                             Connection Method
                                         </div>
                                         <div class="col s4 valign-wrapper right-align">
-                                            <a id="connection" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            <a id="connection"
+                                                class="sort-icon material-icons invisible">arrow_drop_down</a>
                                         </div>
                                     </div>
                                 </th>
 
-                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'username')">
+                                <th class="hover prevent-select"
+                                    onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'username')">
                                     <div class="row valign-wrapper no-margin">
                                         <div class="col s8">
                                             Username
                                         </div>
                                         <div class="col s4 valign-wrapper right-align">
-                                            <a id="username" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            <a id="username"
+                                                class="sort-icon material-icons invisible">arrow_drop_down</a>
                                         </div>
                                     </div>
                                 </th>
 
-                                <th class="hover prevent-select" onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'passwordOrKeyfile')">
+                                <th class="hover prevent-select"
+                                    onclick="askToSort(TYPE_TABLE_ENUM.INVENTORY,'passwordOrKeyfile')">
                                     <div class="row valign-wrapper no-margin">
                                         <div class="col s8">
                                             Auth
                                         </div>
                                         <div class="col s4 valign-wrapper right-align">
-                                            <a id="passwordOrKeyfile" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            <a id="passwordOrKeyfile"
+                                                class="sort-icon material-icons invisible">arrow_drop_down</a>
                                         </div>
                                     </div>
                                 </th>
@@ -273,7 +291,8 @@
                                             Sudo Username
                                         </div>
                                         <div class="col s4 valign-wrapper right-align">
-                                            <a id="sudoUsername" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            <a id="sudoUsername"
+                                                class="sort-icon material-icons invisible">arrow_drop_down</a>
                                         </div>
                                     </div>
                                 </th>
@@ -285,7 +304,8 @@
                                             Sudo Password
                                         </div>
                                         <div class="col s4 valign-wrapper right-align">
-                                            <a id="sudoPassword" class="sort-icon material-icons invisible">arrow_drop_down</a>
+                                            <a id="sudoPassword"
+                                                class="sort-icon material-icons invisible">arrow_drop_down</a>
                                         </div>
                                     </div>
                                 </th>
@@ -428,16 +448,29 @@
         </div>
     </template>
 
+
+    <!-- Modal Log Execution -->
     <div id="log-modal" class="modal">
         <div class="modal-content">
             <h4>Playbook Execution !</h4>
             <p>Keep calm, we take care of everything </p>
             <div class="row">
-                <div class="col s12 left-align log-container">
+                <div class="col s12 left-align log-container" onwheel="disableAutoScroll()"
+                    onscrollend="activateAutoScroll()">
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Tuto Re-open modal log -->
+    <div id="btn-modal-log-target" class="tap-target" data-target="btn-modal-log">
+        <div class="tap-target-content">
+            <h5>Leave the log pop up ?</h5>
+            <p>Reopen the pop up here :)</p>
+        </div>
+    </div>
+
+
 
 </body>
 

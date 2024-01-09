@@ -243,13 +243,18 @@ input[type="text"]:not(.browser-default):focus:not([readonly])+label {
 
 .log-container {
     border: 1px solid #000;
-    border-radius: 0.7em;
-    height: 42em;
+    border-radius: 0.2em;
+    height: 40em;
 
     overflow-y: scroll;
     
     padding-left: 0.2em;
     padding-right: 0.2em;
+}
+
+#btn-modal-log {
+    right: -95%;
+    z-index: 1005;
 }
 
 /*  #############################
@@ -262,4 +267,12 @@ input[type="text"]:not(.browser-default):focus:not([readonly])+label {
 
 .edit-cell>.input-field {
     margin: 0px;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+#recommendations {
+    margin-bottom: 10px;
 }

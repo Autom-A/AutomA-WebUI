@@ -236,12 +236,12 @@ function runPlaybook() {
     xhttp.setRequestHeader("Content-Type", "application/json")
     xhttp.send();
 
-
     runBtnToogle(true)
-    M.Modal.getInstance(document.getElementById("log-modal")).open()
+    openLogModal()
 }
 
 function generateAction() {
     generatePlaybooks();
     sendInventory();
+    document.getElementById("btn-modal-log").classList.add("invisible")
 }

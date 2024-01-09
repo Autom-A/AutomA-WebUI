@@ -1,13 +1,31 @@
 const socket = io();
-
 socket.on("connect", () => { })
-
 socket.on("logEvent", (logData) => {
     addLogLine(logData)
 })
 
+let hasToScroll = true
+
+function setBtnToReopenLog() {
+    if (localStorage.getItem("openLogHelp") == "true" || localStorage.getItem("openLogHelp") == null) {
+        let taps = document.querySelectorAll('.tap-target');
+        M.TapTarget.init(taps, {onClose : () => {
+            localStorage.setItem("openLogHelp","false")
+            document.getElementById("btn-modal-log-target").style.display = "none"
+        }});
+        
+        M.TapTarget.getInstance(document.getElementById("btn-modal-log-target")).open()
+    }
+    document.getElementById("btn-modal-log").classList.remove("invisible")
+}
+
+function openLogModal() {
+    let logModal = M.Modal.getInstance(document.getElementById("log-modal"))
+    logModal.open()
+}
+
 function addLogLine(logData) {
-    logContainer = document.getElementsByClassName("log-container")[0]
+    logContainer = document.getElementsByClassName("log-container").item(0)
 
     let logLine = logData.data.split("\n")
 
@@ -17,12 +35,27 @@ function addLogLine(logData) {
         if (logPart.length > 0) {
             p = paragraphColor(logPart)
             logContainer.appendChild(p)
+
+            autoScroll(logContainer)
         }
     }
 }
 
+function disableAutoScroll() {
+    hasToScroll = false
+}
+
+function activateAutoScroll() {
+    hasToScroll = true
+}
+
+function autoScroll(container) {
+    if (hasToScroll) container.scrollTop = container.scrollHeight
+}
+
 function paragraphColor(logPart) {
     let p = document.createElement("p")
+    p.classList.add("no-margin")
 
     const fontModifier = {
         "0" : "normal",
@@ -33,7 +66,7 @@ function paragraphColor(logPart) {
         "30" : "black",
         "31" : "red",
         "32" : "green",
-        "33" : "yellow",
+        "33" : "amber",
         "34" : "blue",
         "35" : "purple",
         "36" : "cyan",
