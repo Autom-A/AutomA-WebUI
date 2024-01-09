@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let mod = document.getElementById("os-selector-modal")
     M.Modal.init(mod, {});
 
+    let mod2 = document.getElementById("log-modal")
+    M.Modal.init(mod2, {});
+
     let tabs = document.getElementById("recommendation-inventory-tabs")
     M.Tabs.init(tabs,{})
 

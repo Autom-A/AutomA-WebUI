@@ -1,9 +1,28 @@
+from socket import SocketIO
 from ansible_runner import run
 from os.path import join,exists,isfile
 from utils.configuration import Configuration
 from utils.custom_exceptions import PathDoesNotExist
 
-def run_ansible_playbook():
+class SingletonSocket():
+    """Sigleton of the SocketIO class
+    """
+    _instance = {}
+
+    def __new__(class_, *args, **kwargs):
+        if class_ not in class_._instance:
+            class_._instance[class_] = super(SingletonSocket, class_).__new__(class_, *args, **kwargs)
+        return class_._instance[class_]
+
+class Socket(SingletonSocket):
+    
+    socketio : SocketIO = None
+
+    def set_socketio(self,socketio):
+        self.socketio = socketio
+
+
+def run_ansible_playbook(socketio : SocketIO):
     """This function call runner function from ansible to run the playbook.master.yml with 
         the inventory.yml
 
@@ -11,6 +30,9 @@ def run_ansible_playbook():
         PathDoesNotExist: If the path of playbook.master.yml or inventory.yml does not exist
     """
     
+    socket = Socket()
+    socket.set_socketio(socketio)
+
     config = Configuration()
     generated_path = config.get("path_generated")
     playbook_path = join(generated_path,'playbook.master.yml')
@@ -21,7 +43,7 @@ def run_ansible_playbook():
     if not exists(inventory_path) or not isfile(inventory_path):
         raise PathDoesNotExist(f"The following path does not exist : {inventory_path}")
 
-    runner = run(
+    run(
         playbook=playbook_path,
         inventory=inventory_path,
         extravars={},
@@ -31,6 +53,10 @@ def run_ansible_playbook():
 
 def realtime_log(event_data):
     print(event_data['stdout'])
+    
+    socket = Socket()
+    socket.socketio.emit('logEvent', {'data': event_data["stdout"]})
+
 
     if event_data["event"] == "playbook_on_stats":
         # Retrieve status of the Ansible runner

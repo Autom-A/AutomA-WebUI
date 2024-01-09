@@ -13,11 +13,15 @@
     <link rel="shortcut icon" href="{{ url_for('static',filename='images/logo.png') }}">
 
     <script src="{{ url_for('static', filename='js/librairies/materialize.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/librairies/socket.io.min.js') }}"></script>
+
     <script src="{{ url_for('static', filename='js/app.init.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.api.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.question.component.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.selection.component.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.table.component.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.log.component.js') }}"></script>
+
     <script>
         // GLOBAL VARIABLES
         var SERVER_IP = "{{ SERVER_IP }}"
@@ -423,6 +427,17 @@
             </div>
         </div>
     </template>
+
+    <div id="log-modal" class="modal">
+        <div class="modal-content">
+            <h4>Playbook Execution !</h4>
+            <p>Keep calm, we take care of everything </p>
+            <div class="row">
+                <div class="col s12 left-align log-container">
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 
