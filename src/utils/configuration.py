@@ -38,6 +38,7 @@ class Configuration(SingletonConfiguration):
 
             self._config["server_ip"] = "127.0.0.1"
             self._config["server_port"] = 9123
+            self._config["server_secret"] = 'secret'
             self._config["path_generated"] = join(abspath("."),"generated")
             self._config["path_playbooks"] = join(abspath("."),"playbooks")
             self._config["path_logs"] = join(abspath("."),"logs")
@@ -58,6 +59,12 @@ class Configuration(SingletonConfiguration):
                     print("WARNING - No server port supplied - using default 9123")
                     self._config["server_port"] = "127.0.0.1"
 
+                if config.get("server") and config.get("server").get("secret"):
+                    self._config["server_secret"] = config.get("server").get("secret")
+                else:
+                    print("WARNING - No secret token - using default 'secret'. PLEASE CHANGE IT")
+                    self._config["server_secret"] = 'secret'
+
                 if config.get("path") and config.get("path").get("generated"):
                     self._config["path_generated"] = join(abspath("."),config.get("path").get("generated"))
                 else:
@@ -75,7 +82,6 @@ class Configuration(SingletonConfiguration):
                 else:
                     print("WARNING - No path for 'playbooks' dir - using default 'playbooks'")
                     self._config["path_logs"] = join(abspath("."),"logs")
-
 
         if not exists(self._config.get("path_generated")): mkdir(self._config.get("path_generated"))
         if not exists(self._config.get("path_playbooks")): mkdir(self._config.get("path_playbooks"))

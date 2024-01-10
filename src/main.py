@@ -13,16 +13,18 @@ from utils.recommendations_selected import RecommendationsSelected
 from utils.supported_systems import SupportedSystems
 
 STATIC_FOLDER = join(abspath("."),"ressources","static")
-flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
-flask_app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(flask_app)
-
-CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
 
 try:
     # RETRIEVE CONFIGURATION
     config = Configuration()
     config.read_configuration()
+
+    flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
+    flask_app.config['SECRET_KEY'] = config.get("server_secret")
+
+    socketio = SocketIO(flask_app)
+
+    CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
 
     # GENERATE FILE THAT CONTAINS PAIR ID/PATH OF EACH RECOMMENDATIONS
     id_file_path = join(config.get("path_generated"),"id_management.yml")
