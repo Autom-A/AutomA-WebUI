@@ -11,10 +11,12 @@ function setBtnToReopenLog() {
         let taps = document.querySelectorAll('.tap-target');
         M.TapTarget.init(taps, {onClose : () => {
             localStorage.setItem("openLogHelp","false")
-            document.getElementById("btn-modal-log-target").style.display = "none"
+            document.getElementById("btn-modal-log-target").parentElement.style.display = "none"
+            document.querySelector("html").style["overflow-y"] = "scroll"
         }});
         
         M.TapTarget.getInstance(document.getElementById("btn-modal-log-target")).open()
+        document.querySelector("html").style["overflow-y"] = "hidden"
     }
     document.getElementById("btn-modal-log").classList.remove("invisible")
 }

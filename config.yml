@@ -5,3 +5,4 @@ server:
 path:
   generated: "generated"
   playbooks: "playbooks"
+  logs: "logs"

@@ -40,6 +40,7 @@ class Configuration(SingletonConfiguration):
             self._config["server_port"] = 9123
             self._config["path_generated"] = join(abspath("."),"generated")
             self._config["path_playbooks"] = join(abspath("."),"playbooks")
+            self._config["path_logs"] = join(abspath("."),"logs")
 
         else:
             with open(config_path) as config_file:
@@ -69,5 +70,13 @@ class Configuration(SingletonConfiguration):
                     print("WARNING - No path for 'playbooks' dir - using default 'playbooks'")
                     self._config["path_playbooks"] = join(abspath("."),"playbooks")
 
+                if config.get("path") and config.get("path").get("logs"):
+                    self._config["path_logs"] = join(abspath("."),config.get("path").get("logs"))
+                else:
+                    print("WARNING - No path for 'playbooks' dir - using default 'playbooks'")
+                    self._config["path_logs"] = join(abspath("."),"logs")
+
+
         if not exists(self._config.get("path_generated")): mkdir(self._config.get("path_generated"))
         if not exists(self._config.get("path_playbooks")): mkdir(self._config.get("path_playbooks"))
+        if not exists(self._config.get("path_logs")): mkdir(self._config.get("path_logs"))
