@@ -218,11 +218,15 @@ function sendInventory() {
 
 
 function runPlaybook() {
+    logContainer = document.getElementsByClassName("log-container")[0]
+    while(logContainer.firstChild) {
+        logContainer.removeChild(logContainer.firstChild)
+    }
+    
     let endpoint = `http://${SERVER_IP}:${SERVER_PORT}/api/playbook/launcher/run`;
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-
         } else if (this.readyState == 4 && this.status == 400) {
             M.toast({ html: 'ERROR : You must add host in your inventory', classes: 'rounded' });
             M.Tabs.getInstance(document.getElementById("recommendation-inventory-tabs")).select("inventory")
@@ -232,11 +236,12 @@ function runPlaybook() {
     xhttp.setRequestHeader("Content-Type", "application/json")
     xhttp.send();
 
-
     runBtnToogle(true)
+    openLogModal()
 }
 
 function generateAction() {
     generatePlaybooks();
     sendInventory();
+    document.getElementById("btn-modal-log").classList.add("invisible")
 }

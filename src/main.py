@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 from os.path import abspath, join
 from utils.configuration import Configuration
 from utils.hosts_selected import HostsSelected
@@ -12,14 +13,18 @@ from utils.recommendations_selected import RecommendationsSelected
 from utils.supported_systems import SupportedSystems
 
 STATIC_FOLDER = join(abspath("."),"ressources","static")
-flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
-
-CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
 
 try:
     # RETRIEVE CONFIGURATION
     config = Configuration()
     config.read_configuration()
+
+    flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
+    flask_app.config['SECRET_KEY'] = config.get("server_secret")
+
+    socketio = SocketIO(flask_app)
+
+    CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
 
     # GENERATE FILE THAT CONTAINS PAIR ID/PATH OF EACH RECOMMENDATIONS
     id_file_path = join(config.get("path_generated"),"id_management.yml")
@@ -224,7 +229,7 @@ def run_playbook_launcher():
         hosts_selected = HostsSelected()
         hosts_selected.write_yml()
 
-        run_ansible_playbook()
+        run_ansible_playbook(socketio)
         return jsonify({"SUCCESS":"Running Ansible"})
 
     except MissingHost as missing_host:
@@ -235,6 +240,11 @@ def run_playbook_launcher():
 def download_playbook_launcher():
     pass
 
+
+@socketio.on("connect")
+def socket_connected():
+    print(request.sid)
+    print("client has connected")
 
 flask_app.run(host=config.get("server_ip"),
               port=config.get("server_port"),

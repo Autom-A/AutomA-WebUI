@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let mod = document.getElementById("os-selector-modal")
     M.Modal.init(mod, {});
 
+    let mod2 = document.getElementById("log-modal")
+    M.Modal.init(mod2, {onCloseEnd: setBtnToReopenLog});
+
     let tabs = document.getElementById("recommendation-inventory-tabs")
     M.Tabs.init(tabs,{})
 
@@ -21,9 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     selectOsModelOpen()
 
-    var elems = document.querySelectorAll('.dropdown-trigger');
-    M.Dropdown.init(elems, {"constrainWidth":false});
-
+    let dropdowns = document.querySelectorAll('.dropdown-trigger');
+    M.Dropdown.init(dropdowns, {"constrainWidth":false});
 
     const fontMI = new FontFace(
         "MaterialIcons",
