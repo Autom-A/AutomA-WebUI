@@ -4,7 +4,7 @@
 
 ![gif file to demonstrate](demo.gif)
 
-## 🧐 Features
+## ✨ Features
 
 Here're some of the project's best features:
 
