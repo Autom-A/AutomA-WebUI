@@ -237,7 +237,10 @@ function runPlaybook() {
     xhttp.send();
 
     runBtnToogle(true)
-    openLogModal()
+
+    if (JSON.parse(localStorage.getItem("inventory")).hosts.length > 0) {
+        openLogModal()
+    }
 }
 
 function generateAction() {
