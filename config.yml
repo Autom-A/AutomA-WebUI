@@ -1,5 +1,6 @@
 server:
-  ip: "127.0.0.1"
+  ip_backend: "0.0.0.0"
+  ip_frontend: "127.0.0.1"
   port: 9123
   secret: "your_secret_token_here"
 
