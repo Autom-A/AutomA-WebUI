@@ -36,7 +36,8 @@ class Configuration(SingletonConfiguration):
         if not exists(config_path):
             print("WARNING - Config file does not exist - Setting default value")
 
-            self._config["server_ip"] = "127.0.0.1"
+            self._config["server_ip_frontend"] = "127.0.0.1"
+            self._config["server_ip_backend"] = "0.0.0.0"
             self._config["server_port"] = 9123
             self._config["server_secret"] = 'secret'
             self._config["path_generated"] = join(abspath("."),"generated")
@@ -47,11 +48,17 @@ class Configuration(SingletonConfiguration):
             with open(config_path) as config_file:
                 config = safe_load(config_file)
 
-                if config.get("server") and config.get("server").get("ip"):
-                    self._config["server_ip"] = config.get("server").get("ip")
+                if config.get("server") and config.get("server").get("ip_backend"):
+                    self._config["server_ip_backend"] = config.get("server").get("ip_backend")
+                else:
+                    print("WARNING - No backend_ip supplied - using default '0.0.0.0'")
+                    self._config["server_ip_backend"] = "0.0.0.0"
+
+                if config.get("server") and config.get("server").get("ip_frontend"):
+                    self._config["server_ip_frontend"] = config.get("server").get("ip_frontend")
                 else:
                     print("WARNING - No server ip supplied - using default '127.0.0.1'")
-                    self._config["server_ip"] = "127.0.0.1"
+                    self._config["server_ip_frontend"] = "127.0.0.1"
 
                 if config.get("server") and config.get("server").get("port"):
                     self._config["server_port"] = config.get("server").get("port")

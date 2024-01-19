@@ -56,7 +56,7 @@ def index():
 @flask_app.route("/app")
 def app():
     return render_template("app.html",
-                           SERVER_IP=config.get("server_ip"),
+                           SERVER_IP=config.get("server_ip_frontend"),
                            SERVER_PORT=config.get("server_port")
                            )
 
@@ -246,7 +246,7 @@ def socket_connected():
     print(request.sid)
     print("client has connected")
 
-flask_app.run(host=config.get("server_ip"),
+flask_app.run(host=config.get("server_ip_backend"),
               port=config.get("server_port"),
               debug=True
               )
