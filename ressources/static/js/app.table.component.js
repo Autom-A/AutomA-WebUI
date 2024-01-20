@@ -352,7 +352,7 @@ function retrieveInventoryTableInput(inputId, suffix = "") {
  */
 function addHostInTable() {
     let hostItem = retrieveInventoryTableInput("inventory-input");
-
+    
     if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
         || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
             
@@ -364,6 +364,7 @@ function addHostInTable() {
     if (inventory == null) inventory = { "hosts": [] }
     else {
         hosts = inventory.hosts
+        let checkFQDNOrIP = isValidFQDNOrIP(hostItem.ip);
         for (let i = 0; i < hosts.length; i++) {
             const host = hosts[i];
             if (host.hostname == hostItem.hostname) {
@@ -374,6 +375,9 @@ function addHostInTable() {
                 return;
             } else if (hostItem.port < 0 || hostItem.port > 65535) {
                 M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535]', classes: 'rounded' });
+                return;
+            } else if (!checkFQDNOrIP) {
+                M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
                 return;
             }
         }
