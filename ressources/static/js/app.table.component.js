@@ -669,3 +669,19 @@ function askToSort(tableType, colName) {
         } else headCellIcon.classList.add("invisible")
     });
 }
+/**
+ * Check if IP or FQDN as valid syntax
+ * @param {string} inputIPorFQDN IP or FQDN to check 
+ * @returns boolean indicator if syntax are true or false 
+ */
+function isValidFQDNOrIP(inputIPorFQDN) {
+    const fqdnRegex = /^([a-zA-Z0-9_-]{3,}\.)*[a-zA-Z]{2,}$/;
+    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  
+    if (fqdnRegex.test(inputIPorFQDN) || ipRegex.test(inputIPorFQDN)) {
+      return true;
+    } 
+    else {
+      return false;
+    }
+  }
