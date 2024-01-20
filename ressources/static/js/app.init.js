@@ -68,13 +68,14 @@ function validEnvironment() {
 
 function fillAuthFromConnectionMethodValue() {
     let labelPasswordKeyfile = document.getElementById("label-password-keyfile");
+    let inputPasswordKeyfile = document.getElementById("input-password-keyfile")
     let selectConnectionMethod = document.getElementById("select-connection");
     if (selectConnectionMethod.value == "0") {
         labelPasswordKeyfile.innerText = "Password";
-        passwordInput.type = "password";
+        inputPasswordKeyfile.type = "password";
     } else if (selectConnectionMethod.value == "1") {
         labelPasswordKeyfile.innerText = "Keyfile";
-        passwordInput.type = "text";
+        inputPasswordKeyfile.type = "text";
     }
 }
 
