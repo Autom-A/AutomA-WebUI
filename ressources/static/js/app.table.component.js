@@ -352,7 +352,7 @@ function retrieveInventoryTableInput(inputId, suffix = "") {
  */
 function addHostInTable() {
     let hostItem = retrieveInventoryTableInput("inventory-input");
-    
+    let checkFQDNOrIP = isValidFQDNOrIP(hostItem.ip);
     if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
         || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
             
@@ -364,7 +364,6 @@ function addHostInTable() {
     if (inventory == null) inventory = { "hosts": [] }
     else {
         hosts = inventory.hosts
-        let checkFQDNOrIP = isValidFQDNOrIP(hostItem.ip);
         for (let i = 0; i < hosts.length; i++) {
             const host = hosts[i];
             if (host.hostname == hostItem.hostname) {
@@ -444,16 +443,15 @@ function modifyHost(inputId) {
                 }
                 host.hostname = modifiedHost.hostname;
             }
-
+            if (!checkModifFQDNOrIP) {
+                M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
+                return;
+            }
             if (!isNaN(modifiedHost.port) || modifiedHost.ip.length > 0) {
 
                 let tmpIP = host.ip;
                 if (modifiedHost.ip.length > 0) {
                     tmpIP = modifiedHost.ip;
-                }
-                if (!checkModifFQDNOrIP) {
-                    M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
-                    return;
                 }
                 let tmpPort = host.port;
                 if (!isNaN(modifiedHost.port)) {
