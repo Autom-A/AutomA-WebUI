@@ -57,7 +57,7 @@ class Configuration(SingletonConfiguration):
                     self._config["server_port"] = config.get("server").get("port")
                 else:
                     print("WARNING - No server port supplied - using default 9123")
-                    self._config["server_port"] = "127.0.0.1"
+                    self._config["server_port"] = "9123"
 
                 if config.get("server") and config.get("server").get("secret"):
                     self._config["server_secret"] = config.get("server").get("secret")
