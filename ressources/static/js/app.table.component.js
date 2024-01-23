@@ -173,7 +173,7 @@ function renderInventoryLine(host) {
     line.appendChild(renderCell(host["username"]))
     line.appendChild(renderCell(host["passwordOrKeyfile"]))
     line.appendChild(renderCell(host["sudoUsername"]))
-    line.appendChild(renderCell(host["sudoPassword"]))
+    line.appendChild(renderCell("******"))
 
     line.onclick = () => {
         switchEditInventoryLine(line)
@@ -200,7 +200,7 @@ function switchEditInventoryLine(line) {
     editLine.appendChild(renderEditCell("username", line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
     editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
     editLine.appendChild(renderEditCell("sudo-username", line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
-    editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.TEXT, line.childNodes[8].innerText))
+    editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.PASSWORD, line.childNodes[8].innerText))
 
     editLine.appendChild(renderValidHostModificationBtn(`${line.id}-edit`))
 
@@ -250,7 +250,18 @@ function renderEditCell(colname, hostname, inputType, userValue) {
             divInput.appendChild(input);
             divInput.appendChild(label);
             break;
+        case TYPE_INPUT.PASSWORD:
+            let inputPassword = document.createElement("input");
+            inputPassword.id = `input-${colname}-${hostname}`;
+            inputPassword.setAttribute("type", "password");
 
+            let labelPassword = document.createElement("label");
+            labelPassword.setAttribute("for", `input-${colname}-${hostname}`);
+            labelPassword.innerText = "******"
+
+            divInput.appendChild(inputPassword);
+            divInput.appendChild(labelPassword);
+            break;
         case TYPE_INPUT.SELECT:
             let select = document.createElement("select")
             select.id = `select-connection-${hostname}`
@@ -305,6 +316,7 @@ function addLineInTable(item, tableType) {
     switch (tableType) {
         case TYPE_TABLE_ENUM.INVENTORY:
             lineToAdd = renderInventoryLine(item)
+
             containerID = "inventory-container"
             let container = document.getElementById(containerID)
             container.appendChild(lineToAdd)
@@ -516,7 +528,7 @@ function modifyHost(inputId) {
     textLine.childNodes.item(5).innerText = hostObj.username;
     textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
     textLine.childNodes.item(7).innerText = hostObj.sudoUsername;
-    textLine.childNodes.item(8).innerText = hostObj.sudoPassword;
+    textLine.childNodes.item(8).innerText = "******";
 
     textLine.removeAttribute("hidden")
     document.getElementById(inputId).remove();
