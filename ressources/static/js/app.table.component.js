@@ -433,11 +433,6 @@ function modifyHost(inputId) {
         if (host.hostname == hostname) {
             hostObj = host
             if (modifiedHost.hostname.length > 0) {
-                let checkModifFQDNOrIP = isValidFQDNOrIP(modifiedHost.ip);
-                if (!checkModifFQDNOrIP) {
-                    M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
-                    return;
-                }
                 for (let i = 0; i < inventory.hosts.length; i++) {
                     const el = inventory.hosts[i];
                     if (el.hostname == modifiedHost.hostname) {
@@ -474,6 +469,11 @@ function modifyHost(inputId) {
                 }
 
                 if (modifiedHost.ip.length > 0) {
+                    let checkModifFQDNOrIP = isValidFQDNOrIP(modifiedHost.ip);
+                    if (!checkModifFQDNOrIP) {
+                        M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
+                        return;
+                    }
                     host.ip = modifiedHost.ip;
                 }
 
