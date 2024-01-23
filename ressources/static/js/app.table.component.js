@@ -352,14 +352,17 @@ function retrieveInventoryTableInput(inputId, suffix = "") {
  */
 function addHostInTable() {
     let hostItem = retrieveInventoryTableInput("inventory-input");
-
+    let checkFQDNOrIP = isValidFQDNOrIP(hostItem.ip);
     if (hostItem.hostname.length == 0 || hostItem.ip.length == 0 || hostItem.passwordOrKeyfile.length == 0
         || hostItem.username.length == 0 || hostItem.sudoPassword.length == 0 || hostItem.sudoUsername.length == 0) {
             
         M.toast({ html: 'ERROR : All fields must be filled', classes: 'rounded' });
         return;
     }
-
+    if (!checkFQDNOrIP) {
+        M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
+        return;
+    }
     let inventory = JSON.parse(localStorage.getItem("inventory"));
     if (inventory == null) inventory = { "hosts": [] }
     else {
@@ -422,7 +425,6 @@ function modifyHost(inputId) {
     let hostObj = undefined;
     let hostname = inputId.replace("-edit", "")
     modifiedHost = retrieveInventoryTableInput(inputId, "-" + hostname);
-
     let inventory = JSON.parse(localStorage.getItem("inventory"))
 
     for (let i = 0; i < inventory.hosts.length; i++) {
@@ -440,14 +442,12 @@ function modifyHost(inputId) {
                 }
                 host.hostname = modifiedHost.hostname;
             }
-
             if (!isNaN(modifiedHost.port) || modifiedHost.ip.length > 0) {
 
                 let tmpIP = host.ip;
                 if (modifiedHost.ip.length > 0) {
                     tmpIP = modifiedHost.ip;
                 }
-
                 let tmpPort = host.port;
                 if (!isNaN(modifiedHost.port)) {
                     tmpPort = modifiedHost.port;
@@ -469,6 +469,11 @@ function modifyHost(inputId) {
                 }
 
                 if (modifiedHost.ip.length > 0) {
+                    let checkModifFQDNOrIP = isValidFQDNOrIP(modifiedHost.ip);
+                    if (!checkModifFQDNOrIP) {
+                        M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
+                        return;
+                    }
                     host.ip = modifiedHost.ip;
                 }
 
@@ -669,3 +674,19 @@ function askToSort(tableType, colName) {
         } else headCellIcon.classList.add("invisible")
     });
 }
+/**
+ * Check if IP or FQDN as valid syntax
+ * @param {string} inputIPorFQDN IP or FQDN to check 
+ * @returns boolean indicator if syntax are true or false 
+ */
+function isValidFQDNOrIP(inputIPorFQDN) {
+    const fqdnRegex = /^([a-zA-Z0-9_-]{3,}\.){1,}[a-zA-Z]{2,}$/;
+    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  
+    if (fqdnRegex.test(inputIPorFQDN) || ipRegex.test(inputIPorFQDN)) {
+      return true;
+    } 
+    else {
+      return false;
+    }
+  }
