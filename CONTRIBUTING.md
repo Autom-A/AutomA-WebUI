@@ -1,6 +1,6 @@
 # Contributing to AutomA
 
-We would love for you to contribute to AutomA and help make it even better!
+We would love you to contribute to AutomA and help make it even better!
 As a contributor, here are the guidelines we would like you to follow, without it, building a community development environment would be impossible:
 
  - [Code of Conduct](#code-of-conduct)
