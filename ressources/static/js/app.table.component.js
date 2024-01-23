@@ -425,7 +425,6 @@ function modifyHost(inputId) {
     let hostObj = undefined;
     let hostname = inputId.replace("-edit", "")
     modifiedHost = retrieveInventoryTableInput(inputId, "-" + hostname);
-    let checkModifFQDNOrIP = isValidFQDNOrIP(modifiedHost.ip);
     let inventory = JSON.parse(localStorage.getItem("inventory"))
 
     for (let i = 0; i < inventory.hosts.length; i++) {
@@ -434,6 +433,11 @@ function modifyHost(inputId) {
         if (host.hostname == hostname) {
             hostObj = host
             if (modifiedHost.hostname.length > 0) {
+                let checkModifFQDNOrIP = isValidFQDNOrIP(modifiedHost.ip);
+                if (!checkModifFQDNOrIP) {
+                    M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
+                    return;
+                }
                 for (let i = 0; i < inventory.hosts.length; i++) {
                     const el = inventory.hosts[i];
                     if (el.hostname == modifiedHost.hostname) {
@@ -442,10 +446,6 @@ function modifyHost(inputId) {
                     }
                 }
                 host.hostname = modifiedHost.hostname;
-            }
-            if (!checkModifFQDNOrIP) {
-                M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
-                return;
             }
             if (!isNaN(modifiedHost.port) || modifiedHost.ip.length > 0) {
 
