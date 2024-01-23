@@ -171,7 +171,8 @@ function renderInventoryLine(host) {
     else if (host["connection"] == 1) line.appendChild(renderCell("Keyfile based"))
 
     line.appendChild(renderCell(host["username"]))
-    line.appendChild(renderCell(host["passwordOrKeyfile"]))
+    if (host["connection"] == 0) line.appendChild(renderCell("******"))
+    else if (host["connection"] == 1) line.appendChild(renderCell(host["passwordOrKeyfile"]))
     line.appendChild(renderCell(host["sudoUsername"]))
     line.appendChild(renderCell("******"))
 
@@ -198,7 +199,8 @@ function switchEditInventoryLine(line) {
     editLine.appendChild(renderEditCell("port", line.id, TYPE_INPUT.TEXT, line.childNodes[3].innerText))
     editLine.appendChild(renderEditCell("connection", line.id, TYPE_INPUT.SELECT, line.childNodes[4].innerText))
     editLine.appendChild(renderEditCell("username", line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
-    editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
+    if (line.childNodes[4].innerText == "Password based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.PASSWORD, line.childNodes[6].innerText));
+    else if (line.childNodes[4].innerText == "Keyfile based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText));
     editLine.appendChild(renderEditCell("sudo-username", line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
     editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.PASSWORD, line.childNodes[8].innerText))
 
@@ -526,7 +528,8 @@ function modifyHost(inputId) {
     else if (hostObj.connection == 1) textLine.childNodes.item(4).innerText = "Keyfile based";
 
     textLine.childNodes.item(5).innerText = hostObj.username;
-    textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
+    if (hostObj.connection == 0) textLine.childNodes.item(6).innerText = "******";
+    else if (hostObj.connection == 1) textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
     textLine.childNodes.item(7).innerText = hostObj.sudoUsername;
     textLine.childNodes.item(8).innerText = "******";
 
