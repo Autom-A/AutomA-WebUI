@@ -359,7 +359,10 @@ function addHostInTable() {
         M.toast({ html: 'ERROR : All fields must be filled', classes: 'rounded' });
         return;
     }
-
+    if (!checkFQDNOrIP) {
+        M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
+        return;
+    }
     let inventory = JSON.parse(localStorage.getItem("inventory"));
     if (inventory == null) inventory = { "hosts": [] }
     else {
@@ -374,9 +377,6 @@ function addHostInTable() {
                 return;
             } else if (hostItem.port < 0 || hostItem.port > 65535) {
                 M.toast({ html: 'ERROR : The port specified is not correct, out from the range [0:65535]', classes: 'rounded' });
-                return;
-            } else if (!checkFQDNOrIP) {
-                M.toast({ html: 'ERROR : The syntax of your IP address or FQDN is not correct', classes: 'rounded' });
                 return;
             }
         }
