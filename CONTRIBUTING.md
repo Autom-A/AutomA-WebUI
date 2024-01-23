@@ -10,8 +10,6 @@ As a contributor, here are the guidelines we would like you to follow, without i
  - [Submission Guidelines](#submit)
  - [Coding Rules](#coding-rules)
  - [Commit Message Guidelines](#commit-conventions)
- - [Signing the CLA](#cla)
-
 
 ## <a name="code-of-conduct"></a> Code of Conduct
 
@@ -255,7 +253,7 @@ BREAKING CHANGE: <breaking change summary>
 <breaking change description + migration instructions>
 <BLANK LINE>
 <BLANK LINE>
-Fixes #<issue number>
+Fixe #<issue number>
 ```
 
 or
@@ -266,7 +264,7 @@ DEPRECATED: <what is deprecated>
 <deprecation description + recommended update path>
 <BLANK LINE>
 <BLANK LINE>
-Closes #<pr number>
+Close #<pr number>
 ```
 
 Breaking Change section should start with the phrase "BREAKING CHANGE: " followed by a summary of the breaking change, a blank line, and a detailed description of the breaking change that also includes migration instructions.
