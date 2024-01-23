@@ -680,7 +680,7 @@ function askToSort(tableType, colName) {
  * @returns boolean indicator if syntax are true or false 
  */
 function isValidFQDNOrIP(inputIPorFQDN) {
-    const fqdnRegex = /^([a-zA-Z0-9_-]{3,}\.)*[a-zA-Z]{2,}$/;
+    const fqdnRegex = /^([a-zA-Z0-9_-]{3,}\.){1,}[a-zA-Z]{2,}$/;
     const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
   
     if (fqdnRegex.test(inputIPorFQDN) || ipRegex.test(inputIPorFQDN)) {
