@@ -192,7 +192,7 @@ function switchEditInventoryLine(line) {
 
     let editLine = document.createElement("tr")
     editLine.setAttribute("id", `${line.id}-edit`)
-
+    
     editLine.appendChild(renderDeleteHostLineBtn())
     editLine.appendChild(renderEditCell("hostname", line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
     editLine.appendChild(renderEditCell("ip", line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
@@ -200,7 +200,7 @@ function switchEditInventoryLine(line) {
     editLine.appendChild(renderEditCell("connection", line.id, TYPE_INPUT.SELECT, line.childNodes[4].innerText))
     editLine.appendChild(renderEditCell("username", line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
     if (line.childNodes[4].innerText == "Password based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.PASSWORD, line.childNodes[6].innerText));
-    else if (line.childNodes[4].innerText == "Keyfile based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText));
+    else if (line.childNodes[4].innerText == "Keyfile based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
     editLine.appendChild(renderEditCell("sudo-username", line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
     editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.PASSWORD, line.childNodes[8].innerText))
 
@@ -208,7 +208,9 @@ function switchEditInventoryLine(line) {
 
     line.parentNode.insertBefore(editLine, line.nextSibling);
     line.setAttribute("hidden", "true")
-
+    document.querySelector(`#select-connection-${line.id}`).addEventListener("change", function() {
+        changeInputType(line.id);
+    });
     while (MATERIALIZE_FIFO.length > 0) {
         let todo = MATERIALIZE_FIFO.pop()
         switch (todo.element_type) {
@@ -281,7 +283,6 @@ function renderEditCell(colname, hostname, inputType, userValue) {
 
             select.appendChild(opt1)
             select.appendChild(opt2)
-
             divInput.appendChild(select)
 
             MATERIALIZE_FIFO.push({ element_type: "formselect", id: select.id })
@@ -705,3 +706,17 @@ function isValidFQDNOrIP(inputIPorFQDN) {
       return false;
     }
   }
+
+/**
+ * Change html iput type when user change "Password" to "Keyfile" and "Keyfile" to "Password" 
+ * @param {string} lineid Take the line.id (line "name")
+ */
+  function changeInputType(lineid){
+    let selectConnectionMethod = document.getElementById(`select-connection-${lineid}`);
+    let inputPasswordKeyfile = document.getElementById(`input-password-keyfile-${lineid}`)
+    if (selectConnectionMethod.value == "0") {
+        inputPasswordKeyfile.type = "password";
+    } else if (selectConnectionMethod.value == "1") {
+        inputPasswordKeyfile.type = "text";
+    }
+}
