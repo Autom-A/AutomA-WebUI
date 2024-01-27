@@ -3,8 +3,8 @@
 from genericpath import isdir
 from os import listdir
 from os.path import join, exists, isfile
-from utils.custom_exceptions import AnswerIsRequired, PathDoesNotExist, WrongAnswerType
-from utils.supported_systems import SupportedSystems
+from src.utils.custom_exceptions import AnswerIsRequired, PathDoesNotExist, WrongAnswerType
+from src.utils.supported_systems import SupportedSystems
 from yaml import safe_load
 
 def read_questions_file(path : str) -> dict:

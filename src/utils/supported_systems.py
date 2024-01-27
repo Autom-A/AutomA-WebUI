@@ -1,8 +1,8 @@
 #!/bin/env python3
 
 from os.path import join, exists, isdir
-from utils.custom_exceptions import PathDoesNotExist, VariablePathNotDefined
-from utils.path import list_dir_in_dir
+from src.utils.custom_exceptions import PathDoesNotExist, VariablePathNotDefined
+from src.utils.path import list_dir_in_dir
 
 
 class SingletonSupportedSystems():

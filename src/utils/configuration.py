@@ -4,8 +4,8 @@ from yaml import safe_load
 from os import listdir, mkdir
 from os.path import join, exists, isdir, abspath
 
-from utils.custom_exceptions import IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined
-from utils.path import list_dir_in_dir
+from src.utils.custom_exceptions import IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined
+from src.utils.path import list_dir_in_dir
 
 class SingletonConfiguration():
     """Sigleton of the Configuration class
