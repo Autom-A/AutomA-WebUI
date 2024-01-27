@@ -43,10 +43,24 @@ class Configuration(SingletonConfiguration):
             self._config["path_generated"] = join(abspath("."),"generated")
             self._config["path_playbooks"] = join(abspath("."),"playbooks")
             self._config["path_logs"] = join(abspath("."),"logs")
+            self._config["server_user"] = 'admin'
+            self._config["server_password"] = 'admin123'
 
         else:
             with open(config_path) as config_file:
                 config = safe_load(config_file)
+
+                if config.get("server") and config.get("server").get("user"):
+                    self._config["server_user"] = config.get("server").get("user")
+                else:
+                    print("WARNING - No username supplied - using default 'admin'")
+                    self._config["server_user"] = 'admin'
+
+                if config.get("server") and config.get("server").get("password"):
+                    self._config["server_password"] = config.get("server").get("password")
+                else:
+                    print("WARNING - No password supplied - using default 'admin123'")
+                    self._config["server_password"] = 'admin123'
 
                 if config.get("server") and config.get("server").get("ip_backend"):
                     self._config["server_ip_backend"] = config.get("server").get("ip_backend")

@@ -12,6 +12,7 @@ from src.utils.questions_parser import check_answers, list_categories, list_reco
 from src.utils.recommendations_selected import RecommendationsSelected
 from src.utils.supported_systems import SupportedSystems
 from flask import Blueprint
+from flask_login import login_required
 from . import db
 main = Blueprint('main', __name__)
 
@@ -48,6 +49,7 @@ def index():
     return render_template("index.html")
 
 @main.route("/app")
+@login_required
 def app():
     return render_template("app.html",
                            SERVER_IP=config.get("server_ip_frontend"),
@@ -55,6 +57,7 @@ def app():
                            )
 
 @main.route("/api/selector/os", methods=['GET'])
+@login_required
 def get_os():
     try:
         return jsonify(supported_systems.get_os())
@@ -62,6 +65,7 @@ def get_os():
         return jsonify({"ERROR":variable_path_not_defined.args}), 400
 
 @main.route("/api/selector/os", methods=['POST'])
+@login_required
 def post_os():
     try:
         os = request.get_json().get("os")
@@ -77,6 +81,7 @@ def post_os():
         return jsonify({"ERROR":"An error occured"}), 400
 
 @main.route("/api/selector/os_type", methods=['GET'])
+@login_required
 def get_os_type():
     try:
         return jsonify(supported_systems.get_os_type())
@@ -86,6 +91,7 @@ def get_os_type():
         return jsonify({"ERROR":variable_path_not_defined.args}), 400
     
 @main.route("/api/selector/os_type", methods=['POST'])
+@login_required
 def post_os_type():
     try:
         os = request.get_json().get("os_type")
@@ -101,6 +107,7 @@ def post_os_type():
         return jsonify({"ERROR":"An error occured"}), 400
         
 @main.route("/api/selector/os_version", methods=['GET'])
+@login_required
 def get_os_version():
     try:
         return jsonify(supported_systems.get_os_version())
@@ -110,6 +117,7 @@ def get_os_version():
         return jsonify({"ERROR":variable_path_not_defined.args}), 400
 
 @main.route("/api/selector/os_version", methods=['POST'])
+@login_required
 def post_os_version():
     try:
         os = request.get_json().get("os_version")
@@ -125,6 +133,7 @@ def post_os_version():
         return jsonify({"ERROR":"An error occured"}), 400
     
 @main.route("/api/recommendations", methods=['GET'])
+@login_required
 def get_recommendations():
     try:
         all_recommendations = []
@@ -153,6 +162,7 @@ def get_recommendations():
         return jsonify({"ERROR":"An error occured"}), 400 
 
 @main.route("/api/question",methods=['GET'])
+@login_required
 def get_question():
     try:
         r_id = request.args["_id"]
@@ -166,6 +176,7 @@ def get_question():
         return jsonify({"ERROR":"An error occured"}), 400
 
 @main.route("/api/playbooks/render", methods=['POST'])
+@login_required
 def render_playbook():
     try:
         recommendations_selected = request.get_json()
@@ -195,6 +206,7 @@ def render_playbook():
         return jsonify({"ERROR":"An error occured"}), 400
 
 @main.route("/api/inventory/hosts", methods=['POST'])
+@login_required
 def add_hosts():
     try:
         inventory_hosts = request.get_json().get("hosts")
@@ -215,6 +227,7 @@ def add_hosts():
         return jsonify({"ERROR":"An Error has occured"}), 400
 
 @main.route("/api/playbook/launcher/run", methods=['POST'])
+@login_required
 def run_playbook_launcher():
     try:
         recommendation_selected = RecommendationsSelected()
@@ -231,6 +244,7 @@ def run_playbook_launcher():
 
 
 @main.route("/api/playbook/launcher/download", methods=['GET'])
+@login_required
 def download_playbook_launcher():
     pass
 
