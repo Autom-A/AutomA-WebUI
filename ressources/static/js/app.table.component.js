@@ -171,9 +171,10 @@ function renderInventoryLine(host) {
     else if (host["connection"] == 1) line.appendChild(renderCell("Keyfile based"))
 
     line.appendChild(renderCell(host["username"]))
-    line.appendChild(renderCell(host["passwordOrKeyfile"]))
+    if (host["connection"] == 0) line.appendChild(renderCell("******"))
+    else if (host["connection"] == 1) line.appendChild(renderCell(host["passwordOrKeyfile"]))
     line.appendChild(renderCell(host["sudoUsername"]))
-    line.appendChild(renderCell(host["sudoPassword"]))
+    line.appendChild(renderCell("******"))
 
     line.onclick = () => {
         switchEditInventoryLine(line)
@@ -191,22 +192,25 @@ function switchEditInventoryLine(line) {
 
     let editLine = document.createElement("tr")
     editLine.setAttribute("id", `${line.id}-edit`)
-
+    
     editLine.appendChild(renderDeleteHostLineBtn())
     editLine.appendChild(renderEditCell("hostname", line.id, TYPE_INPUT.TEXT, line.childNodes[1].innerText))
     editLine.appendChild(renderEditCell("ip", line.id, TYPE_INPUT.TEXT, line.childNodes[2].innerText))
     editLine.appendChild(renderEditCell("port", line.id, TYPE_INPUT.TEXT, line.childNodes[3].innerText))
     editLine.appendChild(renderEditCell("connection", line.id, TYPE_INPUT.SELECT, line.childNodes[4].innerText))
     editLine.appendChild(renderEditCell("username", line.id, TYPE_INPUT.TEXT, line.childNodes[5].innerText))
-    editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
+    if (line.childNodes[4].innerText == "Password based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.PASSWORD, line.childNodes[6].innerText));
+    else if (line.childNodes[4].innerText == "Keyfile based") editLine.appendChild(renderEditCell("password-keyfile", line.id, TYPE_INPUT.TEXT, line.childNodes[6].innerText))
     editLine.appendChild(renderEditCell("sudo-username", line.id, TYPE_INPUT.TEXT, line.childNodes[7].innerText))
-    editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.TEXT, line.childNodes[8].innerText))
+    editLine.appendChild(renderEditCell("sudo-password", line.id, TYPE_INPUT.PASSWORD, line.childNodes[8].innerText))
 
     editLine.appendChild(renderValidHostModificationBtn(`${line.id}-edit`))
 
     line.parentNode.insertBefore(editLine, line.nextSibling);
     line.setAttribute("hidden", "true")
-
+    document.querySelector(`#select-connection-${line.id}`).addEventListener("change", function() {
+        changeInputType(line.id);
+    });
     while (MATERIALIZE_FIFO.length > 0) {
         let todo = MATERIALIZE_FIFO.pop()
         switch (todo.element_type) {
@@ -250,7 +254,18 @@ function renderEditCell(colname, hostname, inputType, userValue) {
             divInput.appendChild(input);
             divInput.appendChild(label);
             break;
+        case TYPE_INPUT.PASSWORD:
+            let inputPassword = document.createElement("input");
+            inputPassword.id = `input-${colname}-${hostname}`;
+            inputPassword.setAttribute("type", "password");
 
+            let labelPassword = document.createElement("label");
+            labelPassword.setAttribute("for", `input-${colname}-${hostname}`);
+            labelPassword.innerText = "******"
+
+            divInput.appendChild(inputPassword);
+            divInput.appendChild(labelPassword);
+            break;
         case TYPE_INPUT.SELECT:
             let select = document.createElement("select")
             select.id = `select-connection-${hostname}`
@@ -268,7 +283,6 @@ function renderEditCell(colname, hostname, inputType, userValue) {
 
             select.appendChild(opt1)
             select.appendChild(opt2)
-
             divInput.appendChild(select)
 
             MATERIALIZE_FIFO.push({ element_type: "formselect", id: select.id })
@@ -305,6 +319,7 @@ function addLineInTable(item, tableType) {
     switch (tableType) {
         case TYPE_TABLE_ENUM.INVENTORY:
             lineToAdd = renderInventoryLine(item)
+
             containerID = "inventory-container"
             let container = document.getElementById(containerID)
             container.appendChild(lineToAdd)
@@ -514,9 +529,10 @@ function modifyHost(inputId) {
     else if (hostObj.connection == 1) textLine.childNodes.item(4).innerText = "Keyfile based";
 
     textLine.childNodes.item(5).innerText = hostObj.username;
-    textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
+    if (hostObj.connection == 0) textLine.childNodes.item(6).innerText = "******";
+    else if (hostObj.connection == 1) textLine.childNodes.item(6).innerText = hostObj.passwordOrKeyfile;
     textLine.childNodes.item(7).innerText = hostObj.sudoUsername;
-    textLine.childNodes.item(8).innerText = hostObj.sudoPassword;
+    textLine.childNodes.item(8).innerText = "******";
 
     textLine.removeAttribute("hidden")
     document.getElementById(inputId).remove();
@@ -690,3 +706,17 @@ function isValidFQDNOrIP(inputIPorFQDN) {
       return false;
     }
   }
+
+/**
+ * Change html iput type when user change "Password" to "Keyfile" and "Keyfile" to "Password" 
+ * @param {string} lineid Take the line.id (line "name")
+ */
+  function changeInputType(lineid){
+    let selectConnectionMethod = document.getElementById(`select-connection-${lineid}`);
+    let inputPasswordKeyfile = document.getElementById(`input-password-keyfile-${lineid}`)
+    if (selectConnectionMethod.value == "0") {
+        inputPasswordKeyfile.type = "password";
+    } else if (selectConnectionMethod.value == "1") {
+        inputPasswordKeyfile.type = "text";
+    }
+}
