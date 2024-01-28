@@ -1,5 +1,5 @@
 ansible-runner
-Flask
+Flask>=2.2.2
 flask-cors
 jinja2
 pyyaml
