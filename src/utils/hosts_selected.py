@@ -1,7 +1,7 @@
 from enum import IntEnum
 from os.path import join
-from utils.configuration import Configuration
-from utils.custom_exceptions import HostAlreadyAdded, MissingHost
+from src.utils.configuration import Configuration
+from src.utils.custom_exceptions import HostAlreadyAdded, MissingHost
 
 class HostConnectionMethod(IntEnum):
     PASSWORD_BASED = 0

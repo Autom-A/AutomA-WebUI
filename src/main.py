@@ -1,31 +1,26 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
-from flask_socketio import SocketIO, emit
+from src.utils.sockets import socketio
 from os.path import abspath, join
-from utils.configuration import Configuration
-from utils.hosts_selected import HostsSelected
-from utils.id_management import RecommendationID
-from utils.custom_exceptions import AnswerIsRequired, HostAlreadyAdded, IDDoesNotExist, MissingHost, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
-from utils.playbook_renderer import playbook_render_write
-from utils.playbook_runner import run_ansible_playbook
-from utils.questions_parser import check_answers, list_categories, list_recommendations, list_reference, read_questions_file
-from utils.recommendations_selected import RecommendationsSelected
-from utils.supported_systems import SupportedSystems
+from src.utils.configuration import Configuration
+from src.utils.hosts_selected import HostsSelected
+from src.utils.id_management import RecommendationID
+from src.utils.custom_exceptions import AnswerIsRequired, HostAlreadyAdded, IDDoesNotExist, MissingHost, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined, WrongAnswerType
+from src.utils.playbook_renderer import playbook_render_write
+from src.utils.playbook_runner import run_ansible_playbook
+from src.utils.questions_parser import check_answers, list_categories, list_recommendations, list_reference, read_questions_file
+from src.utils.recommendations_selected import RecommendationsSelected
+from src.utils.supported_systems import SupportedSystems
+from flask import Blueprint
+from flask_login import login_required
+from . import db
+main = Blueprint('main', __name__)
 
-STATIC_FOLDER = join(abspath("."),"ressources","static")
 
 try:
-    # RETRIEVE CONFIGURATION
+
     config = Configuration()
     config.read_configuration()
-
-    flask_app = Flask(__name__, static_folder=STATIC_FOLDER)
-    flask_app.config['SECRET_KEY'] = config.get("server_secret")
-
-    socketio = SocketIO(flask_app)
-
-    CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
-
     # GENERATE FILE THAT CONTAINS PAIR ID/PATH OF EACH RECOMMENDATIONS
     id_file_path = join(config.get("path_generated"),"id_management.yml")
     playbooks_dir_path = config.get("path_playbooks")
@@ -49,25 +44,28 @@ except Exception as e:
     print(e.with_traceback())
 
 
-@flask_app.route("/")
+@main.route("/")
 def index():
     return render_template("index.html")
 
-@flask_app.route("/app")
+@main.route("/app")
+@login_required
 def app():
     return render_template("app.html",
                            SERVER_IP=config.get("server_ip_frontend"),
                            SERVER_PORT=config.get("server_port")
                            )
 
-@flask_app.route("/api/selector/os", methods=['GET'])
+@main.route("/api/selector/os", methods=['GET'])
+@login_required
 def get_os():
     try:
         return jsonify(supported_systems.get_os())
     except VariablePathNotDefined as variable_path_not_defined:
         return jsonify({"ERROR":variable_path_not_defined.args}), 400
 
-@flask_app.route("/api/selector/os", methods=['POST'])
+@main.route("/api/selector/os", methods=['POST'])
+@login_required
 def post_os():
     try:
         os = request.get_json().get("os")
@@ -82,7 +80,8 @@ def post_os():
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
 
-@flask_app.route("/api/selector/os_type", methods=['GET'])
+@main.route("/api/selector/os_type", methods=['GET'])
+@login_required
 def get_os_type():
     try:
         return jsonify(supported_systems.get_os_type())
@@ -91,7 +90,8 @@ def get_os_type():
     except VariablePathNotDefined as variable_path_not_defined:
         return jsonify({"ERROR":variable_path_not_defined.args}), 400
     
-@flask_app.route("/api/selector/os_type", methods=['POST'])
+@main.route("/api/selector/os_type", methods=['POST'])
+@login_required
 def post_os_type():
     try:
         os = request.get_json().get("os_type")
@@ -106,7 +106,8 @@ def post_os_type():
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
         
-@flask_app.route("/api/selector/os_version", methods=['GET'])
+@main.route("/api/selector/os_version", methods=['GET'])
+@login_required
 def get_os_version():
     try:
         return jsonify(supported_systems.get_os_version())
@@ -115,7 +116,8 @@ def get_os_version():
     except VariablePathNotDefined as variable_path_not_defined:
         return jsonify({"ERROR":variable_path_not_defined.args}), 400
 
-@flask_app.route("/api/selector/os_version", methods=['POST'])
+@main.route("/api/selector/os_version", methods=['POST'])
+@login_required
 def post_os_version():
     try:
         os = request.get_json().get("os_version")
@@ -130,7 +132,8 @@ def post_os_version():
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
     
-@flask_app.route("/api/recommendations", methods=['GET'])
+@main.route("/api/recommendations", methods=['GET'])
+@login_required
 def get_recommendations():
     try:
         all_recommendations = []
@@ -158,7 +161,8 @@ def get_recommendations():
         print(e.with_traceback())
         return jsonify({"ERROR":"An error occured"}), 400 
 
-@flask_app.route("/api/question",methods=['GET'])
+@main.route("/api/question",methods=['GET'])
+@login_required
 def get_question():
     try:
         r_id = request.args["_id"]
@@ -171,7 +175,8 @@ def get_question():
         print(e)
         return jsonify({"ERROR":"An error occured"}), 400
 
-@flask_app.route("/api/playbooks/render", methods=['POST'])
+@main.route("/api/playbooks/render", methods=['POST'])
+@login_required
 def render_playbook():
     try:
         recommendations_selected = request.get_json()
@@ -200,7 +205,8 @@ def render_playbook():
         print(e.with_traceback())
         return jsonify({"ERROR":"An error occured"}), 400
 
-@flask_app.route("/api/inventory/hosts", methods=['POST'])
+@main.route("/api/inventory/hosts", methods=['POST'])
+@login_required
 def add_hosts():
     try:
         inventory_hosts = request.get_json().get("hosts")
@@ -220,7 +226,8 @@ def add_hosts():
         print(e.with_traceback())
         return jsonify({"ERROR":"An Error has occured"}), 400
 
-@flask_app.route("/api/playbook/launcher/run", methods=['POST'])
+@main.route("/api/playbook/launcher/run", methods=['POST'])
+@login_required
 def run_playbook_launcher():
     try:
         recommendation_selected = RecommendationsSelected()
@@ -236,17 +243,9 @@ def run_playbook_launcher():
         return jsonify({"ERROR":missing_host.args}), 400
 
 
-@flask_app.route("/api/playbook/launcher/download", methods=['GET'])
+@main.route("/api/playbook/launcher/download", methods=['GET'])
+@login_required
 def download_playbook_launcher():
     pass
 
 
-@socketio.on("connect")
-def socket_connected():
-    print(request.sid)
-    print("client has connected")
-
-flask_app.run(host=config.get("server_ip_backend"),
-              port=config.get("server_port"),
-              debug=True
-              )

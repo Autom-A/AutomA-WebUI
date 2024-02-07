@@ -38,7 +38,7 @@ pip3 install -r requirements.txt
 4. Run !
 
 ```bash
-python3 src/main.py
+python3 wsgi.py
 ```
 
 ## 🍰 Contribution Guidelines:

@@ -3,6 +3,8 @@ server:
   ip_frontend: "127.0.0.1"
   port: 9123
   secret: "your_secret_token_here"
+  user: "admin"
+  password: "admin123"
 
 path:
   generated: "generated"

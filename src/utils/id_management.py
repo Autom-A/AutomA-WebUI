@@ -3,10 +3,10 @@ from yaml import safe_load, dump as yml_dump
 
 from os import listdir
 from os.path import join, exists, isdir
-from utils.configuration import Configuration
+from src.utils.configuration import Configuration
 
-from utils.custom_exceptions import IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined
-from utils.path import list_dir_in_dir
+from src.utils.custom_exceptions import IDDoesNotExist, PathDoesNotExist, VariableIDNotDefined, VariablePathNotDefined
+from src.utils.path import list_dir_in_dir
 
 class SingletonRecommendationID():
     """Sigleton of the RecommendationID class

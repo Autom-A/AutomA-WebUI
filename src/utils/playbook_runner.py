@@ -3,8 +3,8 @@ from ansible_runner import run
 from datetime import datetime
 from os.path import join,exists,isfile
 from socket import SocketIO 
-from utils.configuration import Configuration
-from utils.custom_exceptions import PathDoesNotExist
+from src.utils.configuration import Configuration
+from src.utils.custom_exceptions import PathDoesNotExist
 
 class SingletonRunnerEnv():
     """Sigleton of the SocketIO class

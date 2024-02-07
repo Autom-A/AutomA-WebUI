@@ -1,8 +1,8 @@
 from os.path import join
-from utils.configuration import Configuration
-from utils.custom_exceptions import MissingRecommendation
+from src.utils.configuration import Configuration
+from src.utils.custom_exceptions import MissingRecommendation
 
-from utils.supported_systems import SupportedSystems
+from src.utils.supported_systems import SupportedSystems
 class SingletonRecommendationsSelected():
     """
     This class is a sigleton object for RecommendationSelected class

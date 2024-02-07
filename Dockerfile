@@ -18,4 +18,4 @@ RUN git submodule update --init --recursive && pip3 install --user -r requiremen
 
 EXPOSE 9123
 
-CMD ["python3","src/main.py"]
+CMD ["python3","wsgi.py"]
