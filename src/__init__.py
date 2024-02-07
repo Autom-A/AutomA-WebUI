@@ -38,6 +38,6 @@ def create_app():
 
     flask_app.register_blueprint(auth_blueprint)
     flask_app.register_blueprint(main_blueprint)
-    CORS(flask_app,resources={r"/api/*":{"origins": "*"}})
+    CORS(flask_app,resources={r"*":{"origins": "*"}})
     
     return flask_app
